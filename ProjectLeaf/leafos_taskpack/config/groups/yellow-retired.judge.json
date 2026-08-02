@@ -1,0 +1,19 @@
+{
+  "schema": "leafos.model-group/v1",
+  "id": "yellow.judge",
+  "slot": "judge.primary",
+  "enabled": true,
+  "policy": {
+    "parallel_load": false,
+    "preferred_quantization": ["Q6_K", "F16"],
+    "max_vram_gib": 24.0,
+    "max_ram_gib": 64.0,
+    "allow_remote": true
+  },
+  "members": [
+    { "id": "yellow-judge-local", "weight": 100 },
+    { "id": "yellow-judge-bedrock", "weight": 80 },
+    { "id": "kimi-k27-code-remote", "weight": 60, "remote_only": true },
+    { "id": "deepseek-v3-qa-remote", "weight": 50, "remote_only": true }
+  ]
+}

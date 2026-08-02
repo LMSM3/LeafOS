@@ -1,0 +1,132 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[margin=2.2cm]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{booktabs,longtable,hyperref,listings,xcolor,parskip}
+\usepackage[expansion=false]{microtype}
+
+\hypersetup{colorlinks=true,linkcolor=teal,urlcolor=teal,citecolor=teal}
+\lstset{
+  basicstyle=\ttfamily\small,
+  breaklines=true,
+  backgroundcolor=\color{gray!8},
+  frame=single,
+  rulecolor=\color{gray!35},
+  xleftmargin=6pt,
+  xrightmargin=6pt
+}
+
+\title{\textbf{LeafOS Codebase Overview}\\[4pt]\large Source Tree and Responsibility Map}
+\author{LeafOS}
+\date{}
+
+\begin{document}
+\maketitle
+
+\section*{Purpose}
+
+This document is a printable map of the current LeafOS codebase. It separates
+packaging surfaces, source implementation, model acquisition, hardware
+monitoring, and generated evidence. The current project path is
+\texttt{leafctl live PATH}: read-only intake, a typed version-2 run, resident
+supervision, provider proposals, CPU-authoritative execution and validation,
+checkpointing, reporting, and bounded follow-up work. It should be read beside
+\texttt{docs/DOCUMENTATION\_MAP.md}, \texttt{docs/ARCHITECTURE.md}, and the
+taskpack roadmap.
+
+\section*{Top-Level Shape}
+
+\begin{lstlisting}[language={}]
+LeafOS/
+|-- PowerShell-Version/       Windows-friendly command surface
+|-- Bash-Version/             Bash / WSL / Linux command surface
+|-- ProjectLeaf/
+|   |-- leafos_taskpack/      primary CLI, graph, agent, node, provider runtime
+|   |-- leaf_model_installer/ plan-first local model acquisition package
+|   `-- floweros_hardware_monitor/
+|                             terminal hardware/GPU/fan telemetry utility
+|-- README.md                 root orientation
+|-- USAGE.md                  daily command guide
+|-- STAGE.md                  evidence and promotion plane
+|-- leafos.root.json          root layout and runtime policy
+`-- VERSION                   root packaging label
+\end{lstlisting}
+
+\section*{Responsibility Boundaries}
+
+\begin{longtable}{@{}p{0.25\linewidth}p{0.65\linewidth}@{}}
+\toprule
+Area & Responsibility \\
+\midrule
+Root & Defines the two-surface package layout and points operators to the real command surfaces. \\
+PowerShell surface & Windows-first wrappers, install scripts, real-model checks, one-shot bundles, and the llama.cpp provider launcher. \\
+Bash surface & Bash-first wrappers for the same high-level workflows. \\
+Taskpack & The active LeafOS runtime: live-project inlet, resident scheduler, resource governor, providers, CPU executor, TUI, telemetry, compatibility graph/node tools, and reports. \\
+Model installer & Catalog, plan, resolve, apply, resume, and verify model weights. This owns the download boundary. \\
+Hardware monitor & Separate telemetry utility for CPU, memory, storage, network, battery, temperature, GPU, and fan data. \\
+Reports and runs & Evidence artifacts. They are useful for audit, but they should not be treated as source. \\
+\bottomrule
+\end{longtable}
+
+\section*{Taskpack Subsystems}
+
+\begin{longtable}{@{}p{0.24\linewidth}p{0.66\linewidth}@{}}
+\toprule
+Path & Role \\
+\midrule
+\texttt{bin/} & Main command dispatch and user-facing CLI entrypoints. \\
+\texttt{core/agent/} & Task creation, plans, dry-runs, graph loop actions, repair injection, and run manifests. \\
+\texttt{core/graph/} & Graph state, dependency readiness, graph validation, and graph printing. \\
+\texttt{core/model/} & Brain and coder wrappers that call the provider layer and write artifacts. \\
+\texttt{core/python/} & Version-2 inlet, live-project intake, resident supervisor, resource governor, telemetry, work orders, and CPU execution lifecycle. \\
+\texttt{core/providers/} & Provider adapters. Production resident runs use explicit local or configured providers; mock adapters are test-only. \\
+\texttt{core/patch/} & Patch validation, preview, and explicit application boundary. \\
+\texttt{core/verify/} & Completion gate and verification command handling. \\
+\texttt{core/ui/tui/}, \texttt{core/tui/} & Python and native renderers over one normalized snapshot and typed-control bridge. \\
+\texttt{core/node/} & Optional file-backed SSH node receiver and task state machine. \\
+\texttt{core/remote/} & Distributor-side local/SSH transport. \\
+\texttt{core/net/} & LAN discovery, local serving, and bundle download helpers. \\
+\texttt{core/runtime/} & Runtime role policy, model/persona selection, and worker routing. \\
+\texttt{core/ui/}, \texttt{core/web/} & Read-only local views for chat, dashboard, and web/runtime state. \\
+\texttt{config/} & Runtime JSON, provider defaults, action schema, glyphs, loaders, and brand config. \\
+\texttt{tests/} & 167 discovered Python contracts plus shell, native TUI, Catan2, graph, provider, node, runtime, orchestration, and compatibility gates. \\
+\bottomrule
+\end{longtable}
+
+\section*{What Is Real Today}
+
+\begin{itemize}
+  \item \texttt{leafctl live PATH} inventories an existing project or creates a minimal seed, starts or reattaches a persistent version-2 run, starts the resident supervisor, and opens the TUI.
+  \item Instructions from plain text, typed JSON tasks, and work orders converge on one priority/dependency queue and the lifecycle inspect, plan, approve, execute, validate, checkpoint, and report.
+  \item The local llama.cpp Vulkan provider supplies schema-constrained proposals. CPU policy owns paths, commands, approval, execution, validation, repair, and evidence.
+  \item The resource governor uses foreground activity, responsiveness, CPU, GPU, RAM, VRAM, temperature, provider health, and budgets to admit or defer useful work.
+  \item Python and native TUI renderers consume one normalized snapshot and send bounded authenticated controls without editing run or project files.
+  \item Universal telemetry, LMEM controls, event cursors, worker/resident leases, checkpoint hashes, and reports support inspection and recovery.
+  \item The retained real four-minute Catan2 resident profile passed with one completed resident-generated improvement and no blocked work.
+  \item The older task spine, graph/action runner, one-shot bundles, and SSH node tools remain compatibility or optional subsystems.
+\end{itemize}
+
+\section*{Open Acceptance And Compatibility Work}
+
+\begin{itemize}
+  \item Run and retain the real eight-minute and 64-minute WO-038 Catan2 resident profiles before declaring the complete soak matrix passed.
+  \item Replace remaining gated mock-provider tests with equivalent recorded or live llama.cpp fixtures; preserve historical telemetry readability.
+  \item Materialize separate main, scheduler, and coder model roles while preserving proposal-only provider authority.
+  \item Expand TUI task composition and search through typed controls, never direct renderer mutation.
+  \item Keep optional node, graph, and one-shot documentation explicit about their scope.
+\end{itemize}
+
+\section*{Operating Doctrine}
+
+\begin{lstlisting}[language={}]
+Files are the state carrier.
+The typed inlet is the execution authority.
+The CLI and TUI are control surfaces.
+JSON and JSONL are the interchange contracts.
+SSH is the node transport.
+llama.cpp is a provider endpoint, not the authority.
+The CPU validates, gates, writes, and records evidence.
+Useful-work targets adapt to foreground and hardware pressure.
+\end{lstlisting}
+
+\end{document}

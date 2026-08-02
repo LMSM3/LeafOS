@@ -1,0 +1,459 @@
+LeafOS Agentic Loop Improvement Plan
+====================================
+
+STATUS UPDATE - 2026-07-21
+--------------------------
+This file is the historical unification plan that led to the current system.
+The production path is now leafctl live PATH -> typed version-2 run -> resident
+supervisor -> provider proposal -> CPU execution/validation -> checkpoint and
+report. Read DOCUMENTATION_MAP.md, ARCHITECTURE.md, AGENTIC_CLI.md,
+LOOP_INLET_USAGE.md, and RESIDENT_STACK_USAGE.md for current instructions.
+
+References below to a mock provider describe deterministic test contracts.
+Production runs do not silently select mock output. References to OneShot,
+the 0.2 finite task-plan spine, and dual-brain closure are implementation
+history or optional compatibility surfaces, not the top-level project inlet.
+
+WO-038 implementation and the real 4-minute resident profile are complete.
+The real 8-minute and 64-minute soaks remain pending acceptance evidence.
+
+Purpose
+-------
+Improve LeafOS from a collection of useful agentic parts into one dependable
+noninteractive local loop:
+
+create workspace -> create tasks -> route plans -> execute safely -> test ->
+checkpoint -> report -> choose next task -> repeat or stop.
+
+This is the top end of the local agentic workflow. It should eventually be able
+to create a directory such as C:\Games, scaffold projects like chess3D and
+catan2, assign work orders, run improvement cycles, play/benchmark the games,
+and leave evidence that can be resumed.
+
+Five-Part Unification Spine
+---------------------------
+The detailed phases below are now organized under WO-026 as a five-part
+execution plan. The ten phases remain useful design notes, but the working
+order should be driven by these five shippable pieces:
+
+1. Operator entry and sandbox factory:
+   provide one command that creates or selects a target directory, scaffolds
+   requested projects, writes a run manifest, and exits cleanly in dry-run mode.
+
+2. Durable run state and task queue:
+   standardize run.json, queue.json, events.jsonl, checkpoint.json, and report.md
+   so every loop can be inspected and resumed from disk.
+
+3. Planner/executor contract:
+   route tasks through a provider, validate the structured plan, execute only
+   allowlisted steps, run validation, and create repair tasks on failure.
+
+4. Game benchmark integration:
+   make catan2 the first real loop target, then add chess3D after the runner is
+   stable. Benchmarks should produce score deltas and evidence artifacts.
+
+5. Observability and dual-brain provider closure:
+   expose the loop through status/report commands and a live reasoning/action
+   trace made of external events, summaries, tool calls, checks, and checkpoints.
+   GPU/llama.cpp may accelerate proposals, while CPU validation remains the
+   final local authority.
+
+Current State
+-------------
+The pieces already exist, but they are not yet unified:
+
+1. OneShot handoff exists:
+   leafctl oneshot --oneshot <source> <target>
+
+   This creates a handoff bundle. It does not launch a live agent loop.
+
+2. Agent plan and run exist:
+   leafctl agent-task
+   leafctl agent-route
+   leafctl agent-dry-run
+   leafctl agent-run PLAN --yes
+   leafctl agent-report
+
+   This is useful, but it is still mostly single-task and plan-file driven.
+
+3. Graph loop exists:
+   leafctl agent-loop GRAPH --yes --apply
+
+   This can walk a graph, run actions, inject repair nodes, and gate progress.
+   It needs stronger journal/checkpoint/resume behavior before becoming the
+   main unattended loop.
+
+4. Sandbox staging exists:
+   bin\leaf-sandbox.ps1 stage --yes
+
+   This can stage known overnight tasks into isolated work directories, but it
+   does not create arbitrary project skeletons such as C:\Games\chess3D.
+
+5. Dual harness exists:
+   core\python\leaf_dual_harness.py
+
+   It can persist task state, pause/resume/cancel, switch brain runtime method,
+   compact context, and run allowlisted commands. It is not yet connected as
+   the single command-line top end.
+
+Target Command Shape
+--------------------
+The desired user-facing command should be close to:
+
+pwsh -NoProfile -File C:\R\LeafOS0.2.1\ProjectLeaf\leafos_taskpack\bin\leafctl.ps1 agent-loop-start --target C:\Games --projects chess3D,catan2 --profile local-games --yes
+
+Optional variations:
+
+leafctl sandbox-create --target C:\Games --projects chess3D,catan2 --yes
+leafctl sandbox-run C:\Games --max-minutes 64 --yes
+leafctl agent-loop-status C:\Games
+leafctl agent-loop-stop C:\Games --after-current-step
+leafctl agent-loop-resume C:\Games --yes
+
+Design Principles
+-----------------
+1. CPU authority remains final.
+2. Models propose; local validators decide.
+3. Every mutation is planned, previewable, executed, tested, and recorded.
+4. Every long loop has a heartbeat, timeout, checkpoint, and stop reason.
+5. Resume uses committed facts and hashes, not vague conversation memory.
+6. The default mode is local-only and deterministic-first.
+7. GPU providers are optional accelerators, never required for filesystem
+   authority.
+
+Phase 1 - Unified Run Directory
+-------------------------------
+Create one run directory contract used by oneshot-agent, sandbox, graph loop,
+and dual harness.
+
+Suggested layout:
+
+runs\agent-loop\<run-id>\
+  run.json
+  queue.json
+  state.json
+  events.jsonl
+  journal.jsonl
+  checkpoint.json
+  report.md
+  artifacts\
+  workspaces\
+
+Required fields in run.json:
+
+- schema
+- run_id
+- created_utc
+- root
+- target
+- profile
+- projects
+- provider_mode
+- safety_policy
+- max_minutes
+- max_attempts
+- first_checkpoint_due_minutes
+
+Acceptance:
+
+- A dry-run command writes no files.
+- A create command writes the run directory and manifest.
+- A status command can read the manifest without starting a model.
+
+Phase 2 - Project Skeleton Factory
+----------------------------------
+Add a skeleton creator for local improvement projects.
+
+Initial templates:
+
+- chess3D
+- catan2
+- generic-c-game
+- generic-python-sim
+
+Each skeleton should include:
+
+- README.md
+- WORK_ORDER.md
+- project_state.json
+- run_tests.ps1
+- run_tests.sh
+- src or core directory
+- tests directory
+- reports directory
+
+For C:\Games:
+
+C:\Games\
+  run.json
+  chess3D\
+  catan2\
+  shared\
+  reports\
+
+Acceptance:
+
+- The command can create C:\Games\chess3D and C:\Games\catan2 without prompts.
+- Existing directories are not overwritten unless --force is passed.
+- Each project has at least one passing baseline test.
+
+Phase 3 - Queue and Task Contract
+---------------------------------
+Create a queue format that can feed the loop.
+
+Each task should include:
+
+- task_id
+- project
+- work_order
+- objective
+- workdir
+- provider
+- max_attempts
+- timeout_seconds
+- validation_command
+- status
+- dependencies
+- evidence
+
+States:
+
+queued -> planning -> planned -> executing -> validating -> checkpointed
+queued -> blocked
+executing -> failed -> repair_queued
+validating -> failed -> repair_queued
+checkpointed -> complete
+
+Acceptance:
+
+- The loop can list queued, active, blocked, failed, and complete tasks.
+- The loop only starts tasks whose dependencies are complete.
+- A failed validation creates a repair task instead of spinning blindly.
+
+Phase 4 - Planner Route
+-----------------------
+Connect task records to the existing provider route.
+
+Flow:
+
+task.json
+  -> prompt/task file
+  -> provider proposal
+  -> plan file
+  -> plan validator
+  -> dry-run summary
+
+Rules:
+
+- Mock provider remains available for offline tests.
+- llama.cpp provider may be used only through loopback.
+- The plan must be structured and validated before execution.
+- Provider text is never executed directly.
+
+Acceptance:
+
+- A mock task creates a valid plan.
+- A malformed provider response fails closed.
+- The plan can be inspected before execution.
+
+Phase 5 - Executor and Gate
+---------------------------
+Make execution step-based, bounded, and checkpoint-aware.
+
+Each step records:
+
+- command
+- cwd
+- start time
+- exit code
+- stdout path
+- stderr path
+- elapsed seconds
+- changed files if detectable
+- validation result
+
+Execution rules:
+
+- No command runs without an allowlisted workdir.
+- Dangerous commands are rejected by policy.
+- Long commands have timeouts.
+- The loop stops cleanly at safe boundaries.
+
+Acceptance:
+
+- A task that passes tests writes a checkpoint.
+- A task that fails tests writes a failed validation event.
+- A timeout writes a timeout event and does not block the next status check.
+
+Phase 6 - Journal, Checkpoint, Resume
+-------------------------------------
+Bind loop progress to durable evidence.
+
+Events should include:
+
+- run.started
+- project.created
+- task.queued
+- task.planned
+- plan.validated
+- step.started
+- step.completed
+- validation.passed
+- validation.failed
+- checkpoint.written
+- repair.queued
+- run.paused
+- run.resumed
+- run.completed
+- run.failed
+
+Checkpoint should include:
+
+- last event sequence
+- queue digest
+- project file hashes
+- completed task IDs
+- active task ID if any
+- provider/runtime selection
+- stop reason
+
+Acceptance:
+
+- Resume can continue from the last valid checkpoint.
+- Duplicate or missing event sequences are detected.
+- A killed run can be inspected without rerunning the model.
+
+Phase 7 - Game Loop Integration
+-------------------------------
+Add project-specific run modes for games.
+
+Catan2:
+
+- Run catan2bench fast CPU-only baseline.
+- Run catan2bench real 4m/8m/64m after provider config.
+- Store events, brain trace, summary, and topology report.
+
+Chess3D:
+
+- Start with a skeleton board/rules engine.
+- Add baseline legal move generator.
+- Add deterministic bot match.
+- Add render or state export later.
+
+Game improvement loop:
+
+1. Play or simulate baseline.
+2. Identify one measurable weakness.
+3. Generate a small patch.
+4. Run tests and replay.
+5. Record score delta.
+6. Accept only if validation passes.
+
+Acceptance:
+
+- catan2 project can be created under C:\Games.
+- catan2 benchmark can be run from the loop.
+- A game score/report artifact is written per iteration.
+
+Phase 8 - Operator Surface
+--------------------------
+Add simple noninteractive and status commands before building a full TUI.
+
+Commands:
+
+leafctl agent-loop-start ...
+leafctl agent-loop-status <run-dir>
+leafctl agent-loop-tick <run-dir>
+leafctl agent-loop-resume <run-dir> --yes
+leafctl agent-loop-stop <run-dir> --after-current-step
+leafctl agent-loop-report <run-dir>
+
+Status should show:
+
+- run id
+- current project
+- current task
+- elapsed time
+- provider mode
+- last event
+- last checkpoint
+- validation status
+- next action
+
+Acceptance:
+
+- Status works while a run is stopped.
+- Status works while provider is unavailable.
+- Status does not mutate the run.
+
+Phase 9 - GPU / Dual-Brain Integration
+--------------------------------------
+Fold GPU provider support into the loop as an advisory lane.
+
+Rules:
+
+- Provider startup is explicit.
+- Provider config is checked before required mode.
+- GPU output is a proposal.
+- CPU validates plans, patches, game moves, and filesystem writes.
+- Provider failure may degrade only to explicitly declared CPU validation when policy allows; production never substitutes mock output.
+
+Acceptance:
+
+- provider-mode off works.
+- provider-mode auto records failures and continues when allowed.
+- provider-mode required fails early when the provider is not configured.
+
+Phase 10 - Tests and Gates
+--------------------------
+Minimum test set:
+
+1. Create run directory dry-run.
+2. Create C:\Games-like temp workspace with chess3D and catan2 skeletons.
+3. Refuse overwrite without --force.
+4. Queue two tasks and execute one tick.
+5. Mock provider plan generation.
+6. Validation pass writes checkpoint.
+7. Validation fail creates repair task.
+8. Timeout produces timeout event.
+9. Resume from checkpoint.
+10. Status is read-only.
+
+Near-Term Implementation Order
+------------------------------
+1. Add docs/work-orders/WO-026-agent-loop-top-end.md.
+2. Add core/python/leaf_agent_loop.py with create/status/tick/resume.
+3. Add config/agent_loop_profiles.json.
+4. Add skeleton templates under share/templates/projects.
+5. Add PowerShell command bridge in bin/leafctl.ps1.
+6. Add Bash command bridge in bin/leafctl.
+7. Add tests/test_agent_loop.py.
+8. Add tests/agent_loop.sh.
+9. Wire catan2bench as the first real game validation command.
+10. Add chess3D skeleton after the loop runner is stable.
+
+First Useful Milestone
+----------------------
+The smallest useful milestone is:
+
+pwsh -NoProfile -File C:\R\LeafOS0.2.1\ProjectLeaf\leafos_taskpack\bin\leafctl.ps1 agent-loop-start --target C:\Games --projects catan2 --profile local-games --dry-run
+
+Then:
+
+pwsh -NoProfile -File C:\R\LeafOS0.2.1\ProjectLeaf\leafos_taskpack\bin\leafctl.ps1 agent-loop-start --target C:\Games --projects catan2 --profile local-games --yes
+
+Expected result:
+
+- C:\Games\catan2 exists.
+- A run manifest exists.
+- A queue file exists.
+- One baseline Catan2 validation task exists.
+- Status reports the next action.
+- No model or GPU provider is started unless explicitly requested.
+
+Definition Of Done
+------------------
+The improved loop is ready when LeafOS can create a local game workspace,
+schedule at least one improvement task, route and validate a plan, execute it
+noninteractively under policy, run project tests, checkpoint the accepted state,
+produce a report, and resume from disk without relying on chat context.

@@ -1,0 +1,50 @@
+⍝ wakeup.py
+  exists: yes
+  python_compile: pass
+  size_bytes: 13553
+  export: yes
+
+⍝ wakeup.sh
+  exists: yes
+  bash_syntax: pass
+  size_bytes: 706
+  export: yes
+
+⍝ tickers.txt
+  exists: yes
+  size_bytes: 279
+  export: yes
+
+⍝ README.md
+  exists: yes
+  required_sections: pass
+  size_bytes: 3111
+  export: yes
+
+⍝ tests/test_wakeup_shell.sh
+  exists: yes
+  bash_syntax: pass
+  size_bytes: 1865
+  export: yes
+
+⍝ tests/test_wakeup_json.py
+  exists: yes
+  python_compile: pass
+  size_bytes: 2955
+  export: yes
+
+⍝ docs/wakeup_node.md
+  exists: yes
+  size_bytes: 3826
+  export: yes
+
+⍝ runs/latest/wakeup_result.json
+  exists: yes
+  valid_json: yes
+  export: yes
+
+⚠︎ yfinance quote
+  required: no
+  degraded_allowed: yes
+
+status: verified

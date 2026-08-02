@@ -1,0 +1,17 @@
+{
+  "schema": "leafos.model-group/v1",
+  "id": "mapper.default-local",
+  "slot": "router.primary",
+  "enabled": true,
+  "policy": {
+    "parallel_load": false,
+    "preferred_quantization": ["Q4_K_M"],
+    "max_vram_gib": 10.0,
+    "max_ram_gib": 12.0,
+    "allow_remote": false
+  },
+  "members": [
+    { "id": "qwen25-mapper-14b-q4km-local", "weight": 100 },
+    { "id": "qwen25-mapper-7b-q4km-local", "weight": 60 }
+  ]
+}

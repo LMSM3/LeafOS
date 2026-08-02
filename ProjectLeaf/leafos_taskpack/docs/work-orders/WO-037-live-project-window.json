@@ -1,0 +1,40 @@
+{
+  "leafos_object": "leafos.work_order",
+  "version": 2,
+  "work_order_id": "WO-037",
+  "title": "Live Project Window And Stack Finalization",
+  "objective": "Finalize the LeafOS operator inlet with a minimal active TUI command language that can repeatedly improve Catan2 or bootstrap any project from a README, skeleton, and JSON seed.",
+  "allowed_paths": [
+    "bin",
+    "core/python",
+    "core/ui/tui",
+    "core/tui",
+    "core/node/leaf_node.py",
+    "docs",
+    "schemas",
+    "tests"
+  ],
+  "constraints": [
+    "Reuse version-2 work orders and typed task controls.",
+    "Do not give TUI renderers filesystem or shell authority.",
+    "Do not require an operator objective when project facts are sufficient.",
+    "Do not display or persist private model chain-of-thought."
+  ],
+  "commands": {
+    "tests": [
+      ["python", "-m", "unittest", "tests.test_live_project", "tests.test_tui_skeleton", "tests.test_tui_hardware", "tests.test_tui_native", "tests.test_leafctl_dispatch"]
+    ]
+  },
+  "acceptance": [
+    "leafctl live opens the active project TUI",
+    "minimal and natural TUI commands reach the authoritative inlet",
+    "Catan2 discovery and repeated iteration are deterministic",
+    "three-file seeds are supported without a separate executor",
+    "native C and Python renderers share one command contract",
+    "obsolete placeholder code is removed"
+  ],
+  "approval_mode": "required",
+  "allow_mutation": true,
+  "max_attempts": 2,
+  "timeout_seconds": 900
+}

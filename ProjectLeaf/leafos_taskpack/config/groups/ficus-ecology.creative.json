@@ -1,0 +1,14 @@
+{
+  "schema": "leafos.model-group.v1",
+  "group_id": "ficus-ecology.creative",
+  "name": "Fable Ecology Creative Layer",
+  "priority": 4,
+  "mode": "on_demand",
+  "profiles": [
+    "ficus-ecology.drafter-q2",
+    "ficus-ecology.writer-q4",
+    "ficus-ecology.orchid-q4"
+  ],
+  "default": false,
+  "comment": "Creative drafting, polishing, and metaphor generation group with cheap first-pass fallback."
+}

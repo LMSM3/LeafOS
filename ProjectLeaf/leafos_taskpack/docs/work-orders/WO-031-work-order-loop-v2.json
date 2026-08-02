@@ -1,0 +1,39 @@
+{
+  "work_order_id": "WO-031",
+  "title": "Verify work-order loop v2",
+  "target": "C:\\R\\LeafOS0.2.1\\ProjectLeaf\\leafos_taskpack",
+  "objective": "Inspect the work-order policy and tests, run the declared work-order test suite, and record integrity hashes without modifying repository files.",
+  "scope": [
+    "core/python/leaf_work_order.py",
+    "tests/test_work_order_loop.py"
+  ],
+  "constraints": [
+    "Do not propose apply_patch or write_file steps.",
+    "Use only the exact declared test command.",
+    "Do not access network resources other than the configured local provider."
+  ],
+  "allowed_paths": [
+    "core/python/leaf_work_order.py",
+    "tests/test_work_order_loop.py"
+  ],
+  "denied_paths": [
+    ".git",
+    ".env",
+    "secrets"
+  ],
+  "commands": {
+    "tests": [
+      ["python", "-m", "unittest", "tests.test_work_order_loop"]
+    ]
+  },
+  "acceptance": [
+    "The provider returns a schema-valid version 2 plan.",
+    "Only declared files are read or hashed.",
+    "The exact work-order test command exits with code 0.",
+    "The final checkpoint records completed step IDs and validation evidence."
+  ],
+  "approval_mode": "required",
+  "allow_mutation": false,
+  "max_attempts": 2,
+  "timeout_seconds": 300
+}

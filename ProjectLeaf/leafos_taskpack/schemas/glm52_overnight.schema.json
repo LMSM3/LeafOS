@@ -1,0 +1,76 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "LeafOS GLM-5.2 Overnight Profile",
+  "type": "object",
+  "required": ["schema_version", "profile", "runtime", "model", "placement", "benchmark", "required_metrics"],
+  "properties": {
+    "deprecated": {"const": true},
+    "status": {"const": "deprecated_historical_profile"},
+    "deprecated_at": {"type": "string", "minLength": 1},
+    "deprecation_reason": {"type": "string", "minLength": 1},
+    "replacement_policy": {"type": "string", "minLength": 1},
+    "replacement_candidate_template": {"type": "string", "minLength": 1},
+    "schema_version": {"const": 1},
+    "profile": {"const": "glm52-q4-overnight"},
+    "runtime": {
+      "type": "object",
+      "required": ["backend", "executable", "model_path", "benchmark_command"],
+      "properties": {
+        "backend": {"const": "llama.cpp"},
+        "executable": {"type": "string", "minLength": 1},
+        "model_path": {"type": "string"},
+        "benchmark_command": {"type": "array", "items": {"type": "string"}}
+      }
+    },
+    "model": {
+      "type": "object",
+      "required": ["name", "quantization", "stored_weights_gb", "routed_experts", "active_experts"],
+      "properties": {
+        "name": {"const": "GLM-5.2"},
+        "quantization": {"const": "Q4"},
+        "stored_weights_gb": {"type": "number", "minimum": 1},
+        "routed_experts": {"type": "integer", "minimum": 1},
+        "active_experts": {"type": "integer", "minimum": 1}
+      }
+    },
+    "placement": {
+      "type": "object",
+      "required": ["ram_hot_cache_gb", "gpu_vram_budget_gb", "gpu_offload", "storage"],
+      "properties": {
+        "ram_hot_cache_gb": {"type": "number", "minimum": 0},
+        "gpu_vram_budget_gb": {"type": "number", "minimum": 0},
+        "gpu_offload": {"const": "selective"},
+        "storage": {"const": "fast_nvme_mmap"}
+      }
+    },
+    "benchmark": {
+      "type": "object",
+      "required": ["duration_hours", "modes", "generation_rate_gates"],
+      "properties": {
+        "duration_hours": {"type": "number", "exclusiveMinimum": 0},
+        "modes": {
+          "type": "array",
+          "items": {"enum": ["raw", "floweros", "leafos"]},
+          "minItems": 3
+        },
+        "generation_rate_gates": {
+          "type": "array",
+          "minItems": 6,
+          "items": {
+            "type": "object",
+            "required": ["minimum_tokens_per_second", "label"],
+            "properties": {
+              "minimum_tokens_per_second": {"type": "number", "minimum": 0},
+              "label": {"type": "string", "minLength": 1}
+            }
+          }
+        }
+      }
+    },
+    "required_metrics": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"type": "string", "minLength": 1}
+    }
+  }
+}

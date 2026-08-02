@@ -1,0 +1,261 @@
+#!/usr/bin/env bash
+set -Eeuo pipefail
+
+readonly SELF="${0##*/}"
+readonly HF_INSTALLER="https://hf.co/cli/install.sh"
+
+die() {
+	local code="$1"
+	shift
+	printf '%s: error: %s\n' "$SELF" "$*" >&2
+	exit "$code"
+}
+
+note() {
+	printf '%s: %s\n' "$SELF" "$*"
+}
+
+usage() {
+	cat <<'EOF'
+Usage:
+  leaf-hf bootstrap
+  leaf-hf auth
+  leaf-hf whoami
+
+  leaf-hf get REPO DESTINATION [options]
+  leaf-hf verify REPO DESTINATION [--revision REVISION]
+
+Options for get:
+  --include PATTERN     Include matching files; repeatable
+  --exclude PATTERN     Exclude matching files; repeatable
+  --revision REVISION   Branch, tag, or commit; default: main
+  --dry-run             Show download plan without downloading
+  --full                Explicitly permit an unfiltered snapshot
+
+Examples:
+  leaf-hf bootstrap
+  leaf-hf auth
+
+  leaf-hf get user/model ./models/model \
+	  --include "*.gguf" \
+	  --include "*.json" \
+	  --include "tokenizer*" \
+	  --dry-run
+
+  leaf-hf get user/model ./models/model \
+	  --include "*Q4_K_M*.gguf"
+EOF
+}
+
+refresh_path() {
+	export PATH="$HOME/.local/bin:$HOME/.local/share/huggingface/bin:$PATH"
+	hash -r 2>/dev/null || true
+}
+
+require_hf() {
+	refresh_path
+	command -v hf >/dev/null 2>&1 ||
+		die 20 "Hugging Face CLI is not installed; run '$SELF bootstrap'"
+}
+
+bootstrap() {
+	if command -v hf >/dev/null 2>&1; then
+		note "Hugging Face CLI already installed: $(command -v hf)"
+		hf --version
+		return
+	fi
+
+	command -v curl >/dev/null 2>&1 ||
+		die 21 "'curl' is required to install the Hugging Face CLI"
+
+	note "installing Hugging Face CLI for the current user"
+	curl --fail --silent --show-error --location "$HF_INSTALLER" | bash
+
+	refresh_path
+
+	command -v hf >/dev/null 2>&1 ||
+		die 22 "installation completed but 'hf' is not on PATH"
+
+	note "installed: $(command -v hf)"
+	hf --version
+}
+
+authenticate() {
+	require_hf
+
+	if [[ -n "${HF_TOKEN:-}" ]]; then
+		note "authenticating with HF_TOKEN"
+		hf auth login --token "$HF_TOKEN"
+	else
+		note "starting interactive Hugging Face authentication"
+		hf auth login
+	fi
+}
+
+download_repo() {
+	[[ $# -ge 2 ]] ||
+		die 30 "get requires REPO and DESTINATION"
+
+	local repo="$1"
+	local destination="$2"
+	local revision="main"
+	local dry_run=0
+	local permit_full=0
+
+	shift 2
+
+	local -a includes=()
+	local -a excludes=()
+
+	while (($#)); do
+		case "$1" in
+			--include)
+				[[ $# -ge 2 ]] ||
+					die 31 "--include requires a pattern"
+				includes+=("$2")
+				shift 2
+				;;
+
+			--exclude)
+				[[ $# -ge 2 ]] ||
+					die 32 "--exclude requires a pattern"
+				excludes+=("$2")
+				shift 2
+				;;
+
+			--revision)
+				[[ $# -ge 2 ]] ||
+					die 33 "--revision requires a value"
+				revision="$2"
+				shift 2
+				;;
+
+			--dry-run)
+				dry_run=1
+				shift
+				;;
+
+			--full)
+				permit_full=1
+				shift
+				;;
+
+			*)
+				die 34 "unknown get option: $1"
+				;;
+		esac
+	done
+
+	if ((${#includes[@]} == 0 && permit_full == 0)); then
+		die 35 \
+			"refusing an unfiltered repository download; use --include or explicitly pass --full"
+	fi
+
+	require_hf
+	mkdir -p "$destination"
+
+	local -a command=(
+		hf download "$repo"
+		--revision "$revision"
+		--local-dir "$destination"
+	)
+
+	local pattern
+
+	for pattern in "${includes[@]}"; do
+		command+=(--include "$pattern")
+	done
+
+	for pattern in "${excludes[@]}"; do
+		command+=(--exclude "$pattern")
+	done
+
+	((dry_run)) && command+=(--dry-run)
+
+	note "repository:  $repo"
+	note "revision:    $revision"
+	note "destination: $destination"
+
+	"${command[@]}" ||
+		die 36 "download failed for '$repo' at revision '$revision'"
+}
+
+verify_repo() {
+	[[ $# -ge 2 ]] ||
+		die 40 "verify requires REPO and DESTINATION"
+
+	local repo="$1"
+	local destination="$2"
+	local revision="main"
+
+	shift 2
+
+	while (($#)); do
+		case "$1" in
+			--revision)
+				[[ $# -ge 2 ]] ||
+					die 41 "--revision requires a value"
+				revision="$2"
+				shift 2
+				;;
+
+			*)
+				die 42 "unknown verify option: $1"
+				;;
+		esac
+	done
+
+	[[ -d "$destination" ]] ||
+		die 43 "local model directory does not exist: $destination"
+
+	require_hf
+
+	hf cache verify "$repo" \
+		--revision "$revision" \
+		--local-dir "$destination" ||
+		die 44 "verification failed for '$destination'"
+
+	note "verified: $destination"
+}
+
+main() {
+	local command="${1:-help}"
+	shift || true
+
+	case "$command" in
+		bootstrap)
+			(($# == 0)) || die 10 "bootstrap accepts no arguments"
+			bootstrap
+			;;
+
+		auth)
+			(($# == 0)) || die 11 "auth accepts no arguments"
+			authenticate
+			;;
+
+		whoami)
+			(($# == 0)) || die 12 "whoami accepts no arguments"
+			require_hf
+			hf auth whoami
+			;;
+
+		get)
+			download_repo "$@"
+			;;
+
+		verify)
+			verify_repo "$@"
+			;;
+
+		help|-h|--help)
+			usage
+			;;
+
+		*)
+			usage >&2
+			die 13 "unknown command: $command"
+			;;
+	esac
+}
+
+main "$@"

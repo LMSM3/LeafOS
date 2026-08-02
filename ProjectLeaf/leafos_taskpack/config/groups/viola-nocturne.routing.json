@@ -1,0 +1,14 @@
+{
+  "schema": "leafos.model-group.v1",
+  "group_id": "viola-nocturne.routing",
+  "name": "Viola Nocturne Routing Layer",
+  "priority": 0,
+  "mode": "fast",
+  "profiles": [
+    "viola-nocturne.helpertext-q2",
+    "viola-nocturne.router-q2",
+    "viola-nocturne.drafter-q2"
+  ],
+  "default": false,
+  "comment": "Always-on lightweight lanes for routing, helper text, and drafting."
+}

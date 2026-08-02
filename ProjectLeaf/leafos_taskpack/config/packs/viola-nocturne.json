@@ -1,0 +1,90 @@
+{
+  "schema": "leafos.model-pack.v1",
+  "id": "viola-nocturne",
+  "name": "Viola Nocturne",
+  "version": "0.1.0",
+  "description": "A Fable-centric multi-model ecology with lightweight 14B lanes, 27B coding/reference lanes, 35B reasoning lanes, and dormant experimental controls.",
+  "compatible_catalog_min": "0.9.0",
+  "default": false,
+  "identity": {
+    "flower": "viola",
+    "colour": "Pastel Violet",
+    "colour_hex": "#D7AFFF",
+    "symbol": "❀",
+    "display_name": "Viola Nocturne",
+    "compact_alias": "viola❀",
+    "ansi_256": 183
+  },
+  "layers": [
+    {"name": "routing", "group": "viola-nocturne.routing", "responsibility": "intent classification, routing, drafting, helper text"},
+    {"name": "code", "group": "viola-nocturne.code", "responsibility": "code generation, review, and finalization"},
+    {"name": "reasoning", "group": "viola-nocturne.reasoning", "responsibility": "analysis, deep reasoning, judgement, critique"},
+    {"name": "reference", "group": "viola-nocturne.reference", "responsibility": "high-quality reference and helper text"},
+    {"name": "experimental", "group": "viola-nocturne.experimental", "responsibility": "dormant experimental lanes and non-Fable controls"}
+  ],
+  "groups": [
+    "viola-nocturne.routing",
+    "viola-nocturne.code",
+    "viola-nocturne.reasoning",
+    "viola-nocturne.reference",
+    "viola-nocturne.experimental"
+  ],
+  "escalation_policy": {
+    "auto_escalate": true,
+    "max_depth": 3,
+    "manual_only_profiles": [
+      "viola-nocturne.experimental-fable-vision",
+      "viola-nocturne.experimental-moe-router",
+      "viola-nocturne.experimental-long-context",
+      "viola-nocturne.experimental-reasoning-control"
+    ],
+    "experimental_profiles": [
+      "viola-nocturne.experimental-fable-vision",
+      "viola-nocturne.experimental-moe-router",
+      "viola-nocturne.experimental-long-context",
+      "viola-nocturne.experimental-reasoning-control"
+    ]
+  },
+  "role_policy": {
+    "coder_neutral": true,
+    "main_model_candidates": [
+      "viola-nocturne.reasoner-q4",
+      "viola-nocturne.judge-q6",
+      "viola-nocturne.critic-q4"
+    ],
+    "scheduler_model_candidates": [
+      "viola-nocturne.router-q2"
+    ]
+  },
+  "memory_budget": {
+    "minimum_gb": 16,
+    "recommended_gb": 64,
+    "heavy_threshold_gb": 96
+  },
+  "install": {
+    "allow_fallback": false,
+    "items": [
+      {"catalog_key": "viola-fablevibes-14b-a3b", "quant": "Q2_K", "profile_id": "viola-nocturne.router-q2"},
+      {"catalog_key": "viola-fablevibes-14b-a3b", "quant": "Q2_K", "profile_id": "viola-nocturne.drafter-q2"},
+      {"catalog_key": "viola-fablevibes-14b-a3b", "quant": "Q2_K", "profile_id": "viola-nocturne.helpertext-q2"},
+      {"catalog_key": "viola-fablevibes-14b-a3b", "quant": "Q3_K_M", "profile_id": "viola-nocturne.coder-scout-q3"},
+      {"catalog_key": "viola-fable-fusion-27b", "quant": "Q4_K_M", "profile_id": "viola-nocturne.coder-builder-q4"},
+      {"catalog_key": "viola-fable-fusion-27b", "quant": "Q6_K", "profile_id": "viola-nocturne.coder-reviewer-q6"},
+      {"catalog_key": "viola-fable-fusion-27b", "quant": "Q8_0", "profile_id": "viola-nocturne.coder-finalizer-q8"},
+      {"catalog_key": "viola-fable-fusion-27b", "quant": "Q8_0", "profile_id": "viola-nocturne.reference-q8"},
+      {"catalog_key": "viola-fable5-distill-35b-a3b", "quant": "Q4_K_M", "profile_id": "viola-nocturne.reasoner-q4"},
+      {"catalog_key": "viola-fable5-distill-35b-a3b", "quant": "Q4_K_M", "profile_id": "viola-nocturne.deep-reasoner-q4"},
+      {"catalog_key": "viola-fable5-distill-35b-a3b", "quant": "Q6_K", "profile_id": "viola-nocturne.judge-q6"},
+      {"catalog_key": "viola-fable5-distill-35b-a3b", "quant": "Q4_K_M", "profile_id": "viola-nocturne.critic-q4"},
+      {"catalog_key": "viola-fablevibes-14b-a3b", "quant": "Q4_K_M", "profile_id": "viola-nocturne.experimental-fable-vision"},
+      {"catalog_key": "viola-fablevibes-14b-a3b", "quant": "Q4_K_M", "profile_id": "viola-nocturne.experimental-moe-router"},
+      {"catalog_key": "viola-opus-deepseek-27b-1m", "quant": "Q4_K_M", "profile_id": "viola-nocturne.experimental-long-context"},
+      {"catalog_key": "viola-opus-sonnet-27b-v2", "quant": "Q4_K_M", "profile_id": "viola-nocturne.experimental-reasoning-control"}
+    ]
+  },
+  "notes": [
+    "Cosmetic identity only: flower, colour, symbol, and display name do not imply reasoning quality or authority.",
+    "All quant labels are resolved against exact filename patterns; the installer selects one weight file per item.",
+    "Experimental lanes are dormant and require explicit confirm-heavy when applying the install plan."
+  ]
+}

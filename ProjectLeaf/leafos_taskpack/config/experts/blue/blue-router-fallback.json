@@ -1,0 +1,44 @@
+{
+  "schema": "leafos.expert.v1",
+  "source_repo": "DavidAU/Qwen3.6-27B-Fable-Fusion-711-Uncensored-Heretic-NM-DAU-NEO-MAX-MTP-GGUF",
+  "revision": "main",
+  "parameters_b": 27,
+  "provider": "llama.cpp",
+  "placement": "local",
+  "stack_segment": "local_cpu",
+  "endpoint_ref": "local-router",
+  "quantization": "IQ2_M_MTP",
+  "estimated_memory_gib": 12.1,
+  "context_tokens": 32768,
+  "capabilities": [
+    "route.conservative",
+    "route.fallback"
+  ],
+  "fallback_chain": [
+    "blue-router-primary"
+  ],
+  "enabled": true,
+  "purpose": "router fallback Banyan Council expert",
+  "notes": "Installed member of the Blue (Banyan Council) stack from flower-pack-1.2.0.",
+  "install_state": {
+    "status": "installed",
+    "local_path": "C:\\R\\LeafOS0.2.1\\models\\packs\\pack-1\\blue-router-fallback\\qwen36-fable-fusion-711-davidau-IQ2_M_MTP.gguf",
+    "blob_sha256": null,
+    "verified": true,
+    "download_attempts": 1
+  },
+  "runtime_params": {
+    "flash_attention": true,
+    "mmap": true,
+    "mlock": false,
+    "n_gpu_layers": 0,
+    "seed": 42
+  },
+  "validation": {
+    "launch_test_passed": false,
+    "checksum_ok": false,
+    "benchmark_tag": null
+  },
+  "id": "blue-router-fallback",
+  "model_ref": "qwen3.6-27b-fable"
+}

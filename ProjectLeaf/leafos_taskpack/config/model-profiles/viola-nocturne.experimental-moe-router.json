@@ -1,0 +1,18 @@
+{
+  "schema": "leafos.model-profile.v1",
+  "profile_id": "viola-nocturne.experimental-moe-router",
+  "base_catalog_key": "viola-fablevibes-14b-a3b",
+  "title": "Viola Nocturne Experimental MoE Router (Q4_K_M)",
+  "role": "experimental",
+  "lanes": ["slot.router.moe", "slot.router.experiment", "slot.router.classify"],
+  "contracts": ["routing_output"],
+  "runtime": ["llama.cpp"],
+  "recommended_quant": "Q4_K_M",
+  "quality_quant": "Q4_K_M",
+  "low_memory_quant": "Q3_K_M",
+  "emergency_quant": "Q2_K",
+  "activation": "dormant",
+  "escalation_from": [],
+  "escalation_to": ["viola-nocturne.router-q2"],
+  "notes": ["Dormant experimental MoE routing lane. Requires manual activation."]
+}

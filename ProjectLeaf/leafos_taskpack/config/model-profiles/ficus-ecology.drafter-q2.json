@@ -1,0 +1,18 @@
+{
+  "schema": "leafos.model-profile.v1",
+  "profile_id": "ficus-ecology.drafter-q2",
+  "base_catalog_key": "gemma4-coder",
+  "title": "Fable Ecology Drafter (Q2_K)",
+  "role": "drafter",
+  "lanes": ["slot.draft.text", "slot.draft.plan", "slot.draft.pseudo"],
+  "contracts": ["draft_output"],
+  "runtime": ["llama.cpp"],
+  "recommended_quant": "Q2_K",
+  "quality_quant": "Q3_K_M",
+  "low_memory_quant": "Q2_K",
+  "emergency_quant": "Q2_K",
+  "activation": "on_demand",
+  "escalation_from": [],
+  "escalation_to": ["ficus-ecology.coder-builder-q4", "ficus-ecology.reasoner-q4"],
+  "notes": ["Cheap first-pass generator. Produces rough sketches that later workers refine or reject."]
+}

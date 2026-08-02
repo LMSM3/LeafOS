@@ -1,0 +1,293 @@
+{
+  "color": {
+    "ansi_256": 183,
+    "hex": "#D7AFFF",
+    "name": "Pastel Violet",
+    "traits": [
+      "code",
+      "brain"
+    ]
+  },
+  "display_name": "Penstemon Atlas",
+  "dominant_role": "brain",
+  "fingerprint": "b9326c0873ab91d3d6b2dcce1750ec25a6e6d2b1cbf42c5510d825b55386c2be",
+  "flower": {
+    "common_name": "Beardtongue",
+    "genus": "Penstemon",
+    "traits": [
+      "structured",
+      "technical",
+      "precise"
+    ]
+  },
+  "generated_at": "2026-07-31T08:59:45.464391Z",
+  "mark": "\u274a",
+  "models": [
+    {
+      "catalog_status": "resolved",
+      "family": "fable",
+      "id": "fable5-critic",
+      "modalities": [
+        "text"
+      ],
+      "parameters_b": 7.0,
+      "role": "critic",
+      "slot": "critic.primary",
+      "traits": [
+        "adversarial",
+        "reviewer",
+        "precise"
+      ]
+    },
+    {
+      "catalog_status": "resolved",
+      "family": "fable",
+      "id": "fable5-judge",
+      "modalities": [
+        "text"
+      ],
+      "parameters_b": 7.0,
+      "role": "judge",
+      "slot": "judge.primary",
+      "traits": [
+        "authority",
+        "decisive",
+        "final"
+      ]
+    },
+    {
+      "catalog_status": "resolved",
+      "family": "fable",
+      "id": "fable5-router",
+      "modalities": [
+        "text"
+      ],
+      "parameters_b": 3.0,
+      "role": "router",
+      "slot": "router.primary",
+      "traits": [
+        "fast",
+        "triage",
+        "direct"
+      ]
+    },
+    {
+      "catalog_status": "resolved",
+      "family": "fable",
+      "id": "fable5-vision",
+      "modalities": [
+        "text",
+        "vision"
+      ],
+      "parameters_b": 7.0,
+      "role": "vision",
+      "slot": "vision.primary",
+      "traits": [
+        "visual",
+        "multimodal",
+        "perceptive"
+      ]
+    },
+    {
+      "catalog_status": "resolved",
+      "family": "fable",
+      "id": "fable5-writer",
+      "modalities": [
+        "text"
+      ],
+      "parameters_b": 7.0,
+      "role": "writer",
+      "slot": "writer.primary",
+      "traits": [
+        "expressive",
+        "polished",
+        "prose"
+      ]
+    },
+    {
+      "catalog_status": "resolved",
+      "family": "gemma",
+      "id": "gemma4-coder",
+      "modalities": [
+        "text",
+        "code"
+      ],
+      "parameters_b": 12.0,
+      "role": "code",
+      "slot": "coder.primary",
+      "traits": [
+        "structured",
+        "technical",
+        "precise"
+      ]
+    },
+    {
+      "catalog_status": "resolved",
+      "family": "gemma",
+      "id": "gemma4-critic",
+      "modalities": [
+        "text",
+        "code"
+      ],
+      "parameters_b": 12.0,
+      "role": "critic",
+      "slot": "critic.primary",
+      "traits": [
+        "adversarial",
+        "reviewer",
+        "precise"
+      ]
+    },
+    {
+      "catalog_status": "resolved",
+      "family": "gemma",
+      "id": "gemma4-opus-assistant",
+      "modalities": [
+        "text"
+      ],
+      "parameters_b": 12.0,
+      "role": "brain",
+      "slot": "main.primary",
+      "traits": [
+        "balanced",
+        "reasoning",
+        "synthesis"
+      ]
+    },
+    {
+      "catalog_status": "resolved",
+      "family": "gemma",
+      "id": "gemma4-router",
+      "modalities": [
+        "text"
+      ],
+      "parameters_b": 4.0,
+      "role": "router",
+      "slot": "router.fast",
+      "traits": [
+        "fast",
+        "triage",
+        "direct"
+      ]
+    },
+    {
+      "catalog_status": "resolved",
+      "family": "gemma",
+      "id": "gemma4-writer",
+      "modalities": [
+        "text"
+      ],
+      "parameters_b": 12.0,
+      "role": "writer",
+      "slot": "writer.primary",
+      "traits": [
+        "expressive",
+        "polished",
+        "prose"
+      ]
+    },
+    {
+      "catalog_status": "resolved",
+      "family": "minicpm",
+      "id": "minicpm5-fable5-thinking",
+      "modalities": [
+        "text"
+      ],
+      "parameters_b": 1.0,
+      "role": "helper",
+      "slot": "helpertext.fast",
+      "traits": [
+        "quick",
+        "text",
+        "efficient"
+      ]
+    },
+    {
+      "catalog_status": "resolved",
+      "family": "qwen",
+      "id": "qwen35-opus-reasoning",
+      "modalities": [
+        "text"
+      ],
+      "parameters_b": 14.0,
+      "role": "brain",
+      "slot": "scheduler.fallback",
+      "traits": [
+        "deep",
+        "reasoning",
+        "planning"
+      ]
+    },
+    {
+      "catalog_status": "resolved",
+      "family": "qwen",
+      "id": "qwen36-fable-fusion",
+      "modalities": [
+        "text"
+      ],
+      "parameters_b": 27.0,
+      "role": "brain",
+      "slot": "brain.deep",
+      "traits": [
+        "deep",
+        "creative",
+        "heavy"
+      ]
+    },
+    {
+      "catalog_status": "resolved",
+      "family": "qwen",
+      "id": "qwopus35-coder-mtp",
+      "modalities": [
+        "text",
+        "code"
+      ],
+      "parameters_b": 9.0,
+      "role": "code",
+      "slot": "coder.secondary",
+      "traits": [
+        "fast",
+        "technical",
+        "parallel"
+      ]
+    }
+  ],
+  "pack_id": "penstemon-atlas-b9326c",
+  "role_ranking": [
+    [
+      "brain",
+      53.0
+    ],
+    [
+      "code",
+      21.0
+    ],
+    [
+      "critic",
+      19.0
+    ],
+    [
+      "writer",
+      19.0
+    ],
+    [
+      "judge",
+      7.0
+    ],
+    [
+      "router",
+      7.0
+    ],
+    [
+      "vision",
+      7.0
+    ],
+    [
+      "helper",
+      1.0
+    ]
+  ],
+  "schema": "leafos.generated-pack/v1",
+  "sealed": true,
+  "sealed_at": "2026-07-31T08:59:45.465315Z"
+}

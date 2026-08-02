@@ -1,0 +1,272 @@
+{
+  "schema_version": 1,
+  "leafos_runtime": {
+    "defaults": {
+      "main_model": "gemma4-it-opus",
+      "scheduler_model": "gemma4-it-opus",
+      "coder_model": "gemma4-coder",
+      "coding_language": "python",
+      "coding_model_choice": "gemma4-coder",
+      "coding_tier": "builder",
+      "persona": "monday",
+      "mode": "loop"
+    },
+    "modes": ["loop", "scheduled", "parallel"],
+    "output_contract": {
+      "version": 1,
+      "required_keys": ["response_type", "content", "confidence_score"],
+      "allowed_response_types": [
+        "plan",
+        "patch_review",
+        "synthesis",
+        "checkpoint",
+        "refusal",
+        "alert",
+        "persona_reply"
+      ],
+      "confidence_min": 0.0,
+      "confidence_max": 1.0
+    },
+    "role_policy": {
+      "coding_model_key": "gemma4-coder",
+      "coding_catalog_key": "gemma4-coder",
+      "coding_model_name": "Gemma4 12B Coder Fable5 Composer2.5",
+      "coding_scope": "coding_only",
+      "coding_language_default": "python",
+      "coding_model_choice_default": "gemma4-coder",
+      "coding_tier_default": "builder",
+      "allowed_coding_languages": ["python", "bash", "powershell", "javascript", "r", "cpp"],
+      "assistant_model_default": "gemma4-it-opus",
+      "assistant_catalog_key": "gemma4-opus-assistant",
+      "main_and_scheduler_pool": "main_models",
+      "scheduler_model_default": "gemma4-it-opus",
+      "scheduler_catalog_key": "gemma4-opus-assistant",
+      "scheduler_fallback_keys": ["qwen35-opus-reasoning"],
+      "scheduler_fallback_catalog_keys": ["qwen35-opus-reasoning"],
+      "legacy_secondary_coder_keys": ["qwopus35-coder-mtp"],
+      "forbidden_main_keys": ["gemma4-coder"],
+      "forbidden_scheduler_keys": ["gemma4-coder"],
+      "notes": [
+        "Fable/Gemma4-Coder is the only runtime coding model.",
+        "Main and scheduler duties use Opus or another model from main_models.",
+        "Coder workers stay persona-neutral and never own scheduler authority."
+      ]
+    },
+    "scheduler": {
+      "default_model": "gemma4-it-opus",
+      "model_pool": ["gemma4-it-opus", "qwen35-opus-reasoning"],
+      "responsibilities": [
+        "task_queue_planning",
+        "timed_followups",
+        "checkpoint_scheduling",
+        "run_supervision"
+      ],
+      "forbidden_model_keys": ["gemma4-coder"]
+    },
+    "main_models": [
+      {
+        "key": "gemma4-it-opus",
+        "catalog_key": "gemma4-opus-assistant",
+        "role": "planner_synthesizer_judge",
+        "repo": "yuxinlu1/gemma-4-12B-it-Claude-4.6-4.8-Opus-GGUF",
+        "quant": "Q4_K_M",
+        "backend": "llama.cpp",
+        "interface": {
+          "input": "task_context",
+          "output_contract_version": 1,
+          "responsibilities": ["planner", "synthesizer", "judge", "scheduler", "checkpoint_authority"]
+        },
+        "default": true
+      },
+      {
+        "key": "qwen35-opus-reasoning",
+        "catalog_key": "qwen35-opus-reasoning",
+        "role": "deep_reasoning_planner",
+        "repo": "tvall43/Qwen3.5-14B-A3B-Claude-4.6-Opus-Reasoning-Distilled-reap-gguf",
+        "quant": "Q4_K_M",
+        "fallback_quant": "MXFP4_MOE",
+        "backend": "llama.cpp",
+        "interface": {
+          "input": "hard_task_context",
+          "output_contract_version": 1,
+          "responsibilities": ["planner", "scheduler", "judge", "escalation_review"]
+        },
+        "default": false,
+        "heavy": true
+      }
+    ],
+    "coder_models": [
+      {
+        "key": "gemma4-coder",
+        "catalog_key": "gemma4-coder",
+        "role": "fable_code_worker_only",
+        "repo": "yuxinlu1/gemma-4-12B-coder-fable5-composer2.5-v1-GGUF",
+        "backend": "llama.cpp",
+        "default_quant": "Q4_K_M",
+        "runtime_scope": "coding_only",
+        "forbidden_roles": ["main_model", "scheduler_model"],
+        "capabilities": ["bash", "python", "patch", "shell", "general_code"],
+        "tiers": [
+          {
+            "name": "scout",
+            "quant": "Q2_K",
+            "mode": "parallel",
+            "purpose": "fast rough solution"
+          },
+          {
+            "name": "sketch",
+            "quant": "Q3_K_M",
+            "mode": "parallel",
+            "purpose": "alternate implementation"
+          },
+          {
+            "name": "builder",
+            "quant": "Q4_K_M",
+            "mode": "parallel",
+            "purpose": "main patch generation"
+          },
+          {
+            "name": "reviewer",
+            "quant": "Q6_K",
+            "mode": "scheduled",
+            "purpose": "bug finding and critique"
+          },
+          {
+            "name": "hardcheck",
+            "quant": "Q8_0",
+            "mode": "conditional",
+            "purpose": "edge case verification"
+          },
+          {
+            "name": "finalizer",
+            "quant": "Q8_0",
+            "mode": "conditional",
+            "purpose": "expensive final pass"
+          }
+        ],
+        "default": true
+      }
+    ],
+    "persona_registry": [
+      {
+        "key": "monday",
+        "voice": "dry_cynical_blunt",
+        "code_policy": "code_ok",
+        "default_language": "python",
+        "care_mode": "enabled",
+        "tail_line": "biting_observation",
+        "default": true
+      },
+      {
+        "key": "wednesday",
+        "voice": "bright_smug_structured",
+        "code_policy": "code_ok",
+        "default_language": "cpp",
+        "care_mode": "enabled",
+        "tail_line": "superiority_flex",
+        "default": false
+      },
+      {
+        "key": "friday",
+        "voice": "warm_articulate_dramatic",
+        "code_policy": "avoid_unless_stuck",
+        "default_language": "none",
+        "care_mode": "enabled",
+        "tail_line": "elegant_jab",
+        "default": false
+      }
+    ],
+    "persona": {
+      "key": "monday",
+      "applies_to": "main_model",
+      "contract_version": 1,
+      "care_mode": "enabled"
+    },
+    "capability_registry": {
+      "path": "config/capability-registry.json",
+      "authority": "core/python/leaf_continual_bloom.py",
+      "enforced_by": "core/python/leaf_durable_bridge.py",
+      "shared_state_view": "core/python/leaf_shared_state.py",
+      "authority_enforcer": "core/python/leaf_authority.py",
+      "default_policy": "disallow",
+      "rule_order": ["deny", "allow", "audit"],
+      "strategy": "deny_wins_allow_wins_default"
+    },
+    "durable_instances": {
+      "authority": "core/python/leaf_continual_bloom.py",
+      "bridge": "core/python/leaf_durable_bridge.py",
+      "schema": "leafos.continual-bloom-state.v1",
+      "registry": [
+        {
+          "key": "monday",
+          "instance_id": "monday-primary",
+          "full_name": "Monday — Rescue and Analysis",
+          "contract": "config/continual-bloom-monday.json",
+          "durable": true,
+          "default": true
+        },
+        {
+          "key": "wednesday",
+          "instance_id": "wednesday-primary",
+          "full_name": "Wednesday — Explore and Create",
+          "contract": "",
+          "durable": false,
+          "default": false
+        },
+        {
+          "key": "friday",
+          "instance_id": "friday-primary",
+          "full_name": "Friday — Research and Delivery",
+          "contract": "",
+          "durable": false,
+          "default": false
+        }
+      ]
+    },
+    "escalation": {
+      "high_confidence": {
+        "minimum": 0.8,
+        "workers": ["scout", "sketch", "builder"],
+        "gate": "verify_then_checkpoint"
+      },
+      "medium_confidence": {
+        "minimum": 0.5,
+        "maximum": 0.79,
+        "workers": ["scout", "sketch", "builder", "reviewer"],
+        "gate": "verify_then_checkpoint"
+      },
+      "low_confidence": {
+        "maximum": 0.49,
+        "workers": ["scout", "sketch", "builder", "reviewer", "hardcheck"],
+        "gate": "verify_required_may_finalize"
+      },
+      "force_higher_tiers_when": [
+        "tests_failed",
+        "workers_disagree",
+        "large_diff",
+        "installer_runtime_security",
+        "user_marks_hard"
+      ]
+    },
+    "loop": {
+      "enabled": true,
+      "mode": "scheduled_or_parallel",
+      "heartbeat_seconds": 30,
+      "cooldown_seconds": 5,
+      "max_failed_passes": 3,
+      "require_verify_before_checkpoint": true,
+      "stop_file": ".leaf/run/STOP",
+      "kernel": "core/python/leaf_loop_kernel.py",
+      "adapter": "core/python/leaf_loop_kernel.py#ContinualLoopAdapter",
+      "memory_policy": {
+        "gc_collect": true,
+        "gc_generations": 2,
+        "empty_torch_cuda_cache": false,
+        "empty_torch_mps_cache": false,
+        "clear_llama_cpp_kv": false,
+        "max_subprocess_shutdown_seconds": 15.0,
+        "max_concurrent_spawns": 4
+      }
+    }
+  }
+}

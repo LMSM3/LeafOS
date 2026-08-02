@@ -1,0 +1,55 @@
+LeafOS PowerShell Version Installation
+
+A.) Install / readiness check
+
+1. Open PowerShell 7.
+
+2. Go to:
+
+   C:\path\to\LeafOS\PowerShell-Version
+
+3. Run:
+
+   pwsh -File .\install.ps1
+
+B.) Usage
+
+Status:
+
+   .\leaf.ps1 status
+
+Runtime selection:
+
+   .\leaf.ps1 runtime select
+
+One-shot handoff bundle:
+
+   .\leaf.ps1 oneshot --oneshot .. C:\R\LeafOS-OneShot
+
+Model planning:
+
+   .\real-models.ps1
+
+Model resolve:
+
+   .\real-models.ps1 -Resolve
+
+Model download/resume:
+
+   .\real-models.ps1 -Resolve -Apply -Yes
+
+Full real installation automation:
+
+   .\install-real.ps1
+   .\install-real.ps1 -Yes
+
+Safety:
+
+- Planning is offline.
+- Resolve reads metadata only.
+- Apply is the model download boundary.
+- Apply requires -Yes.
+- Existing local GGUF caches are detected before a new location is used.
+- Runtime role rule:
+  Fable/Gemma4-Coder is coding-only.
+  Opus or another main-model-pool model owns main and scheduler duties.

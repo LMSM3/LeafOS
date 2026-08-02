@@ -1,0 +1,107 @@
+{
+  "$schema": "./quick-syntax.schema.json",
+  "schema": "leafos.quick-syntax.v1",
+  "surface": "FlowerOS",
+  "engine": "LeafOS",
+  "command": "leafos",
+  "entries": [
+    {
+      "alias": "q",
+      "expansion": ["quick"],
+      "description": "Show this concise command card.",
+      "read_only": true,
+      "interactive": false
+    },
+    {
+      "alias": "h",
+      "expansion": ["home"],
+      "description": "Open the read-only operator Home.",
+      "read_only": true,
+      "interactive": false
+    },
+    {
+      "alias": "s",
+      "expansion": ["status"],
+      "description": "Show the fast runtime status.",
+      "read_only": true,
+      "interactive": false
+    },
+    {
+      "alias": "d",
+      "expansion": ["doctor"],
+      "description": "Check installation readiness.",
+      "read_only": true,
+      "interactive": false
+    },
+    {
+      "alias": "r",
+      "expansion": ["runtime", "select"],
+      "description": "Show the active runtime selection.",
+      "read_only": true,
+      "interactive": false
+    },
+    {
+      "alias": "p",
+      "expansion": ["provider-stack", "check"],
+      "description": "Check the local model provider.",
+      "read_only": true,
+      "interactive": false
+    },
+    {
+      "alias": "t",
+      "expansion": ["trace", "latest"],
+      "description": "Inspect the latest observable run trace.",
+      "read_only": true,
+      "interactive": false
+    },
+    {
+      "alias": "ref",
+      "expansion": ["reference"],
+      "description": "Locate the primary Markdown and TeX references.",
+      "read_only": true,
+      "interactive": false
+    },
+    {
+      "alias": "b",
+      "expansion": ["bloom", "status"],
+      "description": "Verify and show the durable Monday instance.",
+      "read_only": true,
+      "interactive": false
+    },
+    {
+      "alias": "m",
+      "expansion": ["flower-monitor"],
+      "description": "Open the live CPU, memory, and disk monitor.",
+      "read_only": true,
+      "interactive": true
+    },
+    {
+      "alias": "c",
+      "expansion": ["chat"],
+      "description": "Open local model chat.",
+      "read_only": false,
+      "interactive": true
+    },
+    {
+      "alias": "go",
+      "expansion": ["live"],
+      "description": "Start guided project onboarding.",
+      "read_only": false,
+      "interactive": true
+    },
+    {
+      "alias": "vtop",
+      "expansion": ["vtop"],
+      "description": "Open the live process monitor (secondary action).",
+      "read_only": true,
+      "interactive": true
+    },
+    {
+      "alias": "identity",
+      "expansion": ["pack-identity", "generate"],
+      "description": "Generate or apply cosmetic pack identity.",
+      "read_only": false,
+      "interactive": false
+    }
+  ]
+}

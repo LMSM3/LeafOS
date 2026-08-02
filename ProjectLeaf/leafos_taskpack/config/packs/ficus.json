@@ -1,0 +1,74 @@
+{
+  "description": "LeafOS production stack derived from the installed Flower Pack 1.2.0 Banyan Council payload.",
+  "groups": [
+    "ficus.router",
+    "ficus.brain",
+    "ficus.code",
+    "ficus.critic",
+    "ficus.writer",
+    "ficus.judge",
+    "ficus.helper"
+  ],
+  "id": "ficus",
+  "identity": {
+    "colour": "pink",
+    "display_name": "pink\u273f",
+    "flower": "rose",
+    "symbol": "\u273f",
+    "visual_family": "warm"
+  },
+  "layers": [
+    {
+      "default_group": "ficus.router",
+      "layer": "router",
+      "max_models": 2,
+      "purpose": "fast triage and lane selection"
+    },
+    {
+      "default_group": "ficus.brain",
+      "layer": "brain",
+      "max_models": 2,
+      "purpose": "planning and deep reasoning"
+    },
+    {
+      "default_group": "ficus.code",
+      "layer": "code",
+      "max_models": 2,
+      "purpose": "code generation, review, and repair"
+    },
+    {
+      "default_group": "ficus.critic",
+      "layer": "critic",
+      "max_models": 2,
+      "purpose": "adversarial review"
+    },
+    {
+      "default_group": "ficus.writer",
+      "layer": "writer",
+      "max_models": 2,
+      "purpose": "documentation and polished prose"
+    },
+    {
+      "default_group": "ficus.judge",
+      "layer": "judge",
+      "max_models": 2,
+      "purpose": "evaluation and final authority"
+    },
+    {
+      "default_group": "ficus.helper",
+      "layer": "helpertext",
+      "max_models": 4,
+      "purpose": "text normalization and helper tasks"
+    }
+  ],
+  "model_root_default": "C:\\flower-pack-1.2.0\\flower-pack-1.2.0\\models",
+  "name": "Ficus Council",
+  "nominal_size": "249.9 GB",
+  "pack_id": "2",
+  "parallel_load": false,
+  "require_grouped_activation": true,
+  "schema": "leafos.model-pack/v1",
+  "source_release": "flower-pack-1.2.0",
+  "source_release_path": "C:\\flower-pack-1.2.0\\flower-pack-1.2.0",
+  "version": "1.0.0"
+}

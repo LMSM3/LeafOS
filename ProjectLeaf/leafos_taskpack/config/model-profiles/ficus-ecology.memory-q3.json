@@ -1,0 +1,18 @@
+{
+  "schema": "leafos.model-profile.v1",
+  "profile_id": "ficus-ecology.memory-q3",
+  "base_catalog_key": "gemma4-opus-assistant",
+  "title": "Fable Ecology Memory Weaver (Q3_K_M)",
+  "role": "memory",
+  "lanes": ["slot.memory.ingest", "slot.memory.reflect", "slot.memory.query"],
+  "contracts": ["memory_output"],
+  "runtime": ["llama.cpp"],
+  "recommended_quant": "Q3_K_M",
+  "quality_quant": "Q4_K_M",
+  "low_memory_quant": "Q2_K",
+  "emergency_quant": "Q2_K",
+  "activation": "background",
+  "escalation_from": [],
+  "escalation_to": [],
+  "notes": ["Background model that turns reflections into memory pack entries. Runs only when memory pipeline is active."]
+}

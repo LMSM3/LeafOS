@@ -1,0 +1,68 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "LeafOS Overnight Telemetry Event",
+  "type": "object",
+  "required": ["schema_version", "event_id", "recorded_at", "run_id", "event_type", "task_id", "metrics"],
+  "properties": {
+    "schema_version": {"const": 1},
+    "event_id": {"type": "string", "minLength": 1},
+    "recorded_at": {"type": "string", "format": "date-time"},
+    "run_id": {"type": "string", "minLength": 1},
+    "task_id": {"type": ["string", "null"]},
+    "event_type": {"enum": ["run_start", "task_start", "checkpoint", "sample", "tensor_snapshot", "validation", "transition", "recovery", "task_end", "run_end"]},
+    "sequence": {"type": ["integer", "null"], "minimum": 0},
+    "metrics": {"$ref": "#/$defs/metrics"},
+    "tensor": {"$ref": "#/$defs/tensor"},
+    "availability": {"type": "object", "additionalProperties": {"type": "string"}},
+    "notes": {"type": "array", "items": {"type": "string"}}
+  },
+  "$defs": {
+    "nullableNumber": {"type": ["number", "null"]},
+    "metrics": {
+      "type": "object",
+      "properties": {
+        "elapsed_seconds": {"$ref": "#/$defs/nullableNumber"},
+        "prompt_tokens": {"type": ["integer", "null"], "minimum": 0},
+        "generated_tokens": {"type": ["integer", "null"], "minimum": 0},
+        "prompt_tokens_per_second": {"$ref": "#/$defs/nullableNumber"},
+        "generation_tokens_per_second": {"$ref": "#/$defs/nullableNumber"},
+        "model_load_seconds": {"$ref": "#/$defs/nullableNumber"},
+        "time_to_first_token_seconds": {"$ref": "#/$defs/nullableNumber"},
+        "nvme_read_megabytes_per_second": {"$ref": "#/$defs/nullableNumber"},
+        "nvme_read_latency_milliseconds": {"$ref": "#/$defs/nullableNumber"},
+        "major_page_faults": {"type": ["integer", "null"], "minimum": 0},
+        "minor_page_faults": {"type": ["integer", "null"], "minimum": 0},
+        "ram_page_cache_residency_percent": {"$ref": "#/$defs/nullableNumber"},
+        "gpu_utilization_percent": {"$ref": "#/$defs/nullableNumber"},
+        "gpu_vram_used_gb": {"$ref": "#/$defs/nullableNumber"},
+        "cpu_utilization_percent": {"$ref": "#/$defs/nullableNumber"},
+        "cpu_temperature_celsius": {"$ref": "#/$defs/nullableNumber"},
+        "power_watts": {"$ref": "#/$defs/nullableNumber"},
+        "energy_watt_hours": {"$ref": "#/$defs/nullableNumber"},
+        "tokens_per_watt_hour": {"$ref": "#/$defs/nullableNumber"},
+        "validated_patches": {"type": ["integer", "null"], "minimum": 0},
+        "accepted_changes": {"type": ["integer", "null"], "minimum": 0},
+        "rejected_changes": {"type": ["integer", "null"], "minimum": 0},
+        "checkpoint_valid": {"type": ["boolean", "null"]},
+        "recovered_after_interruption": {"type": ["boolean", "null"]}
+      },
+      "additionalProperties": true
+    },
+    "tensor": {
+      "type": "object",
+      "required": ["name", "shape", "dtype", "placement", "bytes"],
+      "properties": {
+        "name": {"type": "string", "minLength": 1},
+        "shape": {"type": "array", "items": {"type": "integer", "minimum": 0}},
+        "dtype": {"type": "string", "minLength": 1},
+        "placement": {"enum": ["cpu", "gpu", "ram_cache", "nvme", "unknown"]},
+        "bytes": {"type": "integer", "minimum": 0},
+        "transfer_bytes": {"type": ["integer", "null"], "minimum": 0},
+        "transfer_seconds": {"type": ["number", "null"], "minimum": 0},
+        "expert_id": {"type": ["integer", "null"], "minimum": 0},
+        "layer": {"type": ["integer", "null"], "minimum": 0}
+      },
+      "additionalProperties": false
+    }
+  }
+}

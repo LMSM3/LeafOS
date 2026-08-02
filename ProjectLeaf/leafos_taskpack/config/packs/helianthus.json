@@ -1,0 +1,84 @@
+{
+  "description": "First complete LeafOS model pack, retired: 25 profiles across router, brain, code, critic, writer, judge, mapper, and helpertext. 23 local, 2 remote.",
+  "enabled": false,
+  "groups": [
+    "helianthus.router",
+    "helianthus.brain",
+    "helianthus.code",
+    "helianthus.critic",
+    "helianthus.writer",
+    "helianthus.judge",
+    "helianthus.mapper",
+    "helianthus.helper"
+  ],
+  "id": "helianthus",
+  "identity": {
+    "colour": "gray",
+    "display_name": "gray\u2740",
+    "flower": "violet",
+    "symbol": "\u2740",
+    "visual_family": "monochrome"
+  },
+  "layers": [
+    {
+      "default_group": "helianthus.router",
+      "layer": "router",
+      "max_models": 3,
+      "purpose": "fast triage and lane selection"
+    },
+    {
+      "default_group": "helianthus.brain",
+      "layer": "brain",
+      "max_models": 4,
+      "purpose": "planning and deep reasoning"
+    },
+    {
+      "default_group": "helianthus.code",
+      "layer": "code",
+      "max_models": 4,
+      "purpose": "code generation, review, and repair"
+    },
+    {
+      "default_group": "helianthus.critic",
+      "layer": "critic",
+      "max_models": 3,
+      "purpose": "adversarial review"
+    },
+    {
+      "default_group": "helianthus.writer",
+      "layer": "writer",
+      "max_models": 3,
+      "purpose": "documentation and polished prose"
+    },
+    {
+      "default_group": "helianthus.judge",
+      "layer": "judge",
+      "max_models": 4,
+      "purpose": "evaluation and final authority"
+    },
+    {
+      "default_group": "helianthus.mapper",
+      "layer": "mapper",
+      "max_models": 2,
+      "purpose": "context mapping and summarization"
+    },
+    {
+      "default_group": "helianthus.helper",
+      "layer": "helpertext",
+      "max_models": 2,
+      "purpose": "text normalization and helper tasks"
+    }
+  ],
+  "name": "Helianthus Retired Stack",
+  "notes": "Placeholders until GGUF artifacts are downloaded and revisions pinned. All local experts are disabled by default. Retired in favor of Ficus.",
+  "policy": {
+    "allow_remote": true,
+    "max_concurrent_local_models": 1,
+    "max_pack_ram_gib": 64.0,
+    "max_pack_vram_gib": 24.0,
+    "parallel_load": false,
+    "require_grouped_activation": true
+  },
+  "schema": "leafos.model-pack/v1",
+  "version": "0.1.0"
+}

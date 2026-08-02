@@ -1,0 +1,42 @@
+{
+  "schema_version": 1,
+  "event_id": "sample-task-coding-cli-001",
+  "recorded_at": "2026-01-01T00:00:00Z",
+  "run_id": "overnight-01",
+  "task_id": "coding-cli",
+  "event_type": "sample",
+  "sequence": 1,
+  "metrics": {
+    "elapsed_seconds": 120,
+    "prompt_tokens": 256,
+    "generated_tokens": 96,
+    "prompt_tokens_per_second": 18.4,
+    "generation_tokens_per_second": 0.8,
+    "model_load_seconds": null,
+    "time_to_first_token_seconds": null,
+    "nvme_read_megabytes_per_second": null,
+    "nvme_read_latency_milliseconds": null,
+    "major_page_faults": null,
+    "minor_page_faults": null,
+    "ram_page_cache_residency_percent": null,
+    "gpu_utilization_percent": null,
+    "gpu_vram_used_gb": null,
+    "cpu_utilization_percent": null,
+    "cpu_temperature_celsius": null,
+    "power_watts": null,
+    "energy_watt_hours": null,
+    "tokens_per_watt_hour": null,
+    "validated_patches": 1,
+    "accepted_changes": 1,
+    "rejected_changes": 0,
+    "checkpoint_valid": true,
+    "recovered_after_interruption": null
+  },
+  "availability": {
+    "gpu_counters": "not_collected",
+    "nvme_counters": "not_collected",
+    "power_counters": "not_collected",
+    "tensor_tracking": "adapter_optional"
+  },
+  "notes": ["Sample only; replace with runtime measurements."]
+}

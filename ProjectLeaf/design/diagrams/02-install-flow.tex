@@ -1,0 +1,51 @@
+\documentclass[tikz,border=10pt]{standalone}
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric,arrows.meta,positioning,fit,backgrounds,calc}
+
+\begin{document}
+\begin{tikzpicture}[
+	font=\sffamily\small,
+	node distance=1.4cm,
+	>=Stealth,
+	step/.style={rectangle, rounded corners, draw=blue!60, fill=blue!5, minimum width=5cm, minimum height=1cm, align=center, thick},
+	decision/.style={diamond, draw=orange!70, fill=orange!5, minimum width=2.2cm, minimum height=1.2cm, align=center, thick, aspect=2},
+	fail/.style={rectangle, rounded corners, draw=red!70, fill=red!5, minimum width=3.5cm, minimum height=0.9cm, align=center, thick},
+	ok/.style={rectangle, rounded corners, draw=green!60!black, fill=green!5, minimum width=3.5cm, minimum height=0.9cm, align=center, thick},
+	arrow/.style={->, thick}
+]
+
+\node[step] (launch) {User runs\\\texttt{\_start\_pack1\_download.ps1}};
+\node[decision, below=of launch] (psver) {PowerShell\\>= 7.0?};
+\node[fail, right=2.2cm of psver] (failps) {Fail:\\use \texttt{pwsh}};
+\node[step, below=of psver] (deps) {Check dependencies\\\texttt{huggingface\_hub}, \texttt{hf\_transfer}};
+\node[decision, below=of deps] (depsok) {Installed?};
+\node[fail, right=2.2cm of depsok] (faildeps) {Print install\\command and exit};
+\node[step, below=of depsok] (vault) {Unlock DPAPI vault\\\texttt{get read}};
+\node[decision, below=of vault] (tokok) {Token\\valid?};
+\node[fail, right=2.2cm of tokok] (failtok) {Try env/cached\\or anonymous};
+\node[step, below=of tokok] (plan) {Read Flower Pack registry\\build 14-artifact plan};
+\node[step, below=of plan] (scale) {Scale workers\\max(2, cores$-$2) or turbo};
+\node[step, below=of scale] (download) {Download via HF Xet\\with resume};
+\node[decision, below=of download] (done) {All files\\complete?};
+\node[ok, below=of done] (finish) {Install ready\\\texttt{.flower-verified}};
+\node[step, left=2.2cm of done] (retry) {Retry / resume\\next file};
+
+\draw[arrow] (launch) -- (psver);
+\draw[arrow] (psver) -- node[above,sloped]{\footnotesize no} (failps);
+\draw[arrow] (psver) -- node[right]{\footnotesize yes} (deps);
+\draw[arrow] (deps) -- (depsok);
+\draw[arrow] (depsok) -- node[above,sloped]{\footnotesize no} (faildeps);
+\draw[arrow] (depsok) -- node[right]{\footnotesize yes} (vault);
+\draw[arrow] (vault) -- (tokok);
+\draw[arrow] (tokok) -- node[above,sloped]{\footnotesize no} (failtok);
+\draw[arrow] (tokok) -- node[right]{\footnotesize yes} (plan);
+\draw[arrow] (plan) -- (scale);
+\draw[arrow] (scale) -- (download);
+\draw[arrow] (download) -- (done);
+\draw[arrow] (done) -- node[right]{\footnotesize yes} (finish);
+\draw[arrow] (done) -- node[above,sloped]{\footnotesize no} (retry);
+\draw[arrow] (retry) |- (download);
+\draw[arrow, dashed] (failtok) -- (plan);
+
+\end{tikzpicture}
+\end{document}

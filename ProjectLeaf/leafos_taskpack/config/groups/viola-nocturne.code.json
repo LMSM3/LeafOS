@@ -1,0 +1,15 @@
+{
+  "schema": "leafos.model-group.v1",
+  "group_id": "viola-nocturne.code",
+  "name": "Viola Nocturne Code Layer",
+  "priority": 1,
+  "mode": "on_demand",
+  "profiles": [
+    "viola-nocturne.coder-scout-q3",
+    "viola-nocturne.coder-builder-q4",
+    "viola-nocturne.coder-reviewer-q6",
+    "viola-nocturne.coder-finalizer-q8"
+  ],
+  "default": false,
+  "comment": "Escalating coding lanes from lightweight scout to finalizer."
+}

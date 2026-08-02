@@ -1,0 +1,18 @@
+{
+  "schema": "leafos.model-profile.v1",
+  "profile_id": "viola-nocturne.critic-q4",
+  "base_catalog_key": "viola-fable5-distill-35b-a3b",
+  "title": "Viola Nocturne Critic (Q4_K_M)",
+  "role": "critic",
+  "lanes": ["slot.critic.review", "slot.critic.safety", "slot.critic.style"],
+  "contracts": ["critique_output"],
+  "runtime": ["llama.cpp"],
+  "recommended_quant": "Q4_K_M",
+  "quality_quant": "Q6_K",
+  "low_memory_quant": "Q3_K_M",
+  "emergency_quant": "Q2_K",
+  "activation": "on_demand",
+  "escalation_from": ["viola-nocturne.drafter-q2", "viola-nocturne.reasoner-q4", "viola-nocturne.coder-builder-q4"],
+  "escalation_to": ["viola-nocturne.judge-q6"],
+  "notes": ["Scores drafts for coherence, safety, and style fit. Does not rewrite, only flags and rates."]
+}
