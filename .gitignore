@@ -1,0 +1,84 @@
+# LeafOS public source boundary
+
+# Local models, weights, download caches, and model stores
+Models/
+.agents/models/
+ProjectLeaf/leaf_model_installer/models/
+**/*.gguf
+**/*.gguf.*
+**/.cache/
+**/huggingface/
+
+# Toolchains, environments, IDE state, and compiled output
+.leaf-tools/
+**/.venv/
+**/venv/
+**/.vs/
+**/.vscode/
+**/__pycache__/
+**/.pytest_cache/
+**/node_modules/
+**/build/
+**/*.py[cod]
+**/*.exe
+**/*.dll
+**/*.pyd
+**/*.so
+**/*.lib
+**/*.o
+**/*.obj
+
+# Runtime state, live evidence, logs, and generated reports
+**/instances/
+**/runs/
+**/logs/
+**/reports/
+**/*.log
+**/*.err
+**/*.out
+**/*.aux
+**/*.toc
+**/*.synctex*
+**/*.pid
+**/*.lock
+
+# Downloaded archives and temporary working trees
+tmp/
+**/*.zip
+**/*.7z
+**/*.tar
+**/*.tar.gz
+**/*.part
+**/*.incomplete
+
+# Historical duplicate imports and unrelated local workspaces
+IMPORTS/
+IMPORTS2/
+Imports3/
+ARCHIVE/
+Installer_alpha/
+New folder/
+continue/
+training-template/
+VSEPR-Day98-LeafOS-Run1/
+VSEPR-Day98-LeafOS-Z-GR8/
+
+# Local repair/download scratch files in the canonical root
+/_*.py
+/_*.json
+/IMPORTS 4.txt
+/ReadfMe2.txt
+/download-*
+/viola-download.*
+/viola-pack-plan.json
+/viola-profile-plan.json
+/test-all.sh
+/.pr-body.md
+
+# OS metadata and editor leftovers
+.DS_Store
+Thumbs.db
+Desktop.ini
+*~
+*.bak
+*.busy
