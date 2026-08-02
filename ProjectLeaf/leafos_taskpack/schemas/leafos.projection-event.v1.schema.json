@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://leafos.local/schemas/leafos.projection-event.v1.schema.json",
+  "title": "LeafOS Normalized Projection Event",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["leafos_object", "version", "event_id", "event_type", "occurred_at", "recorded_at", "aggregate", "evidence_ref", "payload", "payload_digest"],
+  "properties": {
+    "leafos_object": {"const": "leafos.projection_event"},
+    "version": {"const": 1},
+    "event_id": {"type": "string", "pattern": "^evt_"},
+    "event_type": {"type": "string", "pattern": "^[a-z][a-z0-9_-]+(\\.[a-z][a-z0-9_-]+)+$"},
+    "occurred_at": {"type": "string", "format": "date-time"},
+    "recorded_at": {"type": "string", "format": "date-time"},
+    "aggregate": {"type": "object", "additionalProperties": false, "required": ["type", "id", "version"], "properties": {"type": {"enum": ["project", "run", "task", "report", "profile", "install_plan", "host"]}, "id": {"type": "string"}, "version": {"type": "integer", "minimum": 0}}},
+    "causation_id": {"type": ["string", "null"]},
+    "correlation_id": {"type": ["string", "null"]},
+    "evidence_ref": {"type": "string", "pattern": "^evidence://"},
+    "payload": {"type": "object"},
+    "payload_digest": {"type": "string", "pattern": "^sha256:[a-fA-F0-9]{64}$"}
+  }
+}

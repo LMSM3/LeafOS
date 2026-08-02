@@ -1,0 +1,28 @@
+{
+  "leafos_object": "leafos.work_order",
+  "version": 2,
+  "work_order_id": "WO-039",
+  "title": "FlowerOS Usage-Layer Pivot Finalization",
+  "objective": "Finish the operator-facing boundary needed to pivot from LeafOS infrastructure development into daily FlowerOS usage without renaming or weakening the LeafOS execution and evidence contracts.",
+  "allowed_paths": ["bin", "config", "core/bench", "core/python", "core/ui", "docs", "reports", "schemas", "tests"],
+  "constraints": [
+    "FlowerOS is the operator-facing surface and LeafOS remains the execution and evidence engine.",
+    "Stack means all downloaded and locally available models within this instance.",
+    "Dollar values are explicit gross cloud-equivalent comparisons, never unqualified net savings.",
+    "Historical benchmark and telemetry artifacts remain readable.",
+    "The TUI and Home remain read-only projections and gain no scheduler or execution authority.",
+    "Do not display or persist private model chain-of-thought."
+  ],
+  "acceptance": [
+    "PowerShell and Bash FlowerOS entrypoints reach the existing LeafOS command engine.",
+    "One operator contract controls surface identity and the output-token comparison assumption.",
+    "Benchmark cells and summaries separate measured generated tokens from decode-only hourly projections.",
+    "New universal telemetry records interval-scoped local-token value while old records remain valid.",
+    "Home and the TUI show FlowerOS surface identity, LeafOS engine identity, benchmark status, and local-token value.",
+    "Focused and complete Python suites pass."
+  ],
+  "approval_mode": "required",
+  "allow_mutation": true,
+  "max_attempts": 2,
+  "timeout_seconds": 1800
+}

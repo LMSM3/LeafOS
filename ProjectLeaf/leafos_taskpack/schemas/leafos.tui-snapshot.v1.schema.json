@@ -1,0 +1,141 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://leafos.local/schemas/leafos.tui-snapshot.v1.schema.json",
+  "title": "LeafOS TUI Snapshot",
+  "type": "object",
+  "required": [
+    "leafos_object",
+    "version",
+    "generated_at",
+    "event_cursor",
+    "operator",
+    "benchmark",
+    "run",
+    "work_order",
+    "milestones",
+    "tasks",
+    "queue",
+    "resident",
+    "hardware",
+    "brain",
+    "ledger",
+    "results",
+    "control",
+    "events"
+  ],
+  "properties": {
+    "leafos_object": {"const": "leafos.tui.snapshot"},
+    "version": {"const": 1},
+    "generated_at": {"type": "string", "format": "date-time"},
+    "event_cursor": {"type": "integer", "minimum": 0},
+    "operator": {
+      "type": "object",
+      "required": ["name", "engine", "stage"],
+      "properties": {
+        "name": {"type": "string"},
+        "engine": {"type": "string"},
+        "stage": {"type": "string"}
+      },
+      "additionalProperties": true
+    },
+    "benchmark": {"type": "object"},
+    "dropped_events": {"type": "integer", "minimum": 0},
+    "run": {
+      "type": "object",
+      "required": ["id", "dir", "mode", "state", "elapsed", "safety", "next_action"],
+      "properties": {
+        "id": {"type": "string"},
+        "dir": {"type": "string"},
+        "mode": {"type": "string"},
+        "state": {"type": "string"},
+        "elapsed": {"type": "string"},
+        "safety": {"enum": ["SAFE", "REVIEW", "PAUSED", "DEGRADED", "STOPPING", "FAILED"]},
+        "next_action": {"type": "string"}
+      },
+      "additionalProperties": true
+    },
+    "work_order": {"type": "object"},
+    "project": {
+      "type": "object",
+      "properties": {
+        "target": {"type": "string"},
+        "state": {"enum": ["empty", "seed", "documents", "codebase"]},
+        "iteration": {"type": "integer", "minimum": 0},
+        "catan2": {"type": "boolean"},
+        "last_task_id": {"type": "string"},
+        "syntax": {"type": "string"}
+      },
+      "additionalProperties": false
+    },
+    "resident": {
+      "type": "object",
+      "required": ["enabled", "status", "mode", "supervisor_alive", "profile", "reason", "claim_allowed", "targets", "current", "headroom", "budgets", "usage"],
+      "properties": {
+        "enabled": {"type": "boolean"},
+        "status": {"type": "string"},
+        "mode": {"enum": ["auto", "quiet", "full"]},
+        "supervisor_pid": {"type": ["integer", "null"]},
+        "supervisor_alive": {"type": "boolean"},
+        "worker_pid": {"type": ["integer", "null"]},
+        "profile": {"type": "string"},
+        "reason": {"type": "string"},
+        "claim_allowed": {"type": "boolean"},
+        "targets": {"type": "object"},
+        "current": {"type": "object"},
+        "headroom": {"type": "object"},
+        "cpu_slots": {"type": "integer", "minimum": 0},
+        "provider_delay_seconds": {"type": ["number", "null"], "minimum": 0},
+        "input_idle_seconds": {"type": ["number", "null"], "minimum": 0},
+        "responsiveness_ms": {"type": ["number", "null"], "minimum": 0},
+        "budgets": {"type": "object"},
+        "usage": {"type": "object"}
+      },
+      "additionalProperties": false
+    },
+    "milestones": {
+      "type": "array",
+      "minItems": 5,
+      "maxItems": 5,
+      "items": {
+        "type": "object",
+        "required": ["name", "state", "complete", "total"],
+        "properties": {
+          "name": {"enum": ["INTAKE", "PLAN", "EXECUTE", "VALIDATE", "PUBLISH"]},
+          "state": {"enum": ["complete", "active", "blocked", "waiting"]},
+          "complete": {"type": "integer", "minimum": 0},
+          "total": {"type": "integer", "minimum": 0}
+        },
+        "additionalProperties": false
+      }
+    },
+    "tasks": {"type": "array", "items": {"type": "object"}},
+    "queue": {"type": "object"},
+    "hardware": {"type": "object"},
+    "latest_validation": {"type": "object"},
+    "brain": {"type": "array", "items": {"type": "object"}},
+    "ledger": {"type": "array", "items": {"type": "object"}},
+    "results": {"type": "object"},
+    "control": {
+      "type": "object",
+      "required": ["transport", "authenticated", "connected"],
+      "properties": {
+        "transport": {"enum": ["inlet-cli", "tcp", "none"]},
+        "endpoint": {"type": "string"},
+        "authenticated": {"type": "boolean"},
+        "connected": {"type": "boolean"},
+        "active_process": {
+          "type": "object",
+          "properties": {
+            "pid": {"type": ["integer", "null"]},
+            "task_id": {"type": ["string", "null"]},
+            "started_utc": {"type": ["string", "null"]}
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": true
+    },
+    "events": {"type": "array", "items": {"type": "object"}}
+  },
+  "additionalProperties": false
+}

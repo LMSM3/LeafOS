@@ -1,0 +1,58 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://leafos.local/schemas/leafos.continual-bloom-state.v1.schema.json",
+  "title": "LeafOS Monday continual bloom state v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "leafos_object",
+    "version",
+    "instance_id",
+    "persona_key",
+    "persona_full_name",
+    "system_contract_hash",
+    "status",
+    "transcript_head",
+    "transcript_cursor",
+    "last_event_hash",
+    "stale_rejections",
+    "pending_claims",
+    "last_validation",
+    "last_checkpoint",
+    "lease",
+    "blocked_reason",
+    "next_action"
+  ],
+  "properties": {
+    "leafos_object": {"const": "leafos.continual_bloom_state"},
+    "version": {"const": 1},
+    "instance_id": {"const": "monday-primary"},
+    "persona_key": {"const": "monday"},
+    "persona_full_name": {"const": "Monday — Rescue and Analysis"},
+    "system_contract_hash": {"type": "string", "pattern": "^sha256:[a-f0-9]{64}$"},
+    "status": {"enum": ["starting", "active", "waiting", "idle", "blocked", "failed", "stopped"]},
+    "transcript_head": {"type": "integer", "minimum": 0},
+    "transcript_cursor": {"type": "integer", "minimum": 0},
+    "last_event_hash": {
+      "anyOf": [
+        {"const": "GENESIS"},
+        {"type": "string", "pattern": "^sha256:[a-f0-9]{64}$"}
+      ]
+    },
+    "stale_rejections": {"type": "integer", "minimum": 0},
+    "pending_claims": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+    "last_validation": {"type": ["object", "null"]},
+    "last_checkpoint": {"type": ["object", "null"]},
+    "lease": {"type": "object"},
+    "blocked_reason": {"type": ["string", "null"]},
+    "next_action": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["capability", "reason"],
+      "properties": {
+        "capability": {"type": "string", "minLength": 1},
+        "reason": {"type": "string", "minLength": 1}
+      }
+    }
+  }
+}

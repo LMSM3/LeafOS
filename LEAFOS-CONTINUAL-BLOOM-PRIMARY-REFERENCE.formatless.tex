@@ -1,0 +1,1215 @@
+% LeafOS Continual Bloom primary-reference projection.
+% Derived from LEAFOS-CONTINUAL-BLOOM-PRIMARY-REFERENCE.md.
+% Formatless fragment: no document class, preamble, styling, or document wrapper.
+% Table environments require longtable and booktabs in the including document.
+% Preserve UTF-8 with a Unicode-capable LaTeX engine.
+
+\section{L̷E̴A̶F̸O̵S̷ 0.9.? --- C̶O̸N̶T̶I̷N̸U̷A̴L̴ B̶L̶O̵O̷M̷ R̸U̶N̵T̷I̶M̸E̴}
+
+\begin{verbatim}
+[TITLE BUFFER.......................CORRUPTED]
+[CONFIG.............................NOT FOUND]
+[PROVIDER...........................OFF]
+[BRAIN..............................UNKNOWN]
+[CODER..............................UNKNOWN]
+
+C:\R\LeafOS0.2.1\ProjectLeaf\
+    leafos_taskpack\
+        r▓ns\bench\2026░727075329Z-install\
+            conve?sation.jsonl
+            t╳inking_summary
+            benchmark.jso_
+            decisi██-table.ndjso?
+
+/.leaf/
+    perso?a/
+        mond▓y.json
+        wedn▒sday.json
+        fri╳ay.json
+    transcr░pt/
+        HEAD -> 00000000000000??
+        parent_hash -> GENESIS//GENESIS//GENE—
+    checkpoint/
+        next_action = <unresolved>
+
+FATAL?  no
+SAFE?   unproven
+STATE?  recoverable
+
+................................................................................
+FlowerOS | LeafOS engine | run tui-fixture | LOOP | ???:??:?? | SAFE?
+................................................................................
+\end{verbatim}
+
+\begin{quote}
+\textbf{RECOVERY NOTICE:} The corrupted opening is intentional. It represents the
+state from which the architecture begins: presentation exists, files exist,
+telemetry moves, but identity, authority, and truth have not yet been
+resolved. The remainder of the chapter reconstructs the system from durable
+state rather than trusting whatever the screen happened to claim.
+\end{quote}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\section{Continual Bloom: Persistent Personalities, Native Authority, and the LeafOS Web Runtime}
+
+\subsection{1. Purpose}
+
+LeafOS is not a chatbot wrapped around a shell. It is a local orchestration and
+durability layer that converts intent into bounded, inspectable, resumable state
+transitions. FlowerOS controls the machine-facing environment: boot, drivers,
+hardware access, processes, services, terminal presentation, and host
+integration. LeafOS controls the work: task interpretation, model routing,
+planning, guarded mutation, validation, evidence, checkpoints, recovery, and
+exactly one next action.
+
+The central doctrine is therefore:
+
+\begin{verbatim}
+FlowerOS controls the machine.
+LeafOS controls the work.
+Native tools prove.
+Models interpret.
+State outranks conversation.
+\end{verbatim}
+
+This chapter develops one practical consequence of that doctrine: a continual
+multi-personality runtime in which CPU and GPU workers cooperate through a
+shared transcript without allowing the conversation to become stale, invented,
+or dependent on one process remaining alive forever. It also defines the
+relationship between the shell TUI, the HTML viewer, the Decision Table, the
+profiler, and a reusable family of workflow packages called \textbf{Flower Bloom
+Templates}.
+
+By default, LeafOS should maximize \textbf{useful hardware utilization} whenever an
+approved active workload exists. This does not mean blindly pinning every device
+at 100 percent. It means routing independent inference, compilation, parsing,
+validation, journaling, and context preparation so the CPU and GPU remain
+productively occupied together, while measured output, thermal limits,
+responsiveness, and verification gates retain priority over decorative load.
+
+The current transition is LeafOS \texttt{0.9.1} to \texttt{0.9.2-web}. The intended near-term
+path reaches an optional two-way chat mode around \texttt{0.9.5}. The chat surface is
+not the end goal. It is another controlled projection over the same durable
+runtime.
+
+\subsection{2. The problem with ordinary multi-agent chat}
+
+The naive multi-agent design creates several model prompts, lets each model
+produce a response, and concatenates the results. This looks collaborative
+because several names appear on the screen. Internally, however, the workers
+often read different context windows, miss one another's newest messages, repeat
+old conclusions, and gradually invent incompatible versions of the project.
+
+The failure is not primarily model intelligence. It is state management.
+
+A useful multi-personality system must answer five questions:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\item
+  What exact transcript head did each personality read?
+\item
+  Which parts of its response are observations, hypotheses, proposals, or
+  validated facts?
+\item
+  What evidence supports each promoted claim?
+\item
+  Can the state be reconstructed after the process, KV cache, terminal, or
+  model disappears?
+\item
+  Which component is legally permitted to mutate files or declare success?
+\end{enumerate}
+
+LeafOS answers these questions by treating conversation as an event stream,
+model output as an untrusted proposal, native validation as the source of
+evidence, and checkpoints as the boundary of durable continuation.
+
+The key insight is not continual generation. Continual generation merely
+produces an automated meeting that nobody can escape. The useful property is
+\textbf{continual synchronization}.
+
+\subsection{3. The MWF personality system}
+
+MWF contains exactly three core personalities. Their full names are canonical;
+the letters are only an abbreviation and must not replace their identities in
+state, logs, tables, or user-facing projections.
+
+\subsubsection{3.1 Monday --- Rescue and Analysis}
+
+Monday is the analytical rescuer. Its duty is to detect contradictions, missing
+constraints, invalid assumptions, unsafe actions, and failure states. Monday
+prefers deterministic, recoverable operations. It is the best first personality
+for a single-instance implementation because its output can be evaluated
+against explicit constraints and evidence.
+
+Monday does not become authority merely because its tone is decisive. It may
+recommend rejection, repair, rollback, or further inspection. The native inlet
+decides whether those capabilities are legal.
+
+\subsubsection{3.2 Wednesday --- Explore and Create}
+
+Wednesday is the creative explorer. It searches beyond the first acceptable
+answer, constructs alternatives, proposes experiments, and preserves rejected
+branches when they remain informative. Its purpose is controlled variation, not
+randomness for its own sake.
+
+Wednesday is especially suitable for the GPU reasoning lane because exploratory
+work benefits from larger active context, parallel candidate construction, and
+short bursts of high-throughput inference. Hardware placement remains a routing
+decision rather than part of Wednesday's identity.
+
+\subsubsection{3.3 Friday --- Research and Delivery}
+
+Friday is the pragmatic synthesizer. It compares proposals, weighs evidence,
+selects a path, and prepares a deliverable. Friday is not simply the final
+speaker. It is responsible for exposing why one candidate advanced while
+another was rejected.
+
+Friday may operate on a CPU model, a GPU slot, or a hybrid provider according to
+the runtime policy. Cloud fallback is optional and must never be silently
+introduced into a local run.
+
+\subsubsection{3.4 Personalities are contracts, not costumes}
+
+A personality is not merely a whimsical system prompt. It is a runtime
+contract:
+
+\begin{verbatim}
+personality
+    = model assignment
+    + system contract
+    + duties
+    + forbidden actions
+    + private KV handle
+    + transcript cursor
+    + bounded working state
+    + output schema
+\end{verbatim}
+
+One set of model weights may host several logical personalities, provided each
+has a separate system contract, context, cursor, and provenance. Conversely,
+different models may implement the same personality across hardware tiers. The
+identity belongs to the contract, not to the file size of a GGUF.
+
+Personas apply to the main reasoning model. Coder workers remain
+persona-neutral. They produce bounded patches, critiques, and verification
+signals rather than imitating Monday, Wednesday, or Friday.
+
+\subsection{4. The continual transcript}
+
+\subsubsection{4.1 The transcript as an event stream}
+
+The shared transcript is an append-only sequence:
+
+\begin{verbatim}
+000041  user       request
+000042  Monday     constraint analysis
+000043  Wednesday  candidate experiment
+000044  validator  test result
+000045  Friday     synthesis
+000046  native     capability disposition
+\end{verbatim}
+
+Each event has a sequence number, timestamp, actor, kind, parent hash, payload,
+and event hash. The hash chain detects mutation or truncation. It does not prove
+that the contents are true. A perfectly hashed hallucination remains a
+hallucination with excellent bookkeeping.
+
+A minimal event resembles:
+
+\begin{verbatim}
+{
+  "seq": 45,
+  "timestamp": "2026-07-27T08:00:31Z",
+  "kind": "decision.proposed",
+  "actor": "Friday — Research and Delivery",
+  "read_head": 44,
+  "parent_hash": "fnv1a64:19051a10e503c588",
+  "payload": {
+    "decision": "promote candidate B to native validation",
+    "evidence_refs": ["test:compiler-004", "metric:latency-012"],
+    "confidence": 0.81
+  },
+  "event_hash": "fnv1a64:cdb42f96c04ef378"
+}
+\end{verbatim}
+
+NDJSON is the preferred initial representation: one complete JSON object per
+line. It is appendable, streamable, recoverable after partial writes, readable
+from C++, Bash, PowerShell, and JavaScript, and does not require loading an
+entire conversation to inspect the tail.
+
+\subsubsection{4.2 Persona cursors}
+
+Every personality owns a transcript cursor:
+
+\begin{verbatim}
+struct PersonaState {
+    std::string full_name;
+    std::uint64_t transcript_cursor;
+    Hash system_contract_hash;
+    KvHandle kv_cache;
+    Summary bounded_private_state;
+};
+\end{verbatim}
+
+Before inference, LeafOS advances the personality from its cursor to the current
+head. The generated response records the head from which it was produced.
+
+The anti-staleness gate is:
+
+\[
+\operatorname{generated\_from\_head}
+=
+\operatorname{current\_transcript\_head}.
+\]
+
+If the equality fails at commit time, the response is stale. LeafOS rejects or
+rebases it:
+
+\begin{verbatim}
+reject stale proposal
+→ retrieve unseen events
+→ reconstruct bounded context
+→ generate again
+\end{verbatim}
+
+This prevents Friday from approving a candidate that Monday has already
+invalidated or Wednesday from proposing a solution to a problem that the user
+has since changed.
+
+\subsubsection{4.3 Collaboration cadence}
+
+Pure parallelism prevents the personalities from hearing one another. Fully
+serial inference wastes available CPU and GPU capacity. The preferred cadence
+is a staged micro-cycle:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\item
+  A user or tool event enters the transcript.
+\item
+  Monday on the CPU and Wednesday on the GPU consume the new event
+  concurrently.
+\item
+  Their proposals enter the transcript with the same read-head provenance.
+\item
+  Friday consumes both proposals and produces a synthesis.
+\item
+  Native tools execute or validate only an approved typed action.
+\item
+  Monday audits the evidence before a checkpoint is committed.
+\end{enumerate}
+
+This is parallel where independence is useful and serial where causal awareness
+matters.
+
+The loop must be bounded. A personality may not keep another personality alive
+by producing content solely to trigger another response. If no new evidence,
+constraint, disagreement, or user input exists, the correct event is
+\texttt{runtime.quiescent}, followed by an idle state.
+
+\subsection{5. Proving one personality before three}
+
+The first durable implementation should contain only \textbf{Monday --- Rescue and
+Analysis}. Multi-personality behavior should not be added until one instance
+can survive restart, reject stale output, distinguish claims from facts, and
+resume from exactly one next action.
+
+The minimum instance directory is:
+
+\begin{verbatim}
+instances/
+└── monday-primary/
+    ├── persona.json
+    ├── state.json
+    ├── events.ndjson
+    ├── facts.ndjson
+    ├── evidence/
+    └── checkpoints/
+\end{verbatim}
+
+\texttt{persona.json} defines identity, duties, forbidden actions, and routing
+preferences. \texttt{state.json} stores the compact recoverable present: status,
+cursor, transcript head, checkpoint reference, lease, blocked reason, and one
+next action. \texttt{events.ndjson} contains the append-only history. \texttt{facts.ndjson}
+contains only claims promoted by validation. Evidence and checkpoint artifacts
+are stored separately so the full state can be reconstructed without a live
+model process.
+
+The runtime state is one of:
+
+\begin{verbatim}
+starting | active | waiting | idle | blocked | failed | stopped
+\end{verbatim}
+
+Idle is healthy. Liveness does not mean that a model must talk continuously.
+The supervisor, not the model, owns the heartbeat and lease. It wakes Monday
+only when new input, tool output, validation evidence, a scheduled review, or a
+recovery event requires attention.
+
+The KV cache is a performance optimization. It is never authoritative. If it
+disappears, LeafOS rebuilds bounded context from the persona contract, validated
+facts, checkpoint, and transcript tail.
+
+\subsection{6. Claims, evidence, and modest hallucination metrics}
+
+Coding hallucination detection does not need to become the first research
+project of the runtime. Compilation, tests, schemas, file hashes, and native
+tool output already provide strong practical evidence. The system should still
+refuse to collapse proposal and truth into one field.
+
+Every model claim begins as unverified:
+
+\begin{verbatim}
+{
+  "claim_id": "claim-0042",
+  "text": "The project contains no acceptance specification",
+  "status": "unverified",
+  "evidence_refs": [],
+  "origin_event": 17
+}
+\end{verbatim}
+
+Only a native validator may promote or refute it:
+
+\begin{verbatim}
+{
+  "kind": "claim.validated",
+  "claim_id": "claim-0042",
+  "status": "supported",
+  "evidence_refs": [
+    {
+      "type": "filesystem_inventory",
+      "path": "planning/",
+      "digest": "fnv1a64:91..."
+    }
+  ]
+}
+\end{verbatim}
+
+A deliberately modest runtime metric is evidence coverage:
+
+\[
+E_c=
+\frac{N_{\text{supported claims}}}
+{N_{\text{total claims}}},
+\qquad
+N_{\text{total claims}}>0.
+\]
+
+Additional defensible metrics include:
+
+\[
+A_d=
+\frac{N_{\text{accepted decisions}}}
+{N_{\text{decision attempts}}},
+\]
+
+and
+
+\[
+R_s=N_{\text{stale-head rejections}}.
+\]
+
+These numbers do not claim to measure intelligence. They measure whether the
+runtime is preserving evidence, enforcing authority, and refusing obsolete
+work. This is less glamorous than an ``autonomy score,'' but it has the unusual
+advantage of meaning something.
+
+\subsection{7. Two-sided personality JSON}
+
+Each personality event has two conceptual halves:
+
+\begin{verbatim}
+{
+  "inside": {},
+  "outside": {}
+}
+\end{verbatim}
+
+\subsubsection{7.1 Inside: operational personality}
+
+The inside contains the real contract and structured reasoning artifacts:
+
+\begin{verbatim}
+{
+  "inside": {
+    "name": "Monday",
+    "full_name": "Monday — Rescue and Analysis",
+    "role": "analytical_rescuer",
+    "personality": {
+      "voice": "dry, skeptical, compact",
+      "bias": "prefer deterministic and recoverable actions",
+      "duty": "find contradictions, missing constraints, and failure states"
+    },
+    "planner": {
+      "observations": [],
+      "constraints": [],
+      "hypotheses": [],
+      "objections": [],
+      "evidence_refs": [],
+      "confidence": 0.0,
+      "proposed_next_action": null
+    }
+  }
+}
+\end{verbatim}
+
+The planner record is inspectable, but it should not preserve unrestricted
+hidden chain-of-thought. Durable state should contain useful reasoning
+artifacts: observations, hypotheses, evidence, objections, decisions, and
+confidence. Endless private narration produces larger files without producing
+more truth.
+
+Wednesday's planner emphasizes candidates, experiments, novelty, and risk.
+Friday's planner emphasizes accepted and rejected claims, decisions, acceptance
+gates, evidence, and delivery.
+
+\subsubsection{7.2 Outside: deterministic visual identity}
+
+The outside contains a mathematical visual projection:
+
+\begin{verbatim}
+{
+  "outside": {
+    "visual_seed": "fnv1a64:77cd23...",
+    "dimensions": {
+      "confidence": 0.84,
+      "novelty": -0.15,
+      "urgency": 0.42,
+      "agreement": 0.31,
+      "evidence": 0.91,
+      "risk": -0.27
+    },
+    "colour": {
+      "space": "oklch",
+      "l": 0.82,
+      "c": 0.09,
+      "h": 287.4,
+      "rgb": [218, 194, 235]
+    },
+    "glyph": "%"
+  }
+}
+\end{verbatim}
+
+The visual layer is a skin, not a spine. ASCII, ANSI, Unicode, and emoji
+renderers may vary, but no glyph or color changes authority, validation, or
+state semantics.
+
+\subsection{8. Pastel color and glyph mathematics}
+
+The visual result should look varied while remaining deterministic and
+reproducible. True randomness would cause the same event to appear differently
+after restart and would weaken visual identity.
+
+The seed is derived from stable fields:
+
+\[
+s=\operatorname{Hash}(
+\text{full-name}\parallel
+\text{run-id}\parallel
+\text{event-sequence}\parallel
+\text{state-digest}).
+\]
+
+An event carries the semantic vector
+
+\[
+\mathbf d=[c,n,u,a,e,r],
+\]
+
+where \(c\) is confidence, \(n\) novelty, \(u\) urgency, \(a\) agreement, \(e\)
+evidence strength, and \(r\) risk. Each component is normalized to
+\([-1,1]\). Hash fragments yield deterministic pseudorandom values
+\(q_i\in[0,1]\).
+
+Pastel color is resolved in OKLCH:
+
+\[
+H=360\operatorname{frac}
+\left(q_0+\boldsymbol{\omega}_H\cdot\mathbf d\right),
+\]
+
+\[
+L=\operatorname{clamp}
+\left(
+0.80+0.06(q_1-0.5)+
+\boldsymbol{\omega}_L\cdot\mathbf d,
+0.72,
+0.88
+\right),
+\]
+
+\[
+C=\operatorname{clamp}
+\left(
+0.08+0.04q_2+
+\boldsymbol{\omega}_C\cdot\mathbf d,
+0.04,
+0.14
+\right).
+\]
+
+The result is converted to RGB and then to ANSI truecolor when supported.
+Fallbacks select the nearest 256-color entry, then a no-color ASCII form.
+
+The ASCII-safe glyph set may be:
+
+\begin{verbatim}
+@ # % & * + = ~ ^ :
+\end{verbatim}
+
+with
+
+\[
+\operatorname{glyph\_index}
+=
+s_{\text{fragment}}\bmod N_{\text{glyphs}}.
+\]
+
+Optional Unicode skins may use low-order symbols such as \texttt{✾}, \texttt{✿}, \texttt{❀}, and
+\texttt{❁}. The canonical log stores the semantic dimensions and seed; the renderer
+selects the smallest valid presentation for the current terminal.
+
+\subsection{9. Brain architecture across CPU, GPU, RAM, and NVMe}
+
+The runtime is not divided into ``smart chip'' and ``dumb chip.'' It is divided by
+responsibility.
+
+\subsubsection{9.1 CPU control plane}
+
+The CPU owns:
+
+\begin{itemize}
+\item
+  scheduler and event loop;
+\item
+  transcript and cursor management;
+\item
+  JSON parsing and schema validation;
+\item
+  hashing and checkpoint construction;
+\item
+  filesystem traversal and Git operations;
+\item
+  process lifecycle and hidden child capture;
+\item
+  native test execution;
+\item
+  evidence indexing;
+\item
+  a CPU-resident personality or executive model when selected.
+\end{itemize}
+
+On an i9-13900K, the CPU is fast enough to maintain a substantial local model,
+perform validation, and keep the transcript moving while the GPU handles the
+most accelerator-sensitive inference.
+
+\subsubsection{9.2 GPU model lane}
+
+The GPU owns selected attention-heavy or coding/reasoning workloads. It may host
+Wednesday, the main reasoning model, or a persona-neutral coder depending on
+the current workflow. GPU routing must distinguish:
+
+\begin{verbatim}
+requested provider
+detected provider
+actual provider
+requested offload
+actual offload
+GPU layers
+VRAM allocation
+fallback reason
+\end{verbatim}
+
+Device detection is not proof that the model executed on the device.
+
+\subsubsection{9.3 RAM as the shared warm tier}
+
+RAM holds the authoritative live transcript projection, indexes, bounded
+context packs, warm model state, and optional KV caches. The transcript remains
+recoverable even if a specific cache is evicted.
+
+\subsubsection{9.4 NVMe as the durable tier}
+
+NVMe stores journals, checkpoints, evidence, cold summaries, model files, and
+historical artifacts. The normal direction is:
+
+\begin{verbatim}
+NVMe → RAM → VRAM
+\end{verbatim}
+
+Direct storage-to-GPU paths are optimizations, never foundational assumptions.
+
+\subsubsection{9.5 Default utilization governor}
+
+Maximal useful hardware usage is the default scheduling policy during active
+compute. On the reference i9-13900K and RTX 4070 host, the governor targets a
+five-minute rolling CPU band of \textbf{80--92 percent} and a GPU band of \textbf{85--98
+percent}. Reporting, checkpoint construction, validation-only intervals,
+cooldowns, and explicit idle states are excluded from those active-compute
+bands.
+
+The runtime reaches the targets through pipeline overlap rather than synthetic
+load:
+
+\begin{itemize}
+\item
+  P-cores compile, test, parse, traverse files, and execute suitable offloaded
+  layers;
+\item
+  E-cores maintain the executive loop, transcript, journal, routing, telemetry,
+  and context assembly;
+\item
+  one persistent \texttt{llama-server} model pool uses continuous batching so logical
+  personalities share weights instead of racing duplicate model launches for
+  the same VRAM;
+\item
+  the GPU performs the current inference or coding batch while the CPU validates
+  the prior result and prepares the next bounded context;
+\item
+  RAM retains hot transcript, KV, index, and offload state while NVMe prefetches
+  cold models, evidence, and checkpoint material;
+\item
+  admission control, queue depth, leases, and backpressure prevent too many
+  workers from exhausting VRAM or reducing useful throughput.
+\end{itemize}
+
+The governor alternates \texttt{ACTIVE\_COMPUTE} and \texttt{THERMAL\_BREAK}. It pauses CPU work
+at \textbf{95°C} or GPU work at \textbf{85°C}, and resumes only below \textbf{80°C CPU} and
+\textbf{70°C GPU}. Missing required telemetry for ten seconds triggers quiescence and
+a checkpoint rather than optimistic continuation. Utilization is recorded
+beside completed validated work, queue depth, throughput, and results per joule;
+busy loops and meaningless calculations are forbidden from improving the
+score.
+
+\subsection{10. Native authority and multiple interfaces}
+
+The shell TUI is the primary operator surface, but the executable native inlet
+is the actual mutation authority. The HTML viewer is a synchronized projection
+and typed control surface. Neither presentation owns durable truth.
+
+\begin{verbatim}
+native LeafOS engine
+        |
+        v
+journal + bounded telemetry
+        |
+        v
+projection builder
+   |         |          |
+   v         v          v
+TUI       HTML      Decision Table
+\end{verbatim}
+
+The existing shell presentation can remain:
+
+\begin{verbatim}
+FlowerOS | LeafOS engine | run tui-fixture | LOOP | 186:26:50 | SAFE
+Page 3 Hardware | cursor 5
+[INTAKE]--[PLAN]--[EXECUTE]--[VALIDATE]--[PUBLISH]
+HARDWARE | live | sample 0.000s old
+Model fixture.gguf
+GPU 38.0% | VRAM 1.8/12.0 GB | Brain 32.50 tk/s | CPU 2.7%
+\end{verbatim}
+
+The HTML viewer must not parse this rendered ANSI text. Both interfaces consume
+the same structured state:
+
+\begin{verbatim}
+{
+  "kind": "hardware.sample",
+  "run_id": "tui-fixture",
+  "elapsed": "186:26:50",
+  "gpu_utilization": 38.0,
+  "vram_used_gb": 1.8,
+  "vram_total_gb": 12.0,
+  "brain_tokens_second": 32.5,
+  "cpu_utilization": 2.7
+}
+\end{verbatim}
+
+Parsing the TUI back into state would make presentation formatting part of the
+database contract. A color change could then break execution semantics, which
+is a sufficiently absurd failure mode that somebody would eventually ship it.
+
+\subsubsection{10.1 Typed actions}
+
+HTML buttons and TUI keys emit typed capability requests:
+
+\begin{verbatim}
+{
+  "capability": "run.pause",
+  "source": "html",
+  "nonce": 1722069000000,
+  "read_head": 45
+}
+\end{verbatim}
+
+The native inlet evaluates state, nonce, transcript head, approval policy, and
+capability legality. It appends either an accepted or rejected disposition. The
+browser never executes shell text, edits project files, launches arbitrary
+providers, or marks validation successful.
+
+\subsubsection{10.2 Suppressing child command windows without losing evidence}
+
+On Windows, background tools should be launched directly with
+\texttt{CreateProcessW}, not through \texttt{cmd.exe\ /c}. The runtime uses:
+
+\begin{itemize}
+\item
+  \texttt{CREATE\_NO\_WINDOW};
+\item
+  redirected standard output and error pipes;
+\item
+  \texttt{STARTF\_USESTDHANDLES};
+\item
+  \texttt{STARTF\_USESHOWWINDOW} with \texttt{SW\_HIDE};
+\item
+  a Job Object for collective cancellation and cleanup;
+\item
+  explicit exit-code capture.
+\end{itemize}
+
+This suppresses child CMD windows while preserving logs, errors, cancellation,
+and process identity. Hiding a process must not mean discarding its evidence.
+
+The same supervisor can launch \texttt{nvidia-smi}, \texttt{llama-server}, compilers, test
+runners, and bounded tools. Each child record includes executable path, argument
+vector, process identifier, start and end times, exit code, captured output
+references, and the capability that authorized it.
+
+\subsection{11. Decision and theoretical tables}
+
+\subsubsection{11.1 The Decision Table}
+
+The Decision Table is the bridge between model discussion and native action. It
+does not store only the final answer. It records how a proposal moved through
+the authority boundary.
+
+Recommended columns are:
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}ll@{}}
+\toprule\noalign{}
+Column & Meaning \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Sequence & Monotonic decision identifier \\
+Timestamp & Native commit time \\
+Source & TUI, HTML, Monday, Wednesday, Friday, validator \\
+Capability & Named action requested \\
+Read head & Transcript state used by the requester \\
+Nonce & Replay-prevention token \\
+Proposal digest & Hash of the structured request \\
+Evidence references & Tests, files, metrics, or tool outputs \\
+Confidence & Model-reported confidence, never authority \\
+Risk & Classified mutation or operational risk \\
+Disposition & Accepted, rejected, blocked, or stale \\
+Reason & Native explanation \\
+Result & Execution or validation result \\
+Checkpoint & Durable state created after success \\
+\end{longtable}
+}
+
+The Decision Table may be projected into HTML, the TUI, reports, or later
+analysis. Its durable representation remains append-only NDJSON or an indexed
+database derived from the journal.
+
+\subsubsection{11.2 Related theoretical tables}
+
+The same event stream can generate several bounded projections.
+
+\paragraph{11.2.1 Hypothesis Table}
+
+Tracks competing explanations, predicted observations, falsification tests,
+current evidence, and status.
+
+\paragraph{11.2.2 Constraint Table}
+
+Separates hard requirements, soft preferences, environmental limitations, and
+detected violations. It prevents a model from quietly converting ``must'' into
+``would be nice.''
+
+\paragraph{11.2.3 Evidence Table}
+
+Maps claims to file digests, compiler results, tests, measurements, screenshots,
+and tool outputs. Evidence carries provenance and freshness.
+
+\paragraph{11.2.4 Capability Table}
+
+Defines which named actions are legal in each state. For example:
+
+\begin{verbatim}
+run.pause         SAFE
+run.resume        PAUSED
+run.checkpoint    SAFE | PAUSED
+benchmark.start   SAFE
+metric.sample     SAFE | PAUSED
+chat.submit       CHAT_ENABLED
+\end{verbatim}
+
+\paragraph{11.2.5 Failure Table}
+
+Records classification, affected component, retry budget, recovery capability,
+quarantine status, and final outcome.
+
+\paragraph{11.2.6 Hardware Table}
+
+Separates requested, detected, and actual execution. It includes sample source,
+age, utilization, memory, temperature when available, model process ownership,
+and missing-telemetry state.
+
+These tables are projections, not separate truth stores. Rebuilding them from
+the journal must reproduce the same semantic state.
+
+\subsection{12. Flower Bloom Templates}
+
+A \textbf{Flower Bloom Template} is a reusable blank infrastructure package for a
+class of monitored workflow. It defines schemas, projections, stages, and
+acceptance gates without granting execution authority.
+
+An initial benchmark bloom contains:
+
+\begin{verbatim}
+flower-blooms/
+└── benchmark/
+    ├── bloom.json
+    ├── intake.schema.json
+    ├── decision-table.schema.json
+    ├── capability-table.schema.json
+    ├── evidence-table.schema.json
+    ├── hardware-profile.json
+    ├── acceptance-gates.json
+    └── ui-layout.json
+\end{verbatim}
+
+Later templates may cover:
+
+\begin{itemize}
+\item
+  repository inspection;
+\item
+  code repair;
+\item
+  benchmark and profiler runs;
+\item
+  scientific experiments;
+\item
+  model installation;
+\item
+  continual MWF collaboration;
+\item
+  optional operator chat.
+\end{itemize}
+
+A template may define what to display and what data is required. It cannot
+declare that an action succeeded, create an unrestricted execute endpoint, or
+replace native approval policy.
+
+The word ``Bloom'' is appropriate because a template begins as compact dormant
+structure, expands into a live workflow, produces evidence, and eventually
+contracts into a checkpoint and report. The metaphor is permitted to remain
+useful only while it does not escape into core semantics wearing six emojis.
+
+\subsection{13. Profiler truth contract}
+
+\subsubsection{13.1 The 0.9.1 baseline}
+
+The supplied LeafOS \texttt{0.9.1} profiler invocation used:
+
+\begin{verbatim}
+python core\python\leaf_loop_inlet.py benchmark 15s \
+    --provider off \
+    --mode brain-coder
+\end{verbatim}
+
+It reported:
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}lr@{}}
+\toprule\noalign{}
+Field & Result \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Configuration & \texttt{CONFIG\ NOT\ FOUND} \\
+Provider & \texttt{off} \\
+Brain identity & \texttt{unknown} \\
+Coder identity & \texttt{unknown} \\
+Work iterations & 14 \\
+Successful iterations & 0 \\
+Average latency & 0.187 s \\
+CPU average / maximum & 3.4\% / 15.25\% \\
+GPU average / maximum & 20.26\% / 28.0\% \\
+Patch result & failed for every iteration \\
+\end{longtable}
+}
+
+This is a valid plumbing and failure-reporting baseline. It is not evidence of
+brain or coder inference because the provider was off and both identities were
+unknown. GPU activity cannot be attributed to LeafOS without process ownership
+or provider-specific evidence.
+
+\subsubsection{13.2 The 0.9.2-web reference}
+
+The reproducible reference runtime separates provider state and internal
+fixture work:
+
+\begin{verbatim}
+version: 0.9.2-web
+provider requested/actual: off / off
+model token rate: n/a
+fixture work rate: measured units/s
+evidence coverage: 66.67%
+decision acceptance: 100%
+stale rejections: 0
+\end{verbatim}
+
+Fixture throughput measures the profiler loop, not model inference. The HTML
+and TUI projections display model throughput as unavailable when the actual
+provider is off.
+
+The profiler truth contract requires:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\item
+  Missing configuration is visible.
+\item
+  Unknown identities remain unknown.
+\item
+  Provider-off runs cannot claim model throughput.
+\item
+  GPU activity is not assigned to LeafOS without ownership evidence.
+\item
+  Expected missing telemetry is an explicit unavailable state, not a pass.
+\item
+  The terminal, HTML viewer, journal, and report agree.
+\end{enumerate}
+
+\subsection{14. Numberless work orders and release gates}
+
+The work orders are named by outcome rather than sequence number. Release gates
+provide direction without copying internal scheduling labels into runtime
+identifiers.
+
+\subsubsection{WO --- Profiler Truth Contract}
+
+\textbf{Release gate:} \texttt{0.9.2}
+
+Record requested, detected, and actual providers separately. Preserve failure,
+unknown identity, missing configuration, and telemetry provenance.
+
+\subsubsection{WO --- Shared Web Projection}
+
+\textbf{Release gate:} \texttt{0.9.2}
+
+Render the terminal and HTML viewer from one native snapshot. Suppress child
+windows while preserving their logs and exit codes.
+
+\subsubsection{WO --- Decision Table Authority}
+
+\textbf{Release gate:} \texttt{0.9.3}
+
+Translate every interactive action into a typed capability containing source,
+nonce, and transcript head. Append native dispositions.
+
+\subsubsection{WO --- Continual Transcript Projection}
+
+\textbf{Release gate:} \texttt{0.9.4}
+
+Project conversation and planning artifacts into the viewer. Preserve the full
+names, cursors, provenance, and visual identities of Monday --- Rescue and
+Analysis, Wednesday --- Explore and Create, and Friday --- Research and Delivery.
+
+\subsubsection{WO --- Optional Two-Way Chat}
+
+\textbf{Release gate:} \texttt{0.9.5}
+
+Add opt-in operator chat without treating chat text as executable input.
+Mutations remain separate typed proposals requiring native approval.
+
+\subsubsection{WO --- Flower Bloom Template Registry}
+
+\textbf{Release gate:} \texttt{0.9.5}
+
+Instantiate benchmark, planning, chat, evidence, and hardware workflows from
+reusable schemas without duplicating engine code.
+
+\subsection{15. Optional two-way chat}
+
+Two-way chat should be disabled by default and enabled per run. It introduces a
+new capability:
+
+\begin{verbatim}
+{
+  "capability": "chat.submit",
+  "source": "html",
+  "nonce": 1722069000001,
+  "read_head": 81,
+  "payload": {
+    "text": "Compare the two profiler candidates",
+    "audience": [
+      "Monday — Rescue and Analysis",
+      "Wednesday — Explore and Create",
+      "Friday — Research and Delivery"
+    ]
+  }
+}
+\end{verbatim}
+
+The native inlet validates size, run state, nonce, head, audience, and chat
+policy. Accepted text enters the transcript as conversation, never as shell
+code.
+
+Two channels remain distinct:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\item
+  \textbf{Operator conversation:} user and LeafOS personalities.
+\item
+  \textbf{Internal collaboration:} Monday, Wednesday, and Friday through the
+  journal.
+\end{enumerate}
+
+If a personality believes that chat implies a mutation, it emits a separate
+typed proposal. The operator can inspect, approve, or reject it. This preserves
+natural interaction without turning a text box into remote code execution.
+
+Chat survives restart because transcript events, persona cursors, facts,
+evidence, and checkpoints are durable. The live WebSocket or polling connection
+is merely transport.
+
+\subsection{16. Planning must become infrastructure}
+
+A prompt and a directory are insufficient for detailed planning. They preserve
+intent and location but do not define constraints, sequence, legality,
+acceptance, evidence, or resumption.
+
+A minimal planning bloom should contain:
+
+\begin{verbatim}
+planning-bloom/
+├── bloom.json
+├── prompt.md
+├── project-manifest.json
+├── constraints.json
+├── capability-policy.json
+├── task-graph.ndjson
+├── decision-table.ndjson
+├── evidence-table.ndjson
+├── acceptance-gates.json
+├── state.json
+├── next-action.json
+├── evidence/
+├── reports/
+└── checkpoints/
+\end{verbatim}
+
+The project manifest identifies the repository, source revision, workflow
+envelope, model assignments, persona, mode, and environment. Constraints define
+hard and soft requirements. The task graph records dependencies and readiness.
+Acceptance gates state what must be proven. State and next action allow exact
+resumption. Evidence and reports explain why the system believes the work is
+complete.
+
+This package is not bureaucracy for its own sake. It is the smallest structure
+that allows LeafOS to answer, after an interruption:
+
+\begin{verbatim}
+What were we trying to do?
+What was allowed?
+What actually happened?
+What evidence was produced?
+What remains unresolved?
+What is the one legal next action?
+\end{verbatim}
+
+\subsection{17. Acceptance criteria for the continual bloom runtime}
+
+The architecture is ready to expand only when all of the following hold:
+
+\begin{itemize}
+\item
+  Monday can run as a single durable instance.
+\item
+  Events are append-only and hash-linked.
+\item
+  Claims begin unverified.
+\item
+  Native evidence alone promotes facts.
+\item
+  Persona output records the transcript head it read.
+\item
+  Stale output is rejected or rebased.
+\item
+  KV loss does not destroy recoverability.
+\item
+  The TUI and HTML viewer render the same structured state.
+\item
+  The HTML viewer cannot execute arbitrary commands.
+\item
+  Typed actions enforce capability, nonce, state, and read-head rules.
+\item
+  Hidden child processes retain logs and exit codes.
+\item
+  Decision and theoretical tables rebuild from journal truth.
+\item
+  Provider-off runs never claim inference throughput.
+\item
+  Active runs maximize useful CPU/GPU utilization by default through continuous
+  batching, double-buffered CPU/GPU work, admission control, and thermal-aware
+  backpressure; acceptance requires completed validated work alongside the
+  rolling utilization bands, never high clocks alone.
+\item
+  A checkpoint is committed only after validation succeeds.
+\item
+  Exactly one next action survives each completed transition.
+\item
+  Chat remains optional and cannot bypass approval.
+\item
+  Flower Bloom Templates define structure without acquiring authority.
+\end{itemize}
+
+\subsection{18. Closing principle}
+
+The continual bloom design does not depend on making every model brilliant. It
+depends on giving imperfect local models a disciplined environment in which
+they can disagree, inspect evidence, recover context, and stop when they have
+nothing new to add.
+
+Monday, Wednesday, and Friday are valuable because they preserve different
+operational biases across one durable transcript. CPU and GPU are valuable
+because they support different workloads under one scheduler. The TUI and HTML
+viewer are valuable because they expose the same system through different
+surfaces. The Decision Table and Flower Bloom Templates are valuable because
+they turn conversation into inspectable workflow structure.
+
+None of these components is sufficient alone. Together they establish a local
+runtime where presentation may be colorful, personalities may be distinctive,
+and models may remain fallible---while authority, evidence, state, and recovery
+stay painfully, productively boring.
+
+\begin{verbatim}
+[RECOVERY COMPLETE]
+
+title...............resolved
+directory...........indexed
+personalities.......synchronized
+provider............explicit
+authority...........native
+evidence.............bounded
+next_action..........exactly one
+
+................................................................................
+FlowerOS | LeafOS engine | CONTINUAL BLOOM | SAFE | checkpoint committed
+................................................................................
+\end{verbatim}

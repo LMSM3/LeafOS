@@ -1,0 +1,40 @@
+{
+  "work_order_id": "WO-034",
+  "title": "Live hardware and native control transport",
+  "target": "C:\\R\\LeafOS0.2.1\\ProjectLeaf\\leafos_taskpack",
+  "objective": "Add independent low-latency TUI hardware sampling and replace the native temporary control mailbox with authenticated bounded loopback TCP.",
+  "scope": [
+    "core/python/leaf_telemetry.py",
+    "core/ui/tui",
+    "core/tui",
+    "schemas/leafos.tui-snapshot.v1.schema.json",
+    "tests/test_telemetry.py",
+    "tests/test_tui_hardware.py",
+    "tests/test_tui_native.py",
+    "tests/test_tui_skeleton.py"
+  ],
+  "constraints": [
+    "Treat every downloaded and locally available model as part of the stack.",
+    "Do not append high-frequency presentation samples to the durable run ledger.",
+    "Bind native control transport to loopback only.",
+    "Keep leaf_loop_inlet.py authoritative for state changes.",
+    "Never expose or persist private chain-of-thought."
+  ],
+  "allowed_paths": ["core", "schemas", "tests", "docs", "reports"],
+  "denied_paths": [".git", ".env", "secrets"],
+  "commands": {
+    "tests": [["python", "-m", "unittest", "discover", "-s", "tests"]]
+  },
+  "acceptance": [
+    "Both TUI renderers display independently refreshed hardware counters and sample age.",
+    "The fast collector does not invoke the disk probe.",
+    "Native controls require a per-session token over a bounded loopback socket.",
+    "Only pause_toggle, approve, and stop reach the inlet controller.",
+    "Control transport health is present in the normalized snapshot.",
+    "All automated and live verification passes."
+  ],
+  "approval_mode": "required",
+  "allow_mutation": true,
+  "max_attempts": 2,
+  "timeout_seconds": 300
+}

@@ -1,0 +1,18 @@
+{
+  "schema": "leafos.model-profile.v1",
+  "profile_id": "viola-nocturne.drafter-q2",
+  "base_catalog_key": "viola-fablevibes-14b-a3b",
+  "title": "Viola Nocturne Drafter (Q2_K)",
+  "role": "drafter",
+  "lanes": ["slot.draft.text", "slot.draft.plan", "slot.draft.pseudo"],
+  "contracts": ["draft_output"],
+  "runtime": ["llama.cpp"],
+  "recommended_quant": "Q2_K",
+  "quality_quant": "Q3_K_M",
+  "low_memory_quant": "Q2_K",
+  "emergency_quant": "Q2_K",
+  "activation": "on_demand",
+  "escalation_from": ["viola-nocturne.router-q2"],
+  "escalation_to": ["viola-nocturne.writer-q4", "viola-nocturne.reasoner-q4"],
+  "notes": ["Cheap first-pass generator using FableVibes. Produces rough sketches for later refinement."]
+}

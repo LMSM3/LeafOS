@@ -1,0 +1,35 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "leafos.operator-experience.v1",
+  "title": "FlowerOS operator experience backed by LeafOS",
+  "type": "object",
+  "required": ["schema", "surface", "economics"],
+  "properties": {
+    "$schema": {"type": "string"},
+    "schema": {"const": "leafos.operator-experience.v1"},
+    "surface": {
+      "type": "object",
+      "required": ["name", "engine", "stage", "default_command"],
+      "properties": {
+        "name": {"const": "FlowerOS"},
+        "engine": {"const": "LeafOS"},
+        "stage": {"enum": ["pre-usage-layer", "usage-layer", "stable"]},
+        "default_command": {"type": "string", "minLength": 1}
+      },
+      "additionalProperties": false
+    },
+    "economics": {
+      "type": "object",
+      "required": ["currency", "comparison_output_usd_per_million", "pricing_basis"],
+      "properties": {
+        "currency": {"const": "USD"},
+        "comparison_output_usd_per_million": {"type": "number", "minimum": 0},
+        "pricing_basis": {"enum": ["operator_assumption", "provider_quote"]},
+        "local_costs_included": {"const": false},
+        "note": {"type": "string"}
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

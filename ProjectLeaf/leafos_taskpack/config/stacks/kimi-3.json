@@ -1,0 +1,175 @@
+{
+  "schema": "leafos.model-stack/v1",
+  "id": "kimi-3",
+  "class": "KimiStack",
+  "name": "Kimi Three-Model Stack",
+  "enabled": true,
+
+  "policy": {
+    "parallel_load": false,
+    "download_full_upstream": false,
+    "require_quantized_artifact": true,
+    "fallback_on_failure": true,
+    "preserve_reasoning_artifacts": true,
+    "preserve_raw_chain_of_thought": false
+  },
+
+  "models": [
+    {
+      "slot": 1,
+      "id": "kimi-brain",
+      "role": "brain",
+      "priority": 1,
+      "enabled": true,
+
+      "model_class": "kimi",
+      "upstream_repo": "moonshotai/Kimi-K2.6",
+
+      "runtime": {
+        "provider": "leafos-router",
+        "mode": "remote_or_quantized",
+        "context_tokens": 262144,
+        "temperature": 0.8
+      },
+
+      "duties": [
+        "long-horizon planning",
+        "task decomposition",
+        "research synthesis",
+        "final architectural decisions"
+      ],
+
+      "artifact": {
+        "repo": null,
+        "revision": "main",
+        "include": [
+          "*.gguf",
+          "*.json",
+          "tokenizer*",
+          "*.jinja"
+        ],
+        "local_dir": "models/kimi/brain"
+      }
+    },
+
+    {
+      "slot": 2,
+      "id": "kimi-coder",
+      "role": "coder",
+      "priority": 2,
+      "enabled": true,
+
+      "model_class": "kimi",
+      "upstream_repo": "moonshotai/Kimi-K2.7-Code",
+
+      "runtime": {
+        "provider": "leafos-router",
+        "mode": "remote_or_quantized",
+        "context_tokens": 262144,
+        "temperature": 0.6
+      },
+
+      "duties": [
+        "implementation",
+        "repository editing",
+        "build repair",
+        "test generation",
+        "code optimization"
+      ],
+
+      "artifact": {
+        "repo": null,
+        "revision": "main",
+        "include": [
+          "*.gguf",
+          "*.json",
+          "tokenizer*",
+          "*.jinja"
+        ],
+        "local_dir": "models/kimi/coder"
+      }
+    },
+
+    {
+      "slot": 3,
+      "id": "kimi-judge",
+      "role": "judge",
+      "priority": 3,
+      "enabled": true,
+
+      "model_class": "kimi",
+      "upstream_repo": "moonshotai/Kimi-K2-Thinking",
+
+      "runtime": {
+        "provider": "leafos-router",
+        "mode": "remote_or_quantized",
+        "temperature": 1.0,
+        "max_output_tokens": 4096
+      },
+
+      "duties": [
+        "review coder output",
+        "detect contradictions",
+        "evaluate test evidence",
+        "approve or reject completion"
+      ],
+
+      "artifact": {
+        "repo": null,
+        "revision": "main",
+        "include": [
+          "*.gguf",
+          "*.json",
+          "tokenizer*",
+          "*.jinja"
+        ],
+        "local_dir": "models/kimi/judge"
+      }
+    }
+  ],
+
+  "slots": {
+    "router": {
+      "primary": [],
+      "fallback": []
+    },
+    "brain": {
+      "feeder": [],
+      "primary": ["kimi-brain"]
+    },
+    "coder": {
+      "feeder": [],
+      "primary": ["kimi-coder"]
+    },
+    "critic": {
+      "feeder": [],
+      "primary": []
+    },
+    "writer": {
+      "feeder": [],
+      "primary": []
+    },
+    "judge": {
+      "fallback": [],
+      "primary": ["kimi-judge"]
+    }
+  },
+
+  "routing": {
+    "default": "kimi-brain",
+    "code": "kimi-coder",
+    "review": "kimi-judge",
+
+    "sequence": [
+      "kimi-brain",
+      "kimi-coder",
+      "kimi-judge"
+    ],
+
+    "judge_result": {
+      "accept": "commit_result",
+      "revise": "return_to_kimi-coder",
+      "reject": "return_to_kimi-brain"
+    }
+  }
+}

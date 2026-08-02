@@ -1,0 +1,48 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "leafos.loop-monitor.v1",
+  "title": "LeafOS Loop Monitor Snapshot",
+  "type": "object",
+  "required": [
+    "leafos_object",
+    "version",
+    "observed_utc",
+    "run_id",
+    "run_dir",
+    "state",
+    "event_cursor",
+    "terminal",
+    "heartbeat",
+    "run_status",
+    "new_events"
+  ],
+  "properties": {
+    "leafos_object": {"const": "leafos.loop_monitor.snapshot"},
+    "version": {"const": 1},
+    "observed_utc": {"type": "string", "minLength": 1},
+    "run_id": {"type": "string"},
+    "run_dir": {"type": "string"},
+    "state": {"type": "string"},
+    "current_task": {"type": "string"},
+    "event_cursor": {"type": "integer", "minimum": 0},
+    "terminal": {"type": "boolean"},
+    "heartbeat": {
+      "type": "object",
+      "required": ["available", "worker_alive", "stale", "reason"],
+      "properties": {
+        "available": {"type": "boolean"},
+        "worker_alive": {"type": "boolean"},
+        "pid": {"type": ["integer", "null"]},
+        "last_utc": {"type": ["string", "null"]},
+        "age_seconds": {"type": ["number", "null"]},
+        "timeout_seconds": {"type": "number", "exclusiveMinimum": 0},
+        "stale": {"type": "boolean"},
+        "reason": {"type": "string"}
+      },
+      "additionalProperties": true
+    },
+    "run_status": {"type": "object"},
+    "new_events": {"type": "array", "items": {"type": "object"}}
+  },
+  "additionalProperties": true
+}

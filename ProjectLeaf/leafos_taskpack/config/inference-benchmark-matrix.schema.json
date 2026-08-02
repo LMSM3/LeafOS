@@ -1,0 +1,56 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "leafos.inference-benchmark-matrix.v1",
+  "title": "LeafOS inference benchmark matrix",
+  "type": "object",
+  "required": ["schema", "benchmark_id", "runtime", "cells"],
+  "properties": {
+    "schema": {"const": "leafos.inference-benchmark-matrix.v1"},
+    "benchmark_id": {"type": "string", "minLength": 1},
+    "runtime": {
+      "type": "object",
+      "required": ["command"],
+      "properties": {
+        "command": {
+          "type": "array",
+          "minItems": 1,
+          "items": {"type": "string", "minLength": 1}
+        }
+      },
+      "additionalProperties": true
+    },
+    "protocol": {"type": "object"},
+    "economics": {"type": "object"},
+    "idle_policy": {"type": "object"},
+    "conditions": {"type": "object"},
+    "cells": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": [
+          "id", "model", "prompt_tokens", "generated_tokens", "repetitions",
+          "threads", "gpu_layers", "kv_key_type", "kv_value_type"
+        ],
+        "properties": {
+          "id": {"type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9_.-]*$"},
+          "label": {"type": "string"},
+          "phase": {"type": "string"},
+          "model": {"type": "string", "minLength": 1},
+          "prompt_tokens": {"type": "integer", "minimum": 1},
+          "generated_tokens": {"type": "integer", "minimum": 1},
+          "repetitions": {"type": "integer", "minimum": 1},
+          "threads": {"type": "integer", "minimum": 1},
+          "gpu_layers": {"type": "integer", "minimum": 0},
+          "kv_key_type": {"type": "string", "minLength": 1},
+          "kv_value_type": {"type": "string", "minLength": 1},
+          "warmup": {"type": "boolean"},
+          "enabled": {"type": "boolean"},
+          "notes": {"type": "string"}
+        },
+        "additionalProperties": true
+      }
+    }
+  },
+  "additionalProperties": true
+}

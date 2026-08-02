@@ -1,0 +1,18 @@
+{
+  "schema": "leafos.model-profile.v1",
+  "profile_id": "viola-nocturne.judge-q6",
+  "base_catalog_key": "viola-fable5-distill-35b-a3b",
+  "title": "Viola Nocturne Judge (Q6_K)",
+  "role": "judge",
+  "lanes": ["slot.judge.rank", "slot.judge.final", "slot.judge.policy"],
+  "contracts": ["judgement_output"],
+  "runtime": ["llama.cpp"],
+  "recommended_quant": "Q6_K",
+  "quality_quant": "Q6_K",
+  "low_memory_quant": "Q4_K_M",
+  "emergency_quant": "Q2_K",
+  "activation": "on_demand",
+  "escalation_from": ["viola-nocturne.reasoner-q4", "viola-nocturne.critic-q4", "viola-nocturne.coder-reviewer-q6"],
+  "escalation_to": [],
+  "notes": ["Final arbiter from Fable 5 Distill 35B-A3B. Selects winners and makes final policy calls."]
+}

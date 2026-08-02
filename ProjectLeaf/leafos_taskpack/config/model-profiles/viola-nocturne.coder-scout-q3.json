@@ -1,0 +1,18 @@
+{
+  "schema": "leafos.model-profile.v1",
+  "profile_id": "viola-nocturne.coder-scout-q3",
+  "base_catalog_key": "viola-fablevibes-14b-a3b",
+  "title": "Viola Nocturne Coder Scout (Q3_K_M)",
+  "role": "coder",
+  "lanes": ["slot.code.explore", "slot.code.scaffold", "slot.code.quickfix"],
+  "contracts": ["code_output"],
+  "runtime": ["llama.cpp"],
+  "recommended_quant": "Q3_K_M",
+  "quality_quant": "Q4_K_M",
+  "low_memory_quant": "Q2_K",
+  "emergency_quant": "Q2_K",
+  "activation": "on_demand",
+  "escalation_from": ["viola-nocturne.router-q2"],
+  "escalation_to": ["viola-nocturne.coder-builder-q4", "viola-nocturne.coder-reviewer-q6"],
+  "notes": ["Lightweight coding lane for quick scaffolding and exploration. Not a finalizer."]
+}

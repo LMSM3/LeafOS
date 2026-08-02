@@ -1,0 +1,19 @@
+{
+  "schema": "leafos.model-group/v1",
+  "id": "yellow.code",
+  "slot": "coder.primary",
+  "enabled": true,
+  "policy": {
+    "parallel_load": false,
+    "preferred_quantization": ["Q4_K_S", "Q5_K_M", "Q6_K", "Q8_0"],
+    "max_vram_gib": 24.0,
+    "max_ram_gib": 32.0,
+    "allow_remote": false
+  },
+  "members": [
+    { "id": "yellow-coder-primary", "weight": 100 },
+    { "id": "yellow-coder-review", "weight": 85 },
+    { "id": "yellow-coder-fast", "weight": 70 },
+    { "id": "yellow-coder-bedrock", "weight": 50 }
+  ]
+}

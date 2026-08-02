@@ -1,0 +1,979 @@
+\documentclass[11pt]{article}
+
+% LeafOS Model Assignment ASCII Diagrams
+% Black-and-white TeX support document.
+% Compile with:
+%   pdflatex model_assignment_ascii_diagrams.tex
+%
+% This document intentionally uses ASCII diagrams rather than glyph-heavy output.
+% Because sometimes software deserves to be readable in a terminal from 1997.
+
+\usepackage[margin=0.75in]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{microtype}
+\usepackage{hyperref}
+\usepackage{fancyvrb}
+\usepackage{array}
+\usepackage{longtable}
+\usepackage{titlesec}
+
+\hypersetup{
+  colorlinks=true,
+  linkcolor=black,
+  urlcolor=black,
+  citecolor=black,
+  pdftitle={LeafOS Model Assignment ASCII Tree Diagrams},
+  pdfauthor={LeafOS / Project New Leaf}
+}
+
+\titleformat{\section}{\Large\bfseries}{\thesection}{0.6em}{}
+\titleformat{\subsection}{\large\bfseries}{\thesubsection}{0.6em}{}
+
+\newcommand{\diagramtitle}[1]{\subsection*{#1}}
+\newcommand{\leafrule}{\vspace{0.4em}\hrule\vspace{0.8em}}
+
+\begin{document}
+
+\begin{center}
+{\Huge \textbf{LeafOS Model Assignment ASCII Tree Diagrams}}\\[0.5em]
+{\large Supporting document for \texttt{model-library.md} and \texttt{WO-006-C}}\\[0.4em]
+{\normalsize Branch: \texttt{\string~C} \quad Version target: 0.6.0--0.8.0}
+\end{center}
+
+\leafrule
+
+\section{Purpose}
+
+This document provides black-and-white ASCII tree diagrams for the LeafOS model assignment layer.
+
+The companion files are:
+
+\begin{itemize}
+  \item \texttt{model-library.md}
+  \item \texttt{model-library-real-assignments.md}
+  \item \texttt{WO-006-C-model-assignment-library-script.md}
+  \item \texttt{leaf\_model\_assignments.py}
+\end{itemize}
+
+The diagrams are intentionally terminal-readable. No color. No Unicode dependency. No font ritual. A small mercy from the machinery.
+
+\section{Core Rule}
+
+\begin{Verbatim}[fontsize=\small, frame=single]
+MODEL ASSIGNMENT IS NOT JUST A MODEL NAME.
+
+Real assignment tuple:
+  model
+  quant
+  lane
+  endpoint
+  contract
+  parser
+  gate
+
+Pipeline:
+  model endpoint -> logical lane -> output contract -> parser -> accepted artifact
+\end{Verbatim}
+
+\section{Diagram Index}
+
+\begin{longtable}{>{\ttfamily}p{0.16\linewidth} p{0.76\linewidth}}
+D-001 & Model assignment control tree \\
+D-002 & Stable default route \\
+D-003 & Quality experimental route \\
+D-004 & Low-memory route \\
+D-005 & Repair route \\
+D-006 & Brain/Coder/Helper/Reviewer lane split \\
+D-007 & Quant assignment ladder \\
+D-008 & Endpoint and port layout \\
+D-009 & Parser contract boundary \\
+D-010 & WO-006-C script workflow \\
+D-011 & model-library.md documentation check \\
+D-012 & Performance prediction and benchmark gate \\
+D-013 & Edge cluster helper scaling tree \\
+D-014 & Artifact export package tree \\
+D-015 & Failure and demotion tree \\
+\end{longtable}
+
+\newpage
+
+\section{D-001: Model Assignment Control Tree}
+
+\begin{Verbatim}[fontsize=\scriptsize, frame=single]
+LeafOS Model Assignment Layer
+|
++-- documentation/
+|   |
+|   +-- model-library.md
+|   |   |
+|   |   +-- model roles
+|   |   +-- real assignments
+|   |   +-- quant policy
+|   |   +-- performance predictions
+|   |   +-- routing doctrine
+|   |
+|   +-- model-library-real-assignments.md
+|       |
+|       +-- primary Brain candidates
+|       +-- primary Coder assignment
+|       +-- Helper assignments
+|       +-- Reviewer assignment
+|
++-- executable helper/
+|   |
+|   +-- leaf_model_assignments.py
+|       |
+|       +-- summary
+|       +-- routes
+|       +-- write-json
+|       +-- doctor
+|
++-- generated machine registry/
+|   |
+|   +-- models/model-assignments.json
+|       |
+|       +-- profiles[]
+|       +-- routes{}
+|       +-- doctrine[]
+|
++-- runtime use/
+    |
+    +-- agent-brain
+    +-- agent-coder
+    +-- agent-review
+    +-- agent-report
+    +-- agent-gate
+\end{Verbatim}
+
+\section{D-002: Stable Default Route}
+
+\begin{Verbatim}[fontsize=\scriptsize, frame=single]
+STABLE ROUTE
+|
++-- Brain lane
+|   |
+|   +-- profile_id:
+|   |     brain-primary-14b-gguf
+|   |
+|   +-- model:
+|   |     tvall43/Qwen3.5-14B-A3B-Claude-4.6-Opus-Reasoning-Distilled-reap-gguf
+|   |
+|   +-- lanes:
+|   |     slot.brain.plan
+|   |     slot.brain.repair
+|   |     slot.review.architecture
+|   |
+|   +-- contracts:
+|         json_taskpack
+|         agent_graph_json
+|         review_json
+|
++-- Coder lane
+|   |
+|   +-- profile_id:
+|   |     coder-primary-12b-fable
+|   |
+|   +-- model:
+|   |     yuxinlu1/gemma-4-12B-coder-fable5-composer2.5-v1-GGUF
+|   |
+|   +-- quant:
+|   |     Q4_K_M
+|   |
+|   +-- lane:
+|   |     slot.coder.patch
+|   |
+|   +-- contract:
+|         unified_diff
+|
++-- Helper lane
+|   |
+|   +-- model:
+|   |     same Fable 12B GGUF
+|   |
+|   +-- quant:
+|   |     Q3_K_M
+|   |
+|   +-- lanes:
+|         slot.helper.docs
+|         slot.helper.testgen
+|         slot.helper.repair
+|
++-- Reviewer lane
+    |
+    +-- model:
+          brain-primary-14b-gguf
+    |
+    +-- contract:
+          review_json
+\end{Verbatim}
+
+\section{D-003: Quality Experimental Route}
+
+\begin{Verbatim}[fontsize=\scriptsize, frame=single]
+QUALITY ROUTE
+|
++-- Brain lane: experimental primary
+|   |
+|   +-- profile_id:
+|   |     brain-primary-27b-nvfp4-mtp
+|   |
+|   +-- model:
+|   |     Brian6145/Qwen3.6-27B-Claude-Opus-Sonnet-Distilled-NVFP4-MTP
+|   |
+|   +-- runtime target:
+|   |     vLLM or SGLang if NVFP4/MTP support is stable
+|   |
+|   +-- best use:
+|   |     hard architecture
+|   |     graph generation
+|   |     deep repair planning
+|   |     completion gate design
+|   |
+|   +-- contract:
+|         strict JSON taskpack / graph / repair plan
+|
++-- Coder lane: careful
+|   |
+|   +-- model:
+|   |     Fable 12B GGUF
+|   |
+|   +-- quant:
+|   |     Q6_K
+|   |
+|   +-- contract:
+|         unified_diff only
+|
++-- Helper lane
+|   |
+|   +-- model:
+|   |     Fable 12B GGUF
+|   |
+|   +-- quant:
+|         Q3_K_M
+|
++-- Reviewer lane
+    |
+    +-- model:
+          14B GGUF reasoning planner
+    |
+    +-- contract:
+          review_json
+
+QUALITY ROUTE POLICY
+|
++-- if 27B runtime is stable:
+|     use for hard planning
+|
++-- if 27B runtime is unstable:
+      demote to experimental
+      use 14B route instead
+\end{Verbatim}
+
+\section{D-004: Low-Memory Route}
+
+\begin{Verbatim}[fontsize=\scriptsize, frame=single]
+LOW-MEMORY ROUTE
+|
++-- Brain
+|   |
+|   +-- preferred:
+|   |     brain-primary-14b-gguf
+|   |
+|   +-- if too heavy:
+|   |     mock route or smaller future Brain
+|   |
+|   +-- contract:
+|         json_taskpack
+|
++-- Coder
+|   |
+|   +-- model:
+|   |     Fable 12B GGUF
+|   |
+|   +-- quant:
+|   |     Q3_K_M
+|   |
+|   +-- expected behavior:
+|         faster
+|         lower memory
+|         somewhat weaker patches
+|
++-- Helper
+|   |
+|   +-- model:
+|   |     Fable 12B GGUF
+|   |
+|   +-- quant:
+|   |     Q2_K
+|   |
+|   +-- use:
+|         classification
+|         tiny docs
+|         rough repair hints
+|
++-- Reviewer
+    |
+    +-- model:
+          helper-coder-fable-lowquant
+    |
+    +-- contract:
+          review_json
+
+WARNING
+|
++-- Q2_K is not the main coder.
++-- Q2_K is emergency helper mode.
++-- A tiny model giving confident nonsense is still nonsense.
+\end{Verbatim}
+
+\section{D-005: Repair Route}
+
+\begin{Verbatim}[fontsize=\scriptsize, frame=single]
+REPAIR ROUTE
+|
++-- failure detected
+|   |
+|   +-- parse_failure
+|   +-- schema_failure
+|   +-- scope_failure
+|   +-- patch_apply_failure
+|   +-- test_failure
+|   +-- missing_completion_gate
+|
++-- classify failure
+|   |
+|   +-- run parser logs
+|   +-- inspect verify_result.json
+|   +-- inspect patch_scope.json
+|
++-- Brain repair plan
+|   |
+|   +-- model:
+|   |     brain-primary-14b-gguf
+|   |
+|   +-- output:
+|         repair_plan.json
+|
++-- Fast repair attempt
+|   |
+|   +-- model:
+|   |     Fable 12B Q3_K_M
+|   |
+|   +-- contract:
+|         unified_diff
+|
++-- if fast repair fails
+|   |
+|   +-- careful repair attempt
+|       |
+|       +-- model:
+|       |     Fable 12B Q6_K
+|       |
+|       +-- contract:
+|             unified_diff
+|
++-- reviewer check
+|   |
+|   +-- model:
+|         brain-primary-14b-gguf or reviewer lane
+|
++-- verification
+    |
+    +-- git apply --check
+    +-- tests
+    +-- completion gate
+    +-- report
+
+CAPS
+|
++-- max repair attempts per node: 2 or 3
++-- no infinite agent hamster wheel
+\end{Verbatim}
+
+\section{D-006: Brain / Coder / Helper / Reviewer Lane Split}
+
+\begin{Verbatim}[fontsize=\scriptsize, frame=single]
+LeafOS Runtime Scheduler
+|
++-- slot.brain.plan
+|   |
+|   +-- role:
+|   |     Brain
+|   |
+|   +-- accepted contract:
+|   |     json_taskpack
+|   |     agent_graph_json
+|   |
+|   +-- parser:
+|         parse_brain_taskpack.py
+|
++-- slot.coder.patch
+|   |
+|   +-- role:
+|   |     Coder
+|   |
+|   +-- accepted contract:
+|   |     unified_diff
+|   |
+|   +-- parser:
+|         parse_coder_patch.sh
+|
++-- slot.helper.docs
+|   |
+|   +-- role:
+|   |     Helper
+|   |
+|   +-- accepted contract:
+|   |     report_markdown or unified_diff
+|   |
+|   +-- parser:
+|         parse_report.sh or parse_coder_patch.sh
+|
++-- slot.helper.testgen
+|   |
+|   +-- role:
+|   |     Helper test writer
+|   |
+|   +-- accepted contract:
+|         unified_diff
+|
++-- slot.review.scope
+    |
+    +-- role:
+    |     Reviewer
+    |
+    +-- accepted contract:
+    |     review_json
+    |
+    +-- parser:
+          parse_review_result.py
+
+NOTE
+|
++-- lanes are scheduler roles
++-- endpoints are actual model servers
++-- parsers are the trust boundary
+\end{Verbatim}
+
+\subsection*{WO-006-C/D GLM Adapter Boundary}
+
+\begin{Verbatim}[fontsize=\scriptsize, frame=single]
+Z.AI / GLM is an optional OpenAI-compatible advisory adapter.
+
+remote GLM:
+  planner / reviewer / long-context advisory lane
+
+CPU / local LeafOS:
+  coder lane
+  graph and filesystem authority
+  parser, patch validation, gates, hashes, reports
+
+Provider output -> file-backed provider contract -> CPU parser -> accepted artifact
+
+The remote adapter cannot advance the graph or apply a patch by itself.
+\end{Verbatim}
+
+\section{D-007: Quant Assignment Ladder}
+
+\begin{Verbatim}[fontsize=\scriptsize, frame=single]
+Fable 12B GGUF Quant Ladder
+|
++-- Q2_K
+|   |
+|   +-- size:
+|   |     approx 4.83 GB
+|   |
+|   +-- role:
+|   |     emergency helper
+|   |
+|   +-- use:
+|         tiny repair hints
+|         rough classification
+|         low-memory fallback
+|
++-- Q3_K_M
+|   |
+|   +-- size:
+|   |     approx 6.09 GB
+|   |
+|   +-- role:
+|   |     helper / fast secondary coder
+|   |
+|   +-- use:
+|         docs
+|         tests
+|         fast repair
+|
++-- Q4_K_M
+|   |
+|   +-- size:
+|   |     approx 7.38 GB
+|   |
+|   +-- role:
+|   |     default coder
+|   |
+|   +-- use:
+|         normal patches
+|         project templates
+|         README/test/doc gates
+|
++-- Q6_K
+|   |
+|   +-- size:
+|   |     approx 9.79 GB
+|   |
+|   +-- role:
+|   |     careful coder
+|   |
+|   +-- use:
+|         difficult patches
+|         repeated repair failures
+|         quality route
+|
++-- Q8_0
+    |
+    +-- size:
+    |     approx 12.7 GB
+    |
+    +-- role:
+    |     high-quality but VRAM-tight
+    |
+    +-- use:
+          only if runtime confirms fit
+
+SUSPICIOUS TINY ARTIFACT RULE
+|
++-- Q8_0 465 MB
++-- BF16 862 MB
++-- F16 862 MB
+|
++-- treat as:
+      shard / adapter / metadata / non-main artifact
+|
++-- do not assign as primary until runtime loads it
+\end{Verbatim}
+
+\section{D-008: Endpoint and Port Layout}
+
+\begin{Verbatim}[fontsize=\scriptsize, frame=single]
+Endpoint Layout: Two-Endpoint Baseline
+|
++-- brain.local
+|   |
+|   +-- port:
+|   |     8081
+|   |
+|   +-- role:
+|   |     Brain
+|   |
+|   +-- preferred profile:
+|   |     brain-primary-14b-gguf
+|   |
+|   +-- experimental profile:
+|   |     brain-primary-27b-nvfp4-mtp
+|   |
+|   +-- contract:
+|         json_taskpack
+|
++-- coder.local
+    |
+    +-- port:
+    |     8082
+    |
+    +-- role:
+    |     Coder
+    |
+    +-- profile:
+    |     coder-primary-12b-fable
+    |
+    +-- default quant:
+    |     Q4_K_M
+    |
+    +-- contract:
+          unified_diff
+
+Endpoint Layout: Three-Lane Variant
+|
++-- brain.local       :8081 -> Brain JSON
++-- coder.local       :8082 -> Coder diff
++-- reviewer.logical  :8082 -> Reviewer JSON, logical lane only
+
+Rule:
+  logical_only = true means scheduler label, not separate hardware
+\end{Verbatim}
+
+\section{D-009: Parser Contract Boundary}
+
+\begin{Verbatim}[fontsize=\scriptsize, frame=single]
+UNTRUSTED MODEL OUTPUT
+|
++-- Brain response
+|   |
+|   +-- maybe JSON
+|   +-- maybe prose
+|   +-- maybe accidental markdown
+|
++-- Coder response
+|   |
+|   +-- maybe diff
+|   +-- maybe explanation
+|   +-- maybe invented files
+|
++-- Reviewer response
+    |
+    +-- maybe review JSON
+    +-- maybe vague opinions
+
+==============================
+PARSER CONTRACT BOUNDARY
+==============================
+
++-- Brain parser
+|   |
+|   +-- extract JSON
+|   +-- validate schema
+|   +-- validate graph node types
+|   +-- validate completion gate
+|
++-- Coder parser
+|   |
+|   +-- extract unified diff
+|   +-- validate touched files
+|   +-- git apply --check
+|   +-- changed-line telemetry
+|
++-- Reviewer parser
+    |
+    +-- extract review JSON
+    +-- validate risk fields
+    +-- policy decides warn/block/allow
+
+ACCEPTED ARTIFACTS
+|
++-- taskpack.json
++-- agent.graph.json
++-- extracted.patch
++-- review_result.json
++-- verify_result.json
+
+ONLY ACCEPTED ARTIFACTS CAN MOVE THE GRAPH
+\end{Verbatim}
+
+\section{D-010: WO-006-C Script Workflow}
+
+\begin{Verbatim}[fontsize=\scriptsize, frame=single]
+leaf_model_assignments.py
+|
++-- summary
+|   |
+|   +-- print profiles
+|   +-- print role
+|   +-- print repo
+|   +-- print lanes
+|   +-- print contracts
+|
++-- routes
+|   |
+|   +-- all
+|   +-- stable
+|   +-- quality
+|   +-- low-memory
+|   +-- repair
+|
++-- write-json
+|   |
+|   +-- output:
+|         models/model-assignments.json
+|
++-- doctor
+    |
+    +-- input:
+    |     model-library.md
+    |
+    +-- check:
+    |     expected model repos
+    |     expected quant labels
+    |     expected lanes
+    |
+    +-- exit codes:
+          0 = all anchors found
+          1 = anchors missing
+          2 = documentation missing
+\end{Verbatim}
+
+\section{D-011: Documentation Doctor Tree}
+
+\begin{Verbatim}[fontsize=\scriptsize, frame=single]
+doctor --doc model-library.md
+|
++-- does file exist?
+|   |
+|   +-- no
+|   |   |
+|   |   +-- exit 2
+|   |
+|   +-- yes
+|       |
+|       +-- read text
+|
++-- required model anchors
+|   |
+|   +-- Brian6145/Qwen3.6-27B-Claude-Opus-Sonnet-Distilled-NVFP4-MTP
+|   +-- tvall43/Qwen3.5-14B-A3B-Claude-4.6-Opus-Reasoning-Distilled-reap-gguf
+|   +-- yuxinlu1/gemma-4-12B-coder-fable5-composer2.5-v1-GGUF
+|
++-- required quant anchors
+|   |
+|   +-- Q2_K
+|   +-- Q3_K_M
+|   +-- Q4_K_M
+|   +-- Q6_K
+|   +-- Q8_0
+|
++-- required lane anchors
+    |
+    +-- slot.brain.plan
+    +-- slot.coder.patch
+    +-- slot.review.scope
+
+RESULT
+|
++-- if all found:
+|     exit 0
+|
++-- if any missing:
+      exit 1
+\end{Verbatim}
+
+\section{D-012: Performance Prediction and Benchmark Gate}
+
+\begin{Verbatim}[fontsize=\scriptsize, frame=single]
+Predicted Performance Page
+|
++-- planning estimates
+|   |
+|   +-- 4070 Brain 14B + 3060 Fable 12B:
+|   |     60-70 tk/s aggregate target
+|   |
+|   +-- 27B Brain + Fable 12B:
+|         45-70 tk/s experimental
+|
++-- overclock estimate
+|   |
+|   +-- mild tune:
+|   |     +3% to +8%
+|   |
+|   +-- good cooling + tuned power:
+|   |     +5% to +12%
+|   |
+|   +-- unstable overclock:
+|         no stable profile
+|
++-- benchmark gate
+    |
+    +-- run 3 cold starts
+    +-- run 3 warm starts
+    +-- run short prompts
+    +-- run long prompts
+    +-- record tk/s
+    +-- record TTFT
+    +-- record VRAM
+    +-- record thermals
+    +-- record failures
+    +-- pass parser-contract eval
+
+STABLE PROFILE CRITERIA
+|
++-- no crashes
++-- repeatable tk/s within +/-15%
++-- parser contract acceptable
++-- no driver resets
++-- enough VRAM headroom
+\end{Verbatim}
+
+\section{D-013: Edge Cluster Helper Scaling}
+
+\begin{Verbatim}[fontsize=\scriptsize, frame=single]
+Edge Cluster Role
+|
++-- good tasks
+|   |
+|   +-- file classification
+|   +-- log summarization
+|   +-- symbolic training export
+|   +-- test result clustering
+|   +-- README section detection
+|   +-- completion-map inspection
+|
++-- poor tasks
+    |
+    +-- one giant shared autoregressive decode
+    +-- single long patch
+    +-- large Brain reasoning pass
+
+Scaling estimate
+|
++-- simple independent-task model:
+|     T_cluster = T_single * N * 0.98
+|
++-- conservative coordinated model:
+      T_cluster = T_single * N * 0.98^(N-1)
+
+Simple 0.98 multiplier
+|
++-- 1 node  -> 1.00x
++-- 2 nodes -> 1.96x
++-- 4 nodes -> 3.92x
++-- 8 nodes -> 7.84x
++-- 16 nodes -> 15.68x
++-- 32 nodes -> 31.36x
++-- 64 nodes -> 62.72x
+
+LeafOS use
+|
++-- Hailo / edge accelerator:
+|     classifier/helper/symbol export
+|
++-- Jetson / Orin node:
+|     light helper / summarizer / file map
+|
++-- mini-PC + GPU:
+      remote coder or reviewer endpoint
+\end{Verbatim}
+
+\section{D-014: Artifact Export Package Tree}
+
+\begin{Verbatim}[fontsize=\scriptsize, frame=single]
+WO-006-C Export Package
+|
++-- documentation
+|   |
+|   +-- model-library.md
+|   +-- model-library-real-assignments.md
+|   +-- model-library-with-performance.md
+|
++-- work order
+|   |
+|   +-- WO-006-C-model-assignment-library-script.md
+|
++-- script
+|   |
+|   +-- leaf_model_assignments.py
+|
++-- generated output
+|   |
+|   +-- models/model-assignments.json
+|
++-- supporting docs
+    |
+    +-- model_assignment_ascii_diagrams.tex
+    +-- model_assignment_diagrams.md
+    +-- README.md
+
+Export Gate
+|
++-- include:
+|     docs
+|     script
+|     generated JSON
+|     diagrams
+|
++-- exclude:
+      __pycache__/
+      .pytest_cache/
+      .env
+      secrets
+      downloaded model weights
+\end{Verbatim}
+
+\section{D-015: Failure and Demotion Tree}
+
+\begin{Verbatim}[fontsize=\scriptsize, frame=single]
+Model route attempt
+|
++-- call model endpoint
+|
++-- response received?
+|   |
+|   +-- no
+|   |   |
+|   |   +-- failure:
+|   |       model_endpoint_down
+|   |   +-- action:
+|           use fallback route
+|
++-- parser accepts contract?
+|   |
+|   +-- no
+|   |   |
+|   |   +-- failure:
+|   |       parse_failure / schema_failure / prose_only
+|   |   +-- action:
+|           retry once with stricter header
+|
++-- scope valid?
+|   |
+|   +-- no
+|   |   |
+|   |   +-- failure:
+|   |       scope_failure / invented_file
+|   |   +-- action:
+|           reject patch, request repair
+|
++-- git apply --check passes?
+|   |
+|   +-- no
+|   |   |
+|   |   +-- failure:
+|   |       patch_apply_failure
+|   |   +-- action:
+|           route to repair
+|
++-- tests pass?
+|   |
+|   +-- no
+|   |   |
+|   |   +-- failure:
+|   |       verification_failure
+|   |   +-- action:
+|           repair route
+|
++-- repeated failure?
+    |
+    +-- yes
+    |   |
+    |   +-- demote model profile for this run
+    |   +-- select fallback route
+    |
+    +-- no
+        |
+        +-- mark accepted
+        +-- update event log
+        +-- continue graph
+
+DEMOTION POLICY
+|
++-- 1 failure:
+|     retry with stricter prompt
+|
++-- 2 failures:
+|     alternate quant or helper route
+|
++-- 3 failures:
+      demote profile for run
+      require human review
+\end{Verbatim}
+
+\section{Final Notes}
+
+The model assignment layer is only useful if it stays strict.
+
+\begin{Verbatim}[fontsize=\small, frame=single]
+Fast model + invalid artifact = failure
+Slow model + valid artifact   = useful
+Parser-valid output           = currency
+Raw token speed               = only a routing hint
+\end{Verbatim}
+
+\end{document}

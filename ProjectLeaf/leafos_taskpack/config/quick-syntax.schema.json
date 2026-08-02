@@ -1,0 +1,35 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "leafos.quick-syntax.v1",
+  "title": "FlowerOS quick shell syntax",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["$schema", "schema", "surface", "engine", "command", "entries"],
+  "properties": {
+    "$schema": {"type": "string", "minLength": 1},
+    "schema": {"const": "leafos.quick-syntax.v1"},
+    "surface": {"const": "FlowerOS"},
+    "engine": {"const": "LeafOS"},
+    "command": {"const": "leafos"},
+    "entries": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["alias", "expansion", "description", "read_only", "interactive"],
+        "properties": {
+          "alias": {"type": "string", "pattern": "^[a-z][a-z0-9-]*$"},
+          "expansion": {
+            "type": "array",
+            "minItems": 1,
+            "items": {"type": "string", "minLength": 1}
+          },
+          "description": {"type": "string", "minLength": 1},
+          "read_only": {"type": "boolean"},
+          "interactive": {"type": "boolean"}
+        }
+      }
+    }
+  }
+}

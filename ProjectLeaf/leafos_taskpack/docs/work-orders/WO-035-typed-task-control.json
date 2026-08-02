@@ -1,0 +1,28 @@
+{
+  "work_order_id": "WO-035",
+  "title": "Typed task control",
+  "target": "C:\\R\\LeafOS0.2.1\\ProjectLeaf\\leafos_taskpack",
+  "objective": "Add schema-constrained dynamic task admission and authoritative priority, retry, approval, cancellation, process interruption, and native control journaling.",
+  "scope": ["core/python", "core/ui/tui", "core/tui", "schemas", "config", "tests", "docs", "reports"],
+  "constraints": [
+    "Treat all downloaded and locally available models as the stack.",
+    "Keep the inlet and allowlisted executor authoritative.",
+    "Do not grant renderers shell or filesystem mutation authority.",
+    "Do not persist private chain-of-thought."
+  ],
+  "allowed_paths": ["core", "schemas", "config", "tests", "docs", "reports", "bin"],
+  "denied_paths": [".git", ".env", "secrets"],
+  "commands": {"tests": [["python", "-m", "unittest", "discover", "-s", "tests"]]},
+  "acceptance": [
+    "Typed task submission creates a repository-bounded queued task.",
+    "Priority, retry, approval, and cancellation enforce state and budget rules.",
+    "Cancellation interrupts tracked subprocesses and cannot be overwritten by stale queue state.",
+    "Native LMEM records accepted controls before mutation.",
+    "Python and native TUI controls cross the authenticated inlet boundary.",
+    "All automated and live verification passes."
+  ],
+  "approval_mode": "required",
+  "allow_mutation": true,
+  "max_attempts": 2,
+  "timeout_seconds": 300
+}

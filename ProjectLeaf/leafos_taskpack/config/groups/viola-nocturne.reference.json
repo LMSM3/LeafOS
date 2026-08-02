@@ -1,0 +1,12 @@
+{
+  "schema": "leafos.model-group.v1",
+  "group_id": "viola-nocturne.reference",
+  "name": "Viola Nocturne Reference Layer",
+  "priority": 3,
+  "mode": "on_demand",
+  "profiles": [
+    "viola-nocturne.reference-q8"
+  ],
+  "default": false,
+  "comment": "High-quality reference and prose lane from Fable Fusion 27B Q8_0."
+}

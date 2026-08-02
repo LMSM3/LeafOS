@@ -1,0 +1,30 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://leafos.local/schemas/leafos.midend-action-request.v1.schema.json",
+  "title": "LeafOS Midend Typed Action Request",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["leafos_object", "version", "capability_id", "request_id", "session_id", "subject", "target", "nonce", "issued_at", "expires_at", "payload"],
+  "properties": {
+    "leafos_object": {"const": "leafos.midend_action_request"},
+    "version": {"const": 1},
+    "capability_id": {"type": "string", "pattern": "^[a-z][a-z0-9_-]+\\.[a-z][a-z0-9_-]+$"},
+    "request_id": {"type": "string", "pattern": "^req_[A-Za-z0-9._-]{8,96}$"},
+    "session_id": {"type": "string", "pattern": "^ses_[A-Za-z0-9._-]{8,96}$"},
+    "subject": {"$ref": "#/$defs/subject"},
+    "target": {"$ref": "#/$defs/target"},
+    "nonce": {"type": "string", "minLength": 16, "maxLength": 256},
+    "issued_at": {"type": "string", "format": "date-time"},
+    "expires_at": {"type": "string", "format": "date-time"},
+    "host_facts_hash": {"$ref": "#/$defs/digest"},
+    "precondition_hash": {"$ref": "#/$defs/digest"},
+    "preview_digest": {"$ref": "#/$defs/digest"},
+    "approval_ref": {"type": "string", "pattern": "^approval://"},
+    "payload": {"type": "object", "maxProperties": 32}
+  },
+  "$defs": {
+    "digest": {"type": "string", "pattern": "^sha256:[a-fA-F0-9]{64}$"},
+    "subject": {"type": "object", "additionalProperties": false, "required": ["type", "id"], "properties": {"type": {"enum": ["operator", "policy"]}, "id": {"type": "string", "minLength": 1, "maxLength": 128}}},
+    "target": {"type": "object", "additionalProperties": false, "required": ["type", "id", "version"], "properties": {"type": {"enum": ["host", "workspace", "project", "run", "task", "profile", "install_plan", "report"]}, "id": {"type": "string", "pattern": "^[A-Za-z][A-Za-z0-9._-]{2,127}$"}, "version": {"type": "integer", "minimum": 0}}}
+  }
+}

@@ -1,0 +1,471 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[margin=2.4cm]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{listings,xcolor,hyperref,booktabs,enumitem,titlesec,parskip}
+\usepackage[expansion=false]{microtype}
+
+% ---- colour palette --------------------------------------------------------
+\definecolor{leafcyan}{RGB}{0,140,140}
+\definecolor{leafgray}{RGB}{240,240,240}
+\definecolor{leafdark}{RGB}{40,40,40}
+\definecolor{leafcomment}{RGB}{100,120,100}
+
+\hypersetup{colorlinks=true,linkcolor=leafcyan,urlcolor=leafcyan,citecolor=leafcyan}
+
+% ---- listings --------------------------------------------------------------
+\lstdefinestyle{leaf}{
+  basicstyle=\ttfamily\footnotesize,
+  breaklines=true,
+  backgroundcolor=\color{leafgray},
+  frame=single,
+  rulecolor=\color{gray!40},
+  commentstyle=\color{leafcomment}\itshape,
+  keywordstyle=\color{leafcyan}\bfseries,
+  stringstyle=\color{orange!70!black},
+  xleftmargin=8pt,xrightmargin=8pt,
+  aboveskip=7pt,belowskip=5pt,
+  showstringspaces=false,
+}
+\lstset{style=leaf}
+
+% ---- section formatting ----------------------------------------------------
+\titleformat{\section}{\large\bfseries\color{leafcyan}}{}{0pt}{}[\titlerule]
+\titleformat{\subsection}{\normalsize\bfseries\color{leafdark}}{}{0pt}{}
+
+% ---- doc meta --------------------------------------------------------------
+\title{%
+  \textcolor{leafcyan}{\rule{\linewidth}{1.5pt}}\\[8pt]
+  \textbf{LeafOS Optional Node System}\\[4pt]
+  \large Advanced Learning Guide\\[2pt]
+  \normalsize\texttt{v0.5.0}\\[6pt]
+  \textcolor{leafcyan}{\rule{\linewidth}{0.8pt}}
+}
+\author{}
+\date{}
+
+\begin{document}
+\maketitle\thispagestyle{empty}
+
+\begin{center}
+\fcolorbox{leafcyan}{leafgray}{\parbox{0.86\linewidth}{
+\textbf{Scope note.} This guide covers the optional SSH node subsystem. The
+current project-agent path is \texttt{leafctl live PATH}, backed by the
+version-2 typed inlet, resident supervisor, CPU-authoritative validation, and
+Python/native TUI. Read \texttt{DOCUMENTATION\_MAP.md},
+\texttt{ARCHITECTURE.md}, and \texttt{RESIDENT\_STACK\_USAGE.md} first for
+local project automation.
+}}
+\end{center}
+
+\tableofcontents
+\newpage
+
+%% ===========================================================================
+\section{Architecture Overview}
+
+\subsection{One binary, two roles}
+
+\texttt{leaf} is a single executable that branches on the command group invoked.
+The receiver engine (\path{core/node/leaf_node.py}) runs locally on every node.
+The distributor layer (\path{core/remote/remote.sh}) drives remote nodes by
+SSH-ing into them and invoking the same binary.
+
+\begin{lstlisting}[language={}]
+MASTER / distributor
+  bin/leafctl --source--> core/remote/remote.sh
+								 |
+						  LAN / WAN SSH
+								 |
+WORKER / receiver
+  ssh -> bin/leafctl --source--> core/node/node.sh
+									   |
+							   python3 leaf_node.py
+									   |
+  ~/.leaf/  inbox/  queued/  running/  done/  failed/
+			logs/TASK_ID.jsonl
+			results/TASK_ID/result.json
+\end{lstlisting}
+
+The master never contacts an HTTP API. It opens one SSH connection per operation
+and reads files the receiver wrote. That is the entire protocol.
+
+\subsection{Source chain}
+
+\begin{lstlisting}[language=bash]
+bin/leafctl
+  source core/brand/brand.sh
+  source core/log/log.sh
+  source core/remote/remote.sh      # distributor layer
+	source core/node/node.sh        # receiver wrapper
+	  resolves python3
+	  exports LEAF_NODE_PY path
+\end{lstlisting}
+
+\texttt{leaf\_node.py} is loaded fresh per invocation. A node doing no work is
+a directory tree and an SSH daemon. No persistent process.
+
+\subsection{Workspace resolution}
+
+\begin{lstlisting}[language={}]
+leaf_home() resolution order:
+  1. --home FLAG
+  2. $LEAF_HOME environment variable
+  3. ~/.leaf  (default)
+\end{lstlisting}
+
+%% ===========================================================================
+\section{State Machine}
+
+\subsection{Task lifecycle}
+
+\begin{lstlisting}[language={}]
+							+---- cancel flag ---+
+							|                    v
+inbox/ -> queued/ -> running/ -> done/      failed/
+						 |
+						 +-> failed/   (non-zero exit)
+\end{lstlisting}
+
+State transitions are atomic file moves (\texttt{shutil.move}). A task occupies
+exactly one directory at all times. Crashes abandoning \texttt{running/} are
+detectable by \texttt{leaf task list --state running}.
+
+\subsection{Cooperative cancellation}
+
+The distributor creates \texttt{running/TASK\_ID.cancel}. The runner polls for
+it. A runner that ignores the flag finishes normally --- there is no
+\texttt{SIGKILL} without warning.
+
+\begin{lstlisting}[language=bash]
+leaf task cancel gpu1 task_20260621_142203
+# internally (over SSH):
+# touch ~/.leaf/running/task_20260621_142203.cancel
+\end{lstlisting}
+
+In Python, check with:
+\begin{lstlisting}[language=python]
+if os.path.exists(_cancel_flag(home, task["task_id"])):
+	return 130, "cancelled", {}
+\end{lstlisting}
+
+%% ===========================================================================
+\section{Writing a Custom Runner}
+
+A runner is a Python function:
+
+\begin{lstlisting}[language=python]
+def run_myrunner(home: str, task: dict, log) -> tuple:
+	"""
+	home  -- absolute path to $LEAF_HOME
+	task  -- parsed task JSON descriptor
+	log   -- TaskLog; log.event("stdout", text="...")
+	Returns (exit_code: int, status: str, output: dict)
+	"""
+\end{lstlisting}
+
+\subsection{Minimal example: sleep runner}
+
+\begin{lstlisting}[language=python]
+import time, os
+
+def run_sleep(home, task, log):
+	secs = float(task.get("payload", {}).get("seconds", 5))
+	log.event("stdout", text="sleeping {}s".format(secs))
+	time.sleep(secs)
+	return 0, "ok", {"slept": secs}
+\end{lstlisting}
+
+Register in \texttt{RUNNERS} in \texttt{leaf\_node.py}:
+\begin{lstlisting}[language=python]
+RUNNERS = {
+	"echo": run_echo, "shell": run_shell,
+	"hardware": run_hardware, "llama": run_llama,
+	"sleep": run_sleep,   # add here
+}
+\end{lstlisting}
+
+\subsection{Streaming stdout with real-time cancellation}
+
+\begin{lstlisting}[language=python]
+def run_myrunner(home, task, log):
+	import subprocess
+	proc = subprocess.Popen(
+		["long-running-cmd"],
+		stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
+		universal_newlines=True,
+	)
+	for line in iter(proc.stdout.readline, ""):
+		log.event("stdout", text=line.rstrip("\n"))
+		if os.path.exists(_cancel_flag(home, task["task_id"])):
+			proc.terminate()
+			return 130, "cancelled", {}
+	code = proc.wait()
+	return code, "ok" if code == 0 else "error", {"exit_code": code}
+\end{lstlisting}
+
+The master sees each line in real time via \texttt{leaf task watch} (\texttt{tail -f} over SSH).
+
+%% ===========================================================================
+\section{The Three Contracts}
+
+These schemas must stay stable. Internal rewrites and new runners are safe as
+long as these hold.
+
+\subsection{Task file schema}
+
+\begin{lstlisting}[language={}]
+{
+  "task_id":  "task_20260621_142203",  // stamped by distributor
+  "kind":     "echo",                  // selects the runner
+  "priority": 5,                       // 1 (low) - 10 (high)
+  "payload":  { "message": "hello" }  // runner-defined
+}
+\end{lstlisting}
+
+\subsection{State directory names (frozen)}
+
+\begin{center}
+\texttt{inbox} \quad \texttt{queued} \quad \texttt{running} \quad
+\texttt{done} \quad \texttt{failed}
+\end{center}
+
+Do not rename. \texttt{\_find\_task()} iterates \texttt{STATE\_DIRS} in order.
+
+\subsection{JSONL log event schema}
+
+\begin{tabular}{@{}llc@{}}
+\toprule
+field & type & always present \\
+\midrule
+\texttt{time}      & ISO-8601 string & yes \\
+\texttt{event}     & string          & yes \\
+\texttt{task\_id}  & string          & yes \\
+\texttt{runner}    & string          & \texttt{started} only \\
+\texttt{text}      & string          & \texttt{stdout}/\texttt{stderr} \\
+\texttt{exit\_code}& int             & terminal events \\
+\bottomrule
+\end{tabular}
+
+\medskip
+Standard sequence:
+\texttt{queued \(\to\) started \(\to\) stdout* \(\to\) done\,|\,failed\,|\,cancelled}
+
+%% ===========================================================================
+\section{Transport Layer Internals}
+
+\subsection{Registry (nodes.json)}
+
+\begin{lstlisting}[language={}]
+{
+  "gpu1": {
+	"target":    "user@192.168.1.44",
+	"path":      "~/.leaf",
+	"transport": "ssh"
+  }
+}
+\end{lstlisting}
+
+\texttt{\_node\_resolve NAME} in \texttt{remote.sh} reads this via
+\texttt{registry-get} (Python, no \texttt{jq} dependency), exporting
+\texttt{\_RT}, \texttt{\_RTGT}, \texttt{\_RPATH}.
+
+\subsection{Transport dispatch in remote.sh}
+
+\begin{lstlisting}[language=bash]
+case "$_RT" in
+	local) _local_engine task-start "$task_id" ;;
+	ssh)   _ssh "$_RTGT" "leaf task start $task_id" ;;
+esac
+\end{lstlisting}
+
+\texttt{\_local\_engine} is \texttt{LEAF\_HOME="\$\_RPATH" python3 leaf\_node.py}.
+This is why \texttt{tests/nodes.sh} needs no network.
+
+\subsection{SSH options}
+
+\begin{lstlisting}[language=bash]
+export LEAF_SSH_OPTS="-i ~/.ssh/leaf_node_key -p 2222"
+\end{lstlisting}
+
+Expanded by \texttt{\_ssh()} and \texttt{\_scp()} before all other arguments.
+
+%% ===========================================================================
+\section{Multi-Node Patterns}
+
+\subsection{Fan-out: submit to multiple nodes}
+
+\begin{lstlisting}[language=bash]
+for node in gpu1 gpu2 cpu1; do
+	TASK_ID=$(leaf task submit "$node" examples/echo.task.json | tail -n1)
+	echo "$node $TASK_ID"
+done
+\end{lstlisting}
+
+\subsection{Collect results from all workers}
+
+\begin{lstlisting}[language=bash]
+mkdir -p ./run_collection
+for node in gpu1 gpu2; do
+	leaf task pull "$node" "$TASK_ID" "./run_collection/$node"
+done
+\end{lstlisting}
+
+\subsection{Choose the idle node}
+
+\begin{lstlisting}[language=bash]
+pick_idle() {
+	leaf nodes list --json | python3 -c "
+import json, sys, subprocess
+nodes = json.load(sys.stdin)
+for name, cfg in nodes.items():
+	r = subprocess.run(['leaf','nodes','ping',name],
+					   capture_output=True, text=True)
+	d = json.loads(r.stdout) if r.returncode == 0 else {}
+	if d.get('tasks_running', 1) == 0:
+		print(name); break
+"
+}
+TARGET=$(pick_idle)
+leaf task submit "$TARGET" examples/shell.task.json
+\end{lstlisting}
+
+%% ===========================================================================
+\section{Security Hardening}
+
+\subsection{Dedicated SSH key}
+
+\begin{lstlisting}[language=bash]
+ssh-keygen -t ed25519 -C "leaf-cluster" -f ~/.ssh/leaf_node_key
+ssh-copy-id -i ~/.ssh/leaf_node_key.pub user@192.168.1.44
+export LEAF_SSH_OPTS="-i ~/.ssh/leaf_node_key"
+\end{lstlisting}
+
+\subsection{Restrict key to leaf commands only}
+
+In \texttt{\~{}/.ssh/authorized\_keys} on the worker:
+
+\begin{lstlisting}[language={}]
+command="leaf task start ${SSH_ORIGINAL_COMMAND#* }",
+no-port-forwarding,no-X11-forwarding,no-agent-forwarding,no-pty
+ssh-ed25519 AAAA... leaf-cluster
+\end{lstlisting}
+
+\subsection{Firewall (ufw example)}
+
+\begin{lstlisting}[language=bash]
+ufw allow from 192.168.1.0/24 to any port 22
+ufw deny 22
+\end{lstlisting}
+
+No other port needs to be open. No HTTP listener, no agent socket, no
+exposed API --- only SSH.
+
+\subsection{Non-root dedicated user}
+
+\begin{lstlisting}[language=bash]
+useradd -m -s /bin/bash leafrunner
+su - leafrunner -c "leaf node init --node-id worker1"
+\end{lstlisting}
+
+%% ===========================================================================
+\section{Debugging and Observability}
+
+\subsection{Read JSONL logs directly}
+
+\begin{lstlisting}[language=bash]
+# all events
+cat ~/.leaf/logs/TASK_ID.jsonl | python3 -m json.tool
+
+# stdout lines only
+grep '"event":"stdout"' ~/.leaf/logs/TASK_ID.jsonl \
+  | python3 -c "
+import sys, json
+[print(json.loads(l)['text']) for l in sys.stdin]"
+\end{lstlisting}
+
+\subsection{Orphaned running tasks}
+
+\begin{lstlisting}[language=bash]
+leaf task list --state running --json
+leaf task cancel TASK_ID   # drops cancel flag; runner exits on next poll
+\end{lstlisting}
+
+\subsection{LEAF\_HOME isolation for debugging}
+
+\begin{lstlisting}[language=bash]
+LEAF_HOME=/tmp/debug_node leaf node init --node-id debug
+LEAF_HOME=/tmp/debug_node leaf task start TASK_ID
+\end{lstlisting}
+
+\subsection{SSH connectivity check}
+
+\begin{lstlisting}[language=bash]
+ssh $LEAF_SSH_OPTS user@192.168.1.44 "leaf node status --json"
+ssh -v -o ConnectTimeout=5 user@192.168.1.44 "echo ok"
+\end{lstlisting}
+
+%% ===========================================================================
+\section{Extension Roadmap}
+
+\begin{tabular}{@{}ll@{}}
+\toprule
+Milestone & Planned change \\
+\midrule
+0.6.0 & \texttt{llama.cpp} runner; node selection by GPU presence \\
+0.7.0 & Priority queue; max-N concurrent tasks; queued drains by priority \\
+0.8.0 & \texttt{rsync} replaces \texttt{scp} for large/partial payloads \\
+0.9.0 & Restricted SSH command wrapper + \texttt{authorized\_keys} templates \\
+1.0.0 & Optional read-only web viewer (\texttt{leaf node serve}), log streaming only \\
+\bottomrule
+\end{tabular}
+
+\medskip
+The three contracts in Section~4 are frozen from this milestone forward.
+
+%% ===========================================================================
+\section{Full Command Reference}
+
+\subsection*{Receiver (runs on the worker)}
+
+\begin{lstlisting}[language={}]
+leaf node init   [--node-id ID] [--role ROLE] [--json]
+leaf node status [--json]
+leaf node hardware [--json]
+leaf task start   TASK_ID
+leaf task list    [--state STATE] [--json]
+leaf task logs    TASK_ID [--follow]
+leaf task result  TASK_ID [--json]
+leaf task cancel  TASK_ID
+\end{lstlisting}
+
+\subsection*{Distributor (runs on the master)}
+
+\begin{lstlisting}[language={}]
+leaf nodes add   NAME USER@HOST [--transport ssh|local] [--path DIR]
+leaf nodes list  [--json]
+leaf nodes ping  NAME
+leaf task submit NAME TASK_FILE
+leaf task watch  NAME TASK_ID
+leaf task pull   NAME TASK_ID [DEST]
+leaf task cancel NAME TASK_ID
+\end{lstlisting}
+
+\subsection*{Key files}
+
+\begin{tabular}{@{}ll@{}}
+\toprule
+File & Purpose \\
+\midrule
+\texttt{core/node/leaf\_node.py}  & Receiver engine (stdlib only) \\
+\texttt{core/node/node.sh}        & Brand-aware receiver wrapper \\
+\texttt{core/remote/remote.sh}    & Distributor + transport layer \\
+\texttt{bin/leafctl}              & CLI dispatch \\
+\texttt{examples/*.task.json}     & Example task descriptors \\
+\texttt{tests/nodes.sh}           & End-to-end local-transport test suite \\
+\texttt{docs/NODES.md}            & Architecture reference \\
+\texttt{docs/QUICKSTART.md/.tex}  & Quick start \\
+\bottomrule
+\end{tabular}
+
+\end{document}

@@ -1,0 +1,105 @@
+{
+  "leafos_object": "leafos.work_order",
+  "version": 2,
+  "work_order_id": "WO-042",
+  "title": "USB 3.0 Interceptor And Future Router Relay",
+  "status": "active",
+  "priority": "normal",
+  "target": "C:\\R\\LeafOS0.2.1",
+  "objective": "Define and implement one two-way transport contract that begins as a USB 3.0 file-backed interceptor/spool and can later be promoted to an authenticated private-LAN router relay without creating a second LeafOS authority.",
+  "allowed_paths": [
+    "ProjectLeaf/leafos_taskpack/bin",
+    "ProjectLeaf/leafos_taskpack/config",
+    "ProjectLeaf/leafos_taskpack/core/python",
+    "ProjectLeaf/leafos_taskpack/core/net",
+    "ProjectLeaf/leafos_taskpack/docs",
+    "ProjectLeaf/leafos_taskpack/reports",
+    "ProjectLeaf/leafos_taskpack/schemas",
+    "ProjectLeaf/leafos_taskpack/tests"
+  ],
+  "denied_paths": [
+    ".git",
+    ".env",
+    "secrets",
+    "credentials",
+    "id_rsa",
+    "id_ed25519",
+    "model_weights"
+  ],
+  "constraints": [
+    "The USB phase is a file-backed interceptor and durable spool, not a transparent packet router.",
+    "The future router phase supplies LAN connectivity but never becomes a LeafOS scheduler or execution authority.",
+    "All mutation requests enter through the existing typed loop inlet and retain approval, work-order, path, and validation policy.",
+    "No arbitrary shell, provider, PowerShell, Bash, Python, or model-control payloads may cross the transport boundary.",
+    "No WAN exposure, port forwarding, UPnP, cloud relay, credentials, model weights, or private chain-of-thought on the transport medium.",
+    "Historical run evidence and durable leafos.* objects remain readable and are never rewritten by transport delivery."
+  ],
+  "phases": [
+    {
+      "id": "usb-interceptor",
+      "status": "complete",
+      "deliverables": [
+        "explicit USB root and stable identity contract",
+        "inbox/outbox/processing/complete/rejected/quarantine spool state machine",
+        "versioned bidirectional JSON envelope",
+        "atomic publication, hash, deduplication, expiry, acknowledgement, and rejection handling",
+        "fixture tests for interruption, safe removal, replay, and out-of-order delivery"
+      ]
+    },
+    {
+      "id": "lan-router-relay",
+      "status": "future",
+      "deliverables": [
+        "private-LAN bind and firewall contract",
+        "authenticated encrypted transport",
+        "USB/LAN adapter equivalence tests",
+        "disabled-by-default router relay with no WAN path"
+      ]
+    }
+  ],
+  "message_types": [
+    "monitor.snapshot",
+    "task.submit",
+    "run.pause",
+    "run.resume",
+    "run.drain",
+    "run.stop",
+    "task.approve",
+    "report.get",
+    "transport.ack",
+    "transport.reject"
+  ],
+  "acceptance": [
+    "Valid USB requests reach the existing loop inlet exactly once.",
+    "Valid results and monitor snapshots return through the USB outbox.",
+    "Malformed, unauthorized, expired, replayed, partial, and hash-invalid messages are rejected without queue mutation.",
+    "USB removal and reconnection are resumable and do not duplicate accepted tasks.",
+    "USB and future LAN adapters produce equivalent inlet inputs and audit evidence.",
+    "The existing monitor, TUI, queue, journal, checkpoint, report, and resident supervisor remain the only authorities.",
+    "The future LAN relay is authenticated, encrypted, private-LAN-only, and disabled by default."
+  ],
+  "commands": {
+    "tests": [
+      ["python", "ProjectLeaf/leafos_taskpack/tests/test_transport_envelope.py"],
+      ["python", "ProjectLeaf/leafos_taskpack/tests/test_usb_interceptor.py"],
+      ["python", "ProjectLeaf/leafos_taskpack/tests/test_loop_inlet.py"],
+      ["python", "ProjectLeaf/leafos_taskpack/tests/test_leafctl_dispatch.py"]
+    ]
+  },
+  "verification": {
+    "date": "2026-07-24",
+    "evidence_kind": "real_local_fixture_and_contract_run",
+    "tests": {
+      "test_transport_envelope.py": {"count": 5, "duration_seconds": 0.020},
+      "test_usb_interceptor.py": {"count": 8, "duration_seconds": 0.534},
+      "test_loop_inlet.py": {"count": 14, "duration_seconds": 3.677},
+      "test_leafctl_dispatch.py": {"count": 8, "duration_seconds": 40.374}
+    },
+    "physical_usb_attached": false,
+    "lan_relay_validated": false
+  },
+  "approval_mode": "required",
+  "allow_mutation": true,
+  "max_attempts": 2,
+  "timeout_seconds": 1800
+}

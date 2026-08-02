@@ -1,0 +1,18 @@
+{
+  "schema": "leafos.model-profile.v1",
+  "profile_id": "ficus-ecology.falcon-q3",
+  "base_catalog_key": "gemma4-opus-assistant",
+  "title": "Fable Ecology Falcon (Q3_K_M)",
+  "role": "security",
+  "lanes": ["slot.sec.sanitize", "slot.sec.policy", "slot.sec.boundary"],
+  "contracts": ["security_output"],
+  "runtime": ["llama.cpp"],
+  "recommended_quant": "Q3_K_M",
+  "quality_quant": "Q4_K_M",
+  "low_memory_quant": "Q2_K",
+  "emergency_quant": "Q2_K",
+  "activation": "on_demand",
+  "escalation_from": ["ficus-ecology.router-q2", "ficus-ecology.critic-q3"],
+  "escalation_to": ["ficus-ecology.judge-q4"],
+  "notes": ["Policy and safety reviewer. Flags jailbreaks, leaks, and boundary-crossing requests."]
+}

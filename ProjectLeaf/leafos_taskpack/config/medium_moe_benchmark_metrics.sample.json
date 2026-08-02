@@ -1,0 +1,28 @@
+{
+  "evidence_kind": "template_not_evidence",
+  "candidate_model_id": "",
+  "duration_minutes": null,
+  "scenario": "",
+  "model_load_seconds": null,
+  "time_to_first_token_seconds": null,
+  "prompt_tokens_per_second": null,
+  "generation_tokens_per_second": null,
+  "gpu_process_alive_for_run": null,
+  "provider_restarts": null,
+  "gpu_utilization_average_percent": null,
+  "gpu_vram_used_peak_percent": null,
+  "cpu_utilization_average_percent": null,
+  "ram_used_peak_percent": null,
+  "foreground_responsiveness_p95_ms": null,
+  "nvme_read_megabytes_per_second": null,
+  "major_page_faults": null,
+  "minor_page_faults": null,
+  "validated_patches": null,
+  "accepted_changes": null,
+  "rejected_changes": null,
+  "baseline_validation_passed": null,
+  "oom_events": null,
+  "availability": {
+    "all_unmeasured_fields": "Template only; replace nulls with measured values or provide a field-specific unavailability reason."
+  }
+}

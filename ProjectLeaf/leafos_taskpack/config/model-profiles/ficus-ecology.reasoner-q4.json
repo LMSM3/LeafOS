@@ -1,0 +1,18 @@
+{
+  "schema": "leafos.model-profile.v1",
+  "profile_id": "ficus-ecology.reasoner-q4",
+  "base_catalog_key": "gemma4-opus-assistant",
+  "title": "Fable Ecology Reasoner (Q4_K_M)",
+  "role": "reasoner",
+  "lanes": ["slot.reason.plan", "slot.reason.analyze", "slot.reason.solve"],
+  "contracts": ["reasoning_output"],
+  "runtime": ["llama.cpp"],
+  "recommended_quant": "Q4_K_M",
+  "quality_quant": "Q6_K",
+  "low_memory_quant": "Q3_K_M",
+  "emergency_quant": "Q2_K",
+  "activation": "on_demand",
+  "escalation_from": ["ficus-ecology.router-q2", "ficus-ecology.critic-q3", "ficus-ecology.drafter-q2"],
+  "escalation_to": ["ficus-ecology.judge-q4"],
+  "notes": ["Step-by-step thinker. Used when the router detects ambiguity, math, or multi-hop reasoning."]
+}

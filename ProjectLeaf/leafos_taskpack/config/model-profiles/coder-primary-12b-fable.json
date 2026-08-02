@@ -1,0 +1,20 @@
+{
+  "schema": "leafos.model-profile.v1",
+  "profile_id": "coder-primary-12b-fable",
+  "model_repo": "yuxinlu1/gemma-4-12B-coder-fable5-composer2.5-v1-GGUF",
+  "role": "coder",
+  "lanes": ["slot.coder.patch", "slot.coder.testgen", "slot.coder.docs", "slot.coder.refactor"],
+  "contracts": ["unified_diff"],
+  "runtime": ["llama.cpp", "LM Studio", "Jan", "Ollama"],
+  "recommended_quant": "Q4_K_M",
+  "quality_quant": "Q6_K",
+  "low_memory_quant": "Q3_K_M",
+  "emergency_quant": "Q2_K",
+  "status": "stable_primary_coder_candidate",
+  "notes": [
+    "Use Q4_K_M as the default patch generator.",
+    "Use Q6_K for careful patches.",
+    "Use Q3_K_M for helper, documentation, and test-generation lanes.",
+    "Reject prose-only output."
+  ]
+}

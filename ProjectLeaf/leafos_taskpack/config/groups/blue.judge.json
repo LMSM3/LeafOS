@@ -1,0 +1,17 @@
+{
+  "schema": "leafos.model-group/v1",
+  "id": "blue.judge",
+  "slot": "judge.primary",
+  "enabled": true,
+  "policy": {
+    "parallel_load": false,
+    "preferred_quantization": ["Q8_0_MTP", "Q8_0"],
+    "max_vram_gib": 0.0,
+    "max_ram_gib": 64.0,
+    "allow_remote": false
+  },
+  "members": [
+    { "id": "blue-judge-bedrock", "weight": 100 },
+    { "id": "blue-judge-fallback", "weight": 70 }
+  ]
+}

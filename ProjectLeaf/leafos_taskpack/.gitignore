@@ -1,0 +1,8 @@
+/build/
+/logs/*.log
+/logs/*.jsonl
+/reports/*.md
+/tmp/
+*.o
+*.exe
+.DS_Store

@@ -1,0 +1,14 @@
+{
+  "schema": "leafos.model-group.v1",
+  "group_id": "ficus-ecology.safety",
+  "name": "Fable Ecology Safety Layer",
+  "priority": 5,
+  "mode": "on_demand",
+  "profiles": [
+    "ficus-ecology.falcon-q3",
+    "ficus-ecology.critic-q3",
+    "ficus-ecology.judge-q4"
+  ],
+  "default": false,
+  "comment": "Review and arbitration group. Provides safety, critique, ranking, and final judgement."
+}

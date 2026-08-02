@@ -1,0 +1,14 @@
+{
+  "schema": "leafos.model-group.v1",
+  "group_id": "ficus-ecology.memory",
+  "name": "Fable Ecology Memory Layer",
+  "priority": 1,
+  "mode": "background",
+  "profiles": [
+    "ficus-ecology.sparrow-q2",
+    "ficus-ecology.summarizer-q2",
+    "ficus-ecology.memory-q3"
+  ],
+  "default": false,
+  "comment": "Background layer that services context retrieval, summarization, and reflection."
+}

@@ -1,0 +1,14 @@
+{
+  "schema": "leafos.model-group.v1",
+  "group_id": "ficus-ecology.reasoning",
+  "name": "Fable Ecology Reasoning Layer",
+  "priority": 2,
+  "mode": "on_demand",
+  "profiles": [
+    "ficus-ecology.reasoner-q4",
+    "ficus-ecology.sky-q3",
+    "ficus-ecology.mor-q6"
+  ],
+  "default": false,
+  "comment": "Thinking layer which escalates from medium reasoning to heavy to dormant expert only explicitly."
+}

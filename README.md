@@ -75,5 +75,6 @@ documentation. It excludes model weights, download caches, virtual
 environments, compiled binaries, live runtime state, logs, generated reports,
 and local scratch work.
 
-No license has been selected yet. Until one is added, normal copyright rules
-apply.
+Some contained components carry their own MIT licenses. A repository-wide
+license has not yet been selected; files outside those licensed components
+remain under normal copyright rules.

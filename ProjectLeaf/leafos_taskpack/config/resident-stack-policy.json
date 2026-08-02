@@ -1,0 +1,51 @@
+{
+  "leafos_object": "leafos.resource_policy",
+  "version": 1,
+  "profiles": {
+    "auto-idle": {
+      "cpu_target_percent": 80,
+      "gpu_target_percent": 90,
+      "max_cpu_slots": 4
+    },
+    "auto-interactive": {
+      "cpu_target_percent": 60,
+      "gpu_target_percent": 75,
+      "max_cpu_slots": 2
+    },
+    "quiet": {
+      "cpu_target_percent": 35,
+      "gpu_target_percent": 50,
+      "max_cpu_slots": 1
+    },
+    "full": {
+      "cpu_target_percent": 90,
+      "gpu_target_percent": 98,
+      "max_cpu_slots": 6
+    }
+  },
+  "activity": {
+    "interactive_input_seconds": 8,
+    "idle_ramp_seconds": 20,
+    "responsiveness_soft_ms": 200,
+    "responsiveness_hard_ms": 750
+  },
+  "limits": {
+    "ram_used_percent": 98,
+    "vram_used_percent": 96,
+    "gpu_temperature_soft_c": 80,
+    "gpu_temperature_hard_c": 87
+  },
+  "tuning": {
+    "ewma_alpha": 0.35,
+    "hysteresis_percent": 5,
+    "cooldown_seconds": 5,
+    "provider_delay_step_seconds": 0.25,
+    "provider_delay_max_seconds": 3
+  },
+  "budgets": {
+    "unattended_minutes": 64,
+    "max_iterations": 8,
+    "max_failures": 3,
+    "max_changed_files": 64
+  }
+}

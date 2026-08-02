@@ -1,0 +1,23 @@
+{
+  "schema_version": 1,
+  "leafos_object": "web_state_fallback",
+  "source": "steady-state-config",
+  "generated_at": "2026-06-28T00:00:00-07:00",
+  "safe_operation": {
+    "default_coding_language": "python",
+    "coding_backend": "python",
+    "coding_model_choice": "gemma4-coder",
+    "coding_tier": "builder",
+    "main_model": "gemma4-it-opus",
+    "scheduler_model": "gemma4-it-opus",
+    "scheduler_fallback": "qwen35-opus-reasoning",
+    "download_boundary": "no model weights are downloaded by web-state or metadata refresh"
+  },
+  "metadata_policy": {
+    "preferred": "use recent cached metadata when available",
+    "fallback": "use runtime config and local catalog when live metadata is unavailable",
+    "network_timeout_seconds": 4,
+    "remote_metadata_only": true
+  },
+  "operator_note": "This file is intentionally boring. It is the calm fallback when the web/runtime layer cannot reach live repository metadata."
+}

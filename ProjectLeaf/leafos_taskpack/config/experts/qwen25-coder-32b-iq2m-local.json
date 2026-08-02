@@ -1,0 +1,14 @@
+﻿{
+  "schema": "leafos.expert.v1",
+  "id": "qwen25-coder-32b-iq2m-local",
+  "model_ref": "qwen2.5-coder-32b",
+  "parameters_b": 32,
+  "provider": "llama.cpp",
+  "placement": "local",
+  "endpoint_ref": "local-coder",
+  "quantization": "IQ2_M",
+  "estimated_memory_gib": 10.2,
+  "context_tokens": 16384,
+  "capabilities": ["proposal.patch", "diagnostic.compile", "diagnostic.lint"],
+  "enabled": true
+}

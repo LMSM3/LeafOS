@@ -1,0 +1,31 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://leafos.local/schemas/leafos.stack-preferences.v1.schema.json",
+  "title": "LeafOS Per-Run Stack Preferences",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["leafos_object", "version", "sandbox_profile", "model_optimizations", "application"],
+  "properties": {
+    "leafos_object": {"const": "leafos.stack_preferences"},
+    "version": {"const": 1},
+    "sandbox_profile": {"const": "project-only"},
+    "model_optimizations": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kv_cache"],
+      "properties": {
+        "kv_cache": {"enum": ["inherit", "investigate", "enable", "disable"]}
+      }
+    },
+    "application": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "task_id", "applied"],
+      "properties": {
+        "status": {"enum": ["inherited", "pending_queue", "queued", "applied", "failed"]},
+        "task_id": {"type": ["string", "null"]},
+        "applied": {"type": "boolean"}
+      }
+    }
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "leafos_object": "leafos.work_order",
+  "version": 2,
+  "work_order_id": "WO-036",
+  "title": "Visual Test Observatory",
+  "objective": "Present the full Python regression suite as an animated, hardware-observable run with an explicit real llama.cpp Vulkan demonstration lane.",
+  "allowed_paths": [
+    "bin",
+    "core/testing",
+    "core/ui/chat.py",
+    "docs",
+    "reports/work-orders",
+    "tests"
+  ],
+  "acceptance": [
+    "all original 118 tests receive a visual domain trace",
+    "test modules run in isolated workers",
+    "live stack inference is explicit and CPU validated",
+    "hardware and test events are written as JSONL",
+    "private reasoning content is withheld"
+  ],
+  "stack_role": "brain",
+  "mutation": true,
+  "approval_mode": "operator-requested"
+}

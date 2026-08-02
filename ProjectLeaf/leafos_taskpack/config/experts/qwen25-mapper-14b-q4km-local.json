@@ -1,0 +1,14 @@
+﻿{
+  "schema": "leafos.expert.v1",
+  "id": "qwen25-mapper-14b-q4km-local",
+  "model_ref": "qwen2.5-14b",
+  "parameters_b": 14,
+  "provider": "ollama",
+  "placement": "local",
+  "endpoint_ref": "local-mapper",
+  "quantization": "Q4_K_M",
+  "estimated_memory_gib": 8.5,
+  "context_tokens": 32768,
+  "capabilities": ["context.map", "context.summarize"],
+  "enabled": true
+}

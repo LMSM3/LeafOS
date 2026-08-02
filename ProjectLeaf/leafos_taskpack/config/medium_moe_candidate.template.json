@@ -1,0 +1,39 @@
+{
+  "schema": "leafos.medium-moe-candidate.v1",
+  "policy_id": "medium-moe-local-2026-07",
+  "status": "template",
+  "identity": {
+    "model_id": "",
+    "source_repo": "",
+    "revision": "",
+    "artifact": "",
+    "sha256": "",
+    "license": ""
+  },
+  "topology": {
+    "total_parameters_billion": null,
+    "active_parameters_billion": null,
+    "expert_count": null,
+    "active_experts_per_token": null
+  },
+  "runtime": {
+    "provider": "llamacpp",
+    "compute_backend": "vulkan",
+    "model_format": "GGUF",
+    "model_path": "",
+    "executable": "llama-bench",
+    "benchmark_command": [],
+    "context_tokens": null,
+    "gpu_layers": null,
+    "mmap": true,
+    "kv_cache_type_k": "f16",
+    "kv_cache_type_v": "f16",
+    "no_download": true
+  },
+  "acceptance": {
+    "minimum_generation_tokens_per_second": null,
+    "maximum_time_to_first_token_seconds": null,
+    "minimum_validated_useful_changes_per_hour": null,
+    "threshold_provenance": ""
+  }
+}

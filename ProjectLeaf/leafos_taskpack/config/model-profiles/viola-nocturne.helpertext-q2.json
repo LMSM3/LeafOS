@@ -1,0 +1,18 @@
+{
+  "schema": "leafos.model-profile.v1",
+  "profile_id": "viola-nocturne.helpertext-q2",
+  "base_catalog_key": "viola-fablevibes-14b-a3b",
+  "title": "Viola Nocturne Helper Text (Q2_K)",
+  "role": "helper",
+  "lanes": ["slot.help.lookup", "slot.help.format", "slot.help.classify"],
+  "contracts": ["help_output"],
+  "runtime": ["llama.cpp"],
+  "recommended_quant": "Q2_K",
+  "quality_quant": "Q3_K_M",
+  "low_memory_quant": "Q2_K",
+  "emergency_quant": "Q2_K",
+  "activation": "always",
+  "escalation_from": [],
+  "escalation_to": ["viola-nocturne.router-q2"],
+  "notes": ["Tiny always-available helper for greetings, syntax hints, and routing simple requests upward."]
+}
