@@ -26,7 +26,7 @@ EVENT_TYPES = {
 }
 
 UNIVERSAL_RUN_KINDS = {
-    "agent-loop", "catan2bench", "fullstackbench", "continual-live",
+    "agent-loop", "fullstackbench", "continual-live",
     "dual-harness", "overnight", "oneshot", "manual",
 }
 UNIVERSAL_EVENT_TYPES = {
@@ -904,7 +904,7 @@ def parser() -> argparse.ArgumentParser:
     universal.add_argument("--brain-stack-entry", default="")
     universal.add_argument("--coder-stack-entry", default="")
     universal.add_argument("--quantization", default="")
-    universal.add_argument("--provider-mode", choices=("off", "mock", "auto", "required", "llamacpp", "ollama", "openai", "other"), default="off")
+    universal.add_argument("--provider-mode", choices=("off", "mock", "auto", "required", "llamacpp", "ollama", "openai", "web", "other"), default="off")
     universal.add_argument("--provider-backend", default="")
     universal.add_argument("--provider-endpoint", default="")
     universal.add_argument("--provider-status", choices=("off", "starting", "ready", "running", "stopped", "degraded", "failed", "unknown"), default="off")

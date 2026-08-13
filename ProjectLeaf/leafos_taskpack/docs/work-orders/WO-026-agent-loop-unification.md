@@ -12,9 +12,9 @@
 ## Purpose
 
 LeafOS already has the right ingredients: oneshot bundles, task files, graph loop
-execution, sandbox staging, dual-brain harness state, stack/provider routing,
-and the Catan2 benchmark. The gap is the top-level noninteractive loop that a
-user can start on a directory and inspect later without relying on chat context.
+execution, sandbox staging, dual-brain harness state, and stack/provider routing.
+The gap is the top-level noninteractive loop that a user can start on a directory
+and inspect later without relying on chat context.
 
 In this work order, **stack** means all models downloaded and locally available
 to this LeafOS instance. The provider serves selected stack entries; it is not
@@ -23,7 +23,7 @@ the stack itself.
 This work order unifies those pieces into one local operator command:
 
 ```powershell
-pwsh -NoProfile -File C:\R\LeafOS0.2.1\ProjectLeaf\leafos_taskpack\bin\leafctl.ps1 agent-loop-start --target C:\Games --projects catan2,chess3D --profile local-games --yes
+pwsh -NoProfile -File C:\R\LeafOS0.2.2\ProjectLeaf\leafos_taskpack\bin\leafctl.ps1 agent-loop-start --target C:\Games --projects chess3D,generic-python-sim --profile local-games --yes
 ```
 
 The loop should create or reuse a workspace, schedule tasks, route plans, execute
@@ -43,7 +43,7 @@ Deliverables:
 - dry-run support that prints planned directories, files, queue entries, and
   validation commands without writing
 - `--yes` support for noninteractive creation
-- project skeleton templates for `catan2`, `chess3D`, `generic-c-game`, and
+- project skeleton templates for `chess3D`, `generic-c-game`, and
   `generic-python-sim`
 
 Acceptance criteria:
@@ -53,8 +53,6 @@ Acceptance criteria:
 - [x] Existing project folders are not overwritten unless `--force` is passed.
 - [x] Each created project has `README.md`, `WORK_ORDER.md`, `project_state.json`,
       `run_tests.ps1`, `run_tests.sh`, `src` or `core`, `tests`, and `reports`.
-- [x] `catan2` skeleton points at the existing Catan2 benchmark as its first
-      validation command.
 
 ## Part 2 - Durable Run State and Task Queue
 
@@ -143,15 +141,7 @@ command; multi-step mutation is not claimed complete here.
 Use games as the first real benchmark because they expose the full loop:
 planning, action, validation, scoring, iteration, and observable improvement.
 
-Catan2 first:
-
-- run the existing Catan2 benchmark as a baseline validation
-- support target durations near 4, 8, and 64 minutes
-- record board topology, bot policy, score delta, event summary, and provider mode
-- accept patches only when tests pass and benchmark evidence improves or explains
-  the tradeoff
-
-Chess3D second:
+Chess3D first:
 
 - start with skeleton board/rules engine
 - add deterministic legal move generation
@@ -160,11 +150,11 @@ Chess3D second:
 
 Acceptance criteria:
 
-- [x] `catan2` can be created under a target workspace.
-- [x] The loop can run a short Catan2 baseline without GPU provider startup.
+- [x] `chess3D` can be created under a target workspace.
+- [x] The loop can run a short chess3D baseline without GPU provider startup.
 - [x] Benchmark artifacts land under the run directory.
 - [x] Benchmark artifacts are also copied or summarized into project `reports`.
-- [x] Score deltas are attached to task evidence.
+- [x] Validation results are attached to task evidence.
 - [x] Regression results create repair tasks rather than silent acceptance.
 
 ## Part 5 - Observability and Dual-Brain Provider Closure
@@ -232,12 +222,12 @@ Acceptance criteria:
 The first working top-level loop is available through:
 
 ```powershell
-pwsh -NoProfile -File C:\R\LeafOS0.2.1\ProjectLeaf\leafos_taskpack\bin\leafctl.ps1 agent-loop-start --target C:\Games --projects catan2,chess3D --profile local-games --yes
-pwsh -NoProfile -File C:\R\LeafOS0.2.1\ProjectLeaf\leafos_taskpack\bin\leafctl.ps1 agent-loop-status C:\Games
-pwsh -NoProfile -File C:\R\LeafOS0.2.1\ProjectLeaf\leafos_taskpack\bin\leafctl.ps1 agent-loop-tick C:\Games
-pwsh -NoProfile -File C:\R\LeafOS0.2.1\ProjectLeaf\leafos_taskpack\bin\leafctl.ps1 agent-loop-stop C:\Games --after-current-step
-pwsh -NoProfile -File C:\R\LeafOS0.2.1\ProjectLeaf\leafos_taskpack\bin\leafctl.ps1 agent-loop-resume C:\Games --yes
-pwsh -NoProfile -File C:\R\LeafOS0.2.1\ProjectLeaf\leafos_taskpack\bin\leafctl.ps1 agent-loop-report C:\Games
+pwsh -NoProfile -File C:\R\LeafOS0.2.2\ProjectLeaf\leafos_taskpack\bin\leafctl.ps1 agent-loop-start --target C:\Games --projects chess3D,generic-python-sim --profile local-games --yes
+pwsh -NoProfile -File C:\R\LeafOS0.2.2\ProjectLeaf\leafos_taskpack\bin\leafctl.ps1 agent-loop-status C:\Games
+pwsh -NoProfile -File C:\R\LeafOS0.2.2\ProjectLeaf\leafos_taskpack\bin\leafctl.ps1 agent-loop-tick C:\Games
+pwsh -NoProfile -File C:\R\LeafOS0.2.2\ProjectLeaf\leafos_taskpack\bin\leafctl.ps1 agent-loop-stop C:\Games --after-current-step
+pwsh -NoProfile -File C:\R\LeafOS0.2.2\ProjectLeaf\leafos_taskpack\bin\leafctl.ps1 agent-loop-resume C:\Games --yes
+pwsh -NoProfile -File C:\R\LeafOS0.2.2\ProjectLeaf\leafos_taskpack\bin\leafctl.ps1 agent-loop-report C:\Games
 ```
 
 Implemented files:
@@ -245,7 +235,6 @@ Implemented files:
 ```text
 core/python/leaf_agent_loop.py
 config/agent_loop_profiles.json
-share/templates/projects/catan2/TEMPLATE.md
 share/templates/projects/chess3D/TEMPLATE.md
 share/templates/projects/generic-c-game/TEMPLATE.md
 share/templates/projects/generic-python-sim/TEMPLATE.md
@@ -272,8 +261,8 @@ must preserve the queued command, stay inside the task workdir, contain one
 bounded step, and remain within the queued timeout. Malformed proposals are
 rejected and create repair tasks; no raw provider text is executed.
 
-Catan2 task evidence now includes the LeafOS-versus-bot score delta and a copy
-of the benchmark summary under the project `reports` directory. The dual-brain
+Task evidence now includes a copy of validation summaries under the project
+`reports` directory. The dual-brain
 harness can point `agent_loop_run_dir` at a run and update its canonical
 `queue.json` directly; task arrays are no longer copied into private harness
 state in that mode.
@@ -281,7 +270,7 @@ state in that mode.
 ## Evidence Log
 
 - 2026-07-19: planner contract and malformed-proposal fail-closed test - PASS.
-- 2026-07-19: Catan2 report promotion, score delta, and regression repair gate - PASS.
+- 2026-07-19: Validation report promotion and regression repair gate - PASS.
 - 2026-07-19: provider-auto degraded fallback recording - PASS.
 - 2026-07-19: shared dual-harness/agent-loop queue integration - PASS.
 

@@ -81,12 +81,14 @@ VSEPR-Day98-LeafOS-Z-GR8/
 /viola-profile-plan.json
 /test-all.sh
 /.pr-body.md
+/ascii_main.png
 
 # Generated installer plans and local self-test state
 ProjectLeaf/leaf_model_installer/viola-*.json
 ProjectLeaf/leaf_model_installer/tests/perm_probe.txt
 ProjectLeaf/leaf_model_installer/shell_helpers/tempnew.txt
 ProjectLeaf/leafos_taskpack/.notetoself
+ProjectLeaf/leafos_taskpack/share/state/*.json
 ProjectLeaf/install/windows/_speedtest_clean_1b.ps1
 ProjectLeaf/install/windows/bench-hf-1b.ps1
 ProjectLeaf/install/windows/test-hf-token-speed.ps1

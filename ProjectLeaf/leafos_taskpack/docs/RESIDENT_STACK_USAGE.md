@@ -12,7 +12,7 @@ the typed inlet and CPU-side validator.
 
 ```powershell
 .\bin\leafctl.ps1 live C:\R\MyProject
-.\bin\leafctl.ps1 live C:\Games\catan2 --new --yes --budget 64
+.\bin\leafctl.ps1 live C:\R\MyNewProject --new --yes --budget 64
 ```
 
 `leafctl live` enables the resident supervisor by default. `--mode auto|quiet|full` selects the initial resource profile. `--no-resident` retains the older worker that exits when its current queue reaches a terminal state.
@@ -116,22 +116,22 @@ provider-recovery.log
 
 `resident-state.json` contains policy, budgets, usage, the latest deterministic decision, and stable reason codes. Resource transitions are also written to `events.jsonl` and `universal-run-log.jsonl`; high-frequency TUI samples remain presentation-only.
 
-## Catan2 Demonstration
+## Resident Demonstration
 
 ```powershell
-.\bin\leafctl.ps1 catan2-resident --profile 4m
-.\bin\leafctl.ps1 catan2-resident --profile 8m
-.\bin\leafctl.ps1 catan2-resident --profile 64m
+.\bin\leafctl.ps1 resident start --profile 4m --target C:\R\MyProject
+.\bin\leafctl.ps1 resident start --profile 8m --target C:\R\MyProject
+.\bin\leafctl.ps1 resident start --profile 64m --target C:\R\MyProject
 ```
 
-The default benchmark starts from an isolated three-file Catan2 seed. It exercises provider planning, continual queue refill, operator task admission, quiet/auto transitions, validation, drain, and reconnectable evidence. `--target PATH` uses an existing Catan2 project instead.
+The resident supervisor starts from a generic three-file seed if `--target` does not exist. It exercises provider planning, continual queue refill, operator task admission, quiet/auto transitions, validation, drain, and reconnectable evidence. `--target PATH` uses an existing project instead.
 
 For scheduler contract testing only:
 
 ```powershell
-.\bin\leafctl.ps1 catan2-resident --contract-only --iterations 3
+.\bin\leafctl.ps1 resident start --contract-only --iterations 3
 ```
 
-Contract mode is explicitly labeled and does not claim real provider inference or game implementation. Real profiles write per-phase CPU/GPU distributions, responsiveness percentiles, task outcomes, queue evidence, and provider state beneath `runs/resident-catan2bench`.
+Contract mode is explicitly labeled and does not claim real provider inference. Real profiles write per-phase CPU/GPU distributions, responsiveness percentiles, task outcomes, queue evidence, and provider state beneath `runs/resident-demo`.
 
 The 4-minute profile is the fast real-provider acceptance run. The 8-minute profile adds a second operator-input phase. The 64-minute profile is the provider-longevity and recovery soak; it should be run before declaring the entire WO-038 soak matrix complete.

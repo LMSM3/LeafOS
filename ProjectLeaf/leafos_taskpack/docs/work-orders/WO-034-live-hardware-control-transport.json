@@ -1,7 +1,7 @@
 {
   "work_order_id": "WO-034",
   "title": "Live hardware and native control transport",
-  "target": "C:\\R\\LeafOS0.2.1\\ProjectLeaf\\leafos_taskpack",
+  "target": "C:\\R\\LeafOS0.2.2\\ProjectLeaf\\leafos_taskpack",
   "objective": "Add independent low-latency TUI hardware sampling and replace the native temporary control mailbox with authenticated bounded loopback TCP.",
   "scope": [
     "core/python/leaf_telemetry.py",

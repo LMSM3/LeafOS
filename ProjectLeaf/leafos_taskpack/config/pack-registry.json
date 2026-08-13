@@ -11,7 +11,7 @@
         "symbol": "\u273f",
         "visual_family": "warm"
       },
-      "manifest_path": "C:\\R\\LeafOS0.2.1\\ProjectLeaf\\leafos_taskpack\\packs\\generated\\penstemon-atlas-b9326c.json",
+      "manifest_path": "C:\\R\\LeafOS0.2.3\\ProjectLeaf\\leafos_taskpack\\packs\\generated\\penstemon-atlas-b9326c.json",
       "pack_id": "penstemon-atlas-b9326c",
       "reserved_at": "2026-07-31T08:59:45.466230Z"
     },
@@ -26,7 +26,7 @@
         "symbol": "\u2740",
         "visual_family": "cool"
       },
-      "manifest_path": "C:\\R\\LeafOS0.2.1\\ProjectLeaf\\leafos_taskpack\\packs\\generated\\penstemon-crown-4e96d9.json",
+      "manifest_path": "C:\\R\\LeafOS0.2.3\\ProjectLeaf\\leafos_taskpack\\packs\\generated\\penstemon-crown-4e96d9.json",
       "pack_id": "penstemon-crown-4e96d9",
       "reserved_at": "2026-07-31T09:07:49.840124Z"
     }

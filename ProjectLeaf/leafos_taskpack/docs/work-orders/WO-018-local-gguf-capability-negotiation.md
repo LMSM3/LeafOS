@@ -31,3 +31,8 @@
 - `core/runtime/profile_resolver.py` now emits verified model capabilities and the capacity equation.
 - The local `gemma4-coding-Q4_K_M.gguf` reports a 262,144-token model limit; the 65,536-token continual profile resolves as supported with 16,384 reasoning plus 8,192 output tokens.
 - `tests/test_runtime_capabilities.py` covers supported, fallback, malformed, and metadata-read paths.
+
+## MOE parallel handoff
+
+- [WO-017](WO-017-small-scale-moe-hardware-orchestration.md) reuses this bounded metadata capability for MOE-001 inventory and later placement admission. The newer cross-link does not change this work order's DONE status.
+- Catalog-versus-embedded metadata disagreement remains a hard identity finding. The MoE lane may measure an explicitly reviewed experimental candidate, but it may not silently remove the promotion blocker.

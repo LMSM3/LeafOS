@@ -1,0 +1,86 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://leafos.local/ccis/contracts/allocation/allocation-snapshot.v1.schema.json",
+  "title": "CCIS Rebuildable Allocation Snapshot",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["ccis_object", "schema_version", "reducer_version", "registry_digest", "source_seq", "source_event_hash", "logical_tick", "ready", "delayed", "blocked", "leases", "tasks", "ready_digest", "delayed_digest", "lease_digest", "task_digest", "projection_digest"],
+  "properties": {
+    "ccis_object": {"const": "ccis.allocation_snapshot"},
+    "schema_version": {"const": 1},
+    "reducer_version": {"const": 1},
+    "registry_digest": {"$ref": "#/$defs/digest"},
+    "source_seq": {"type": "integer", "minimum": 0},
+    "source_event_hash": {"type": ["string", "null"], "pattern": "^sha256:[0-9a-f]{64}$"},
+    "logical_tick": {"type": "integer", "minimum": 0},
+    "ready": {"type": "array", "items": {"$ref": "#/$defs/queue_item"}},
+    "delayed": {"type": "array", "items": {"$ref": "#/$defs/queue_item"}},
+    "blocked": {"type": "array", "items": {"$ref": "#/$defs/blocked_item"}},
+    "leases": {"type": "array", "items": {"$ref": "#/$defs/projected_lease"}},
+    "tasks": {"type": "array", "items": {"$ref": "#/$defs/projected_task"}},
+    "ready_digest": {"$ref": "#/$defs/digest"},
+    "delayed_digest": {"$ref": "#/$defs/digest"},
+    "lease_digest": {"$ref": "#/$defs/digest"},
+    "task_digest": {"$ref": "#/$defs/digest"},
+    "projection_digest": {"$ref": "#/$defs/digest"}
+  },
+  "$defs": {
+    "digest": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"},
+    "queue_item": {
+      "type": "object", "additionalProperties": false,
+      "required": ["task_id", "stable_key"],
+      "properties": {
+        "task_id": {"type": "string", "minLength": 3},
+        "stable_key": {"type": "array", "minItems": 3, "maxItems": 4}
+      }
+    },
+    "blocked_item": {
+      "type": "object", "additionalProperties": false,
+      "required": ["task_id", "reason"],
+      "properties": {
+        "task_id": {"type": "string", "minLength": 3},
+        "reason": {"type": "string", "minLength": 1},
+        "details": {"type": "array", "items": {"type": "string"}}
+      }
+    },
+    "resource_claim": {
+      "type": "object", "additionalProperties": false,
+      "required": ["resource", "mode", "amount", "unit"],
+      "properties": {
+        "resource": {"type": "string", "minLength": 1},
+        "mode": {"enum": ["shared", "exclusive"]},
+        "amount": {"type": "number", "minimum": 0},
+        "unit": {"type": "string", "minLength": 1}
+      }
+    },
+    "projected_lease": {
+      "type": "object", "additionalProperties": false,
+      "required": ["lease_id", "task_id", "worker_id", "acquired_tick", "expires_tick", "claims", "state"],
+      "properties": {
+        "lease_id": {"type": "string", "pattern": "^lease-[0-9]{8}$"},
+        "task_id": {"type": "string", "minLength": 3},
+        "worker_id": {"type": "string", "minLength": 1},
+        "acquired_tick": {"type": "integer", "minimum": 0},
+        "expires_tick": {"type": "integer", "minimum": 1},
+        "claims": {"type": "array", "items": {"$ref": "#/$defs/resource_claim"}},
+        "state": {"enum": ["ACTIVE", "RELEASED", "EXPIRED"]},
+        "released_tick": {"type": "integer", "minimum": 0},
+        "expired_tick": {"type": "integer", "minimum": 0}
+      }
+    },
+    "projected_task": {
+      "type": "object", "additionalProperties": false,
+      "required": ["task_id", "state", "effective_priority", "enqueue_sequence", "attempts", "lease_id", "last_reason", "task_digest"],
+      "properties": {
+        "task_id": {"type": "string", "minLength": 3},
+        "state": {"enum": ["ADMITTED", "QUEUED", "LEASED", "RUNNING", "SUCCEEDED", "FAILED", "BLOCKED", "REVISE", "REJECTED", "ESCALATED", "CANCELLED"]},
+        "effective_priority": {"type": "integer"},
+        "enqueue_sequence": {"type": ["integer", "null"], "minimum": 1},
+        "attempts": {"type": "integer", "minimum": 0},
+        "lease_id": {"type": ["string", "null"]},
+        "last_reason": {"type": ["string", "null"]},
+        "task_digest": {"$ref": "#/$defs/digest"}
+      }
+    }
+  }
+}

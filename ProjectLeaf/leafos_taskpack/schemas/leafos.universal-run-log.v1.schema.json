@@ -43,7 +43,6 @@
     "run_kind": {
       "enum": [
         "agent-loop",
-        "catan2bench",
         "fullstackbench",
         "continual-live",
         "dual-harness",

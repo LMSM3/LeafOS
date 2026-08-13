@@ -72,7 +72,6 @@ The canonical lifecycle is `inspect -> plan -> approve -> execute -> validate ->
 | Universal telemetry | `core/python/leaf_telemetry.py`, `schemas/leafos.universal-run-log.v1.schema.json` |
 | Python TUI | `core/ui/tui/` |
 | Native TUI | `core/tui/` |
-| Resident Catan2 benchmark | `core/bench/resident_catan2bench.py` |
 | Durable memory | `core/memory/`, native LMEM journal |
 | Schemas | `schemas/` |
 | Tests | `tests/` |

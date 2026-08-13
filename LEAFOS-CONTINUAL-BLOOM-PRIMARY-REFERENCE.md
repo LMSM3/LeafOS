@@ -7,7 +7,7 @@
 [BRAIN..............................UNKNOWN]
 [CODER..............................UNKNOWN]
 
-C:\R\LeafOS0.2.1\ProjectLeaf\
+C:\R\LeafOS0.2.2\ProjectLeaf\
     leafos_taskpack\
         r▓ns\bench\2026░727075329Z-install\
             conve?sation.jsonl
@@ -937,7 +937,7 @@ nonce, and transcript head. Append native dispositions.
 
 ### WO — Continual Transcript Projection
 
-**Release gate:** `0.9.4`
+**Release gate:** `0.9.5`
 
 Project conversation and planning artifacts into the viewer. Preserve the full
 names, cursors, provenance, and visual identities of Monday — Rescue and

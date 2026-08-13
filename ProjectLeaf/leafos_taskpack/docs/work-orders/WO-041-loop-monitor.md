@@ -51,7 +51,7 @@ LeafOS run authority and preserve reconnectable event cursors.
 ## Real Dated Run Snippets
 
 Recorded from fresh local runs on 2026-07-24 in
-`C:\R\LeafOS0.2.1\ProjectLeaf\leafos_taskpack`:
+`C:\R\LeafOS0.2.2\ProjectLeaf\leafos_taskpack`:
 
 ```text
 > python -B tests/test_loop_inlet.py

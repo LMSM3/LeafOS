@@ -40,13 +40,13 @@ class FakeClock:
 
 class ResidentSchedulerTests(unittest.TestCase):
     def make_run(self, root: Path) -> Path:
-        target = root / "catan2"
+        target = root / "project"
         runs = root / "runs"
         with mock.patch.object(live.inlet, "RUNS_ROOT", runs), mock.patch.object(
             live.inlet, "LIVE_INTAKE_ROOT", runs / "live-intake"
         ):
             result = live.start_project(
-                target, create_seed=True, template="catan2", provider="off", fresh_run=True,
+                target, create_seed=True, template="generic", provider="off", fresh_run=True,
                 spawn=False, run_dir=str(root / "run"),
             )
         return Path(result["run_dir"])

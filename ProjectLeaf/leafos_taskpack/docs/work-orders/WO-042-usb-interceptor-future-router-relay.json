@@ -5,7 +5,7 @@
   "title": "USB 3.0 Interceptor And Future Router Relay",
   "status": "active",
   "priority": "normal",
-  "target": "C:\\R\\LeafOS0.2.1",
+  "target": "C:\\R\\LeafOS0.2.2",
   "objective": "Define and implement one two-way transport contract that begins as a USB 3.0 file-backed interceptor/spool and can later be promoted to an authenticated private-LAN router relay without creating a second LeafOS authority.",
   "allowed_paths": [
     "ProjectLeaf/leafos_taskpack/bin",

@@ -1,0 +1,17 @@
+# Shell entrypoints must remain executable by Bash after Windows checkout.
+*.sh text eol=lf
+ProjectLeaf/leafos_taskpack/config/*.conf text eol=lf
+ProjectLeaf/leafos_taskpack/bin/flower-monitor text eol=lf
+ProjectLeaf/leafos_taskpack/bin/flowerctl text eol=lf
+ProjectLeaf/leafos_taskpack/bin/leaf-hf text eol=lf
+ProjectLeaf/leafos_taskpack/bin/leaf-models text eol=lf
+ProjectLeaf/leafos_taskpack/bin/leaf-overnight text eol=lf
+ProjectLeaf/leafos_taskpack/bin/leaf-tui text eol=lf
+ProjectLeaf/leafos_taskpack/bin/leaf-web-model text eol=lf
+ProjectLeaf/leafos_taskpack/bin/leafctl text eol=lf
+ProjectLeaf/leafos_taskpack/bin/leafpy text eol=lf
+ProjectLeaf/leafos_taskpack/core/ui/chat_json text eol=lf
+ProjectLeaf/leafos_taskpack/core/ui/dashboard_json text eol=lf
+ProjectLeaf/leafos_taskpack/core/ui/quick_syntax text eol=lf
+ProjectLeaf/leafos_taskpack/core/ui/reference text eol=lf
+ProjectLeaf/leafos_taskpack/share/templates/*.tpl text eol=lf

@@ -337,14 +337,15 @@ def command_local_status(args: argparse.Namespace) -> int:
 def _color(text: str, name: str, enabled: bool) -> str:
     if not enabled:
         return text
+    # Map legacy basic names to the FlowerOS pastel/green palette.
     codes = {
-        "red": "31",
-        "green": "32",
-        "yellow": "33",
-        "cyan": "36",
-        "bold": "1",
+        "red":   "\033[38;2;255;154;162m",  # pastel error
+        "green": "\033[38;2;119;221;119m",  # leaf green
+        "yellow":"\033[38;2;255;250;181m",  # butter
+        "cyan":  "\033[38;2;178;223;255m",  # pastel sky
+        "bold":  "\033[1m",
     }
-    return f"\033[{codes[name]}m{text}\033[0m"
+    return f"{codes[name]}{text}\033[0m"
 
 
 def _has_model_like_files(path: Path) -> bool:

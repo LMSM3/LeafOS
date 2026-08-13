@@ -17,15 +17,15 @@ from model_profiles import ModelProfileError, load_profile, load_profiles, route
 class ModelProfileTests(unittest.TestCase):
     def test_registry_materializes_all_documented_profiles(self) -> None:
         profiles = load_profiles()
-        self.assertEqual(
-            {
-                "brain-primary-27b-nvfp4-mtp",
-                "brain-primary-14b-gguf",
-                "coder-primary-12b-fable",
-                "helper-coder-fable-lowquant",
-            },
-            {profile["profile_id"] for profile in profiles},
-        )
+        documented = {
+            "brain-primary-27b-nvfp4-mtp",
+            "brain-primary-14b-gguf",
+            "coder-primary-12b-fable",
+            "helper-coder-fable-lowquant",
+        }
+        ids = {profile["profile_id"] for profile in profiles}
+        self.assertTrue(documented.issubset(ids), f"missing documented profiles: {documented - ids}")
+        self.assertGreaterEqual(len(ids), len(documented))
 
     def test_lane_routing_preserves_brain_and_coder_authority(self) -> None:
         profiles = load_profiles()

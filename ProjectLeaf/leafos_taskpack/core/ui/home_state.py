@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+﻿#!/usr/bin/env python3
 """Build the read-only LeafOS operator home state contract."""
 
 from __future__ import annotations
@@ -7,6 +7,7 @@ import json
 import os
 import re
 import shlex
+import subprocess
 import sys
 from datetime import datetime, timezone
 from pathlib import Path
@@ -23,11 +24,85 @@ if str(PYTHON_DIR) not in sys.path:
 from leaf_economics import load_operator_config, summarize_benchmark  # noqa: E402
 
 
+def _decode_process_output(value: bytes) -> str:
+    """Decode redirected Windows shell output without reader-thread failures."""
+    encodings = ["utf-8-sig"]
+    if os.name == "nt":
+        try:
+            import ctypes
+
+            encodings.append(f"cp{ctypes.windll.kernel32.GetOEMCP()}")
+        except (AttributeError, OSError):
+            pass
+    encodings.extend(["cp437", "cp850", "cp1252", "utf-16"])
+    for encoding in dict.fromkeys(encodings):
+        try:
+            return value.decode(encoding)
+        except (LookupError, UnicodeDecodeError):
+            continue
+    return value.decode("utf-8", errors="replace")
+
+
 def _json(path: Path, default: Any) -> Any:
     try:
         return json.loads(path.read_text(encoding="utf-8"))
     except (OSError, json.JSONDecodeError):
         return default
+
+
+def _installer_readiness() -> dict[str, Any]:
+    """Query the hardened PowerShell installer readiness surface.
+
+    Runs PowerShell-Version\\install.ps1 -Readiness and parses the
+    check lines into a structured dict. Translation only.
+    """
+    repo_root = ROOT.parents[1]
+    install_ps1 = repo_root / "PowerShell-Version" / "install.ps1"
+    if not install_ps1.is_file():
+        return {
+            "available": False,
+            "script": str(install_ps1),
+            "checks": {},
+            "raw": "install.ps1 not found",
+        }
+    shell = "powershell.exe" if os.name == "nt" else "pwsh"
+    cmd = [shell, "-NoProfile", "-File", str(install_ps1), "-Readiness"]
+    try:
+        result = subprocess.run(cmd, capture_output=True, text=False, timeout=60)
+    except Exception as exc:
+        return {
+            "available": False,
+            "script": str(install_ps1),
+            "checks": {},
+            "raw": f"subprocess error: {exc}",
+        }
+    checks: dict[str, bool] = {}
+    stdout = _decode_process_output(result.stdout or b"")
+    for line in stdout.splitlines():
+        stripped = line.strip()
+        if stripped.startswith("[") and "]" in stripped:
+            mark, rest = stripped.split("]", 1)
+            passed = any(symbol in mark for symbol in ("\u2713", "\u2714", "\u221a", "+"))
+            label = rest.strip().lstrip("-").strip()
+            if label:
+                checks[label] = passed
+    return {
+        "available": True,
+        "script": str(install_ps1),
+        "exit_code": result.returncode,
+        "checks": checks,
+        "ready": result.returncode == 0 and all(checks.values()),
+        "raw": stdout.strip(),
+    }
+
+
+def _persist_state(state: dict[str, Any]) -> None:
+    out = ROOT / "share" / "state"
+    out.mkdir(parents=True, exist_ok=True)
+    (out / "operator-home.json").write_text(
+        json.dumps(state, sort_keys=True, separators=(",", ":")),
+        encoding="utf-8",
+    )
 
 
 def _stack(root: Path) -> dict[str, Any]:
@@ -168,23 +243,50 @@ def build_state(root: Path = ROOT, health_timeout: float = 0.25) -> dict[str, An
     recent_runs = _runs(root)
     work_order = _work_order(root)
     next_actions = []
+    # Runtime actions
     if accelerator["provider"]["health"] != "ok":
-        next_actions.append({"label": "Check local provider", "command": operator_command(accelerator["safe_start_command"]), "safe": True})
+        next_actions.append({"label": "Check local provider", "command": operator_command(accelerator["safe_start_command"]), "safe": True, "category": "Runtime", "glyph": "provider"})
     else:
-        next_actions.append({"label": "Open local chat", "command": operator_command("leafctl chat"), "safe": True})
-    next_actions.append({"label": "Inspect latest run", "command": operator_command("leafctl trace latest"), "safe": True})
+        next_actions.append({"label": "Open local chat", "command": operator_command("leafctl chat"), "safe": True, "category": "Runtime", "glyph": "chat"})
+    next_actions.append({"label": "Run doctor", "command": operator_command("leafctl doctor"), "safe": True, "category": "Runtime", "glyph": "ok"})
+
+    # Work actions
+    next_actions.append({"label": "Inspect latest run", "command": operator_command("leafctl trace latest"), "safe": True, "category": "Work", "glyph": "work"})
     if benchmark["status"] in {"not_run", "blocked_busy", "partial", "failed"}:
         manifest = _quoted_caller_path(root / "config" / "inference-benchmark-matrix.json")
         next_actions.append({
             "label": "Check clean inference benchmark",
             "command": operator_command(f"leafctl realbench matrix --manifest {manifest} --dry-run"),
             "safe": True,
+            "category": "Work",
+            "glyph": "runtime",
         })
-    return {
-        "leafos_object": "home_state", "version": "0.8.0-A",
+    next_actions.append({"label": "Open interactive menu", "command": operator_command("leafctl menu"), "safe": True, "category": "Work", "glyph": "leaf"})
+
+    # FlowerOS layer bridge actions
+    flower_root = root.parents[1] / "FlowerOS"
+    if flower_root.is_dir():
+        next_actions.append({
+            "label": "View FlowerOS state",
+            "command": f"bash '{flower_root / 'bin' / 'flower-state'}' show",
+            "safe": True,
+            "category": "FlowerOS layer",
+            "glyph": "flower-os",
+        })
+        next_actions.append({
+            "label": "View FlowerOS theme",
+            "command": f"bash '{flower_root / 'bin' / 'flower-state'}' theme",
+            "safe": True,
+            "category": "FlowerOS layer",
+            "glyph": "flower-os",
+        })
+
+    state = {
+        "leafos_object": "home_state", "version": "0.8.1-A",
         "generated_at": datetime.now(timezone.utc).isoformat(), "root": str(root),
         "operator": operator["surface"],
         "readiness": {"status": "ok" if not missing else "fail", "missing": missing, "python": sys.version.split()[0]},
+        "installer": {"readiness": _installer_readiness()},
         "provider": accelerator["provider"], "accelerator": accelerator,
         "stack": _stack(root), "runtime": {"defaults": runtime.get("defaults", {}), "mode": runtime.get("defaults", {}).get("mode")},
         "gpu": {"backend": accelerator["backend"], "available": accelerator["gpu_available"], "state": accelerator["state"]},
@@ -194,3 +296,5 @@ def build_state(root: Path = ROOT, health_timeout: float = 0.25) -> dict[str, An
         "task_loop": {"latest_run": recent_runs[0] if recent_runs else None},
         "recent_runs": recent_runs, "next_actions": next_actions,
     }
+    _persist_state(state)
+    return state

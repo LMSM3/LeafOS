@@ -1,0 +1,178 @@
+LeafOS 0.2.3 - secure web-model pipe
+=====================================
+
+OUTCOME
+
+0.2.3 has one new model capability: a minimal web-model data pipe.  It is a
+provider transport, not a scheduler.  The existing LeafOS queue, admission,
+CPU validation, and evidence authorities remain in charge.  Model output is
+always labelled "proposal-only".
+
+The pipe is deliberately disabled in config/web-model.json until an operator
+sets one exact HTTPS endpoint, an allowlist containing that host, one or more
+allowed model names, and an absolute FlowerOS credential-broker command.
+
+INSTALL / LOGIN AUDIT (2026-08-13)
+
+VERIFIED CURRENT
+  - FlowerOS installer login lives in C:\FlowerOS\lib\install-core.sh.
+  - It writes user=<value> and token=<value> to ~/.floweros/auth (mode 600).
+  - It regards a non-empty file as an authenticated session.
+
+CONTRADICTED
+  - The existing file is not a sufficient secure web-model credential source.
+    It has no verified-session marker, expiry, audience, or endpoint binding.
+  - Network failure currently saves the entered token for offline use.  That
+    means possession of the legacy file does not prove remote verification.
+  - The kernel user database is declarations only in the inspected tree; no
+    implementation of flower_user_bloom or password hashing was found.
+
+SECURE 0.2.3 DECISION
+  - LeafOS never reads ~/.floweros/auth.
+  - LeafOS never reads provider API keys from ambient environment variables in
+    the new web lane.
+  - A separately owned FlowerOS broker must attest a verified login and issue a
+    credential valid for at most 300 seconds, for one audience and exact host.
+  - The broker receives scope as JSON on stdin.  No secret appears in argv.
+  - Broker stderr is discarded and its credential is never emitted by LeafOS.
+  - The web call permits HTTPS port 443 only, refuses IP-literal endpoints and
+    redirects, ignores ambient proxy variables, and caps input/output/time.
+
+FILES
+
+  config/web-model.json
+      Global route and limits.  Packs cannot override endpoint or auth.
+
+  bin/leaf-web-model
+  bin/leaf-web-model.ps1
+      Bash and PowerShell entrypoints.  Both exec the same Python authority.
+
+  core/python/leaf_web_model_pipe.py
+      JSONL validation, Flower broker call, bounded HTTPS transport, response.
+
+  schemas/leafos.web-model-request.v1.schema.json
+  schemas/leafos.web-model-response.v1.schema.json
+      Stable pack-facing contract.
+
+PACK CONTRACT
+
+A pack may provide only:
+  - request_id
+  - optional pack_id
+  - messages (system/user/assistant text)
+  - optional allowlisted model
+  - bounded max_tokens and temperature
+
+A pack may not provide an endpoint, header, credential, shell, command, tool,
+or execution request.  That separation is the minimal dual-stack pattern:
+
+  pack -> JSONL -> local model OR secure web pipe -> proposal -> LeafOS gates
+
+FLOWER BROKER CONTRACT
+
+The configured broker is an absolute executable argv array.  It receives one
+JSON object on stdin:
+
+  {"schema":"floweros.credential-request.v1",
+   "audience":"leafos.web-model",
+   "endpoint_host":"models.example.com",
+   "provider":"flower-web"}
+
+It must validate the active Flower login with the Flower-owned authority,
+exchange that session for a short-lived endpoint credential, and return:
+
+  {"schema":"floweros.credential-response.v1",
+   "ok":true,
+   "session_verified":true,
+   "audience":"leafos.web-model",
+   "endpoint_host":"models.example.com",
+   "credential":"SHORT_LIVED_VALUE",
+   "expires_at":"2026-08-13T12:01:00Z"}
+
+Do not implement the broker by printing the legacy ~/.floweros/auth token.
+The credential should be a short-lived exchange result or vault-issued token.
+
+SHELL <-> PYTHON WIRING STUB
+
+This shell file is enough when a Flower login agent already implements the
+JSON contract.  The request and response pass through unchanged:
+
+  #!/usr/bin/env bash
+  set -euo pipefail
+  exec /absolute/path/to/flower-login-agent issue-web-model-credential
+
+Point auth.broker_command at the absolute path of that shell's interpreter and
+the script, for example:
+
+  "broker_command": ["C:/Program Files/Git/bin/bash.exe",
+                     "C:/FlowerOS/bin/flower-web-credential"]
+
+The Python side is already complete.  If the login agent is written in Python,
+its central shape is:
+
+  import json, sys
+  request = json.load(sys.stdin)
+  # Validate the Flower session and exchange it in the Flower-owned service.
+  credential, expires_at = issue_scoped_credential(
+      audience=request["audience"],
+      endpoint_host=request["endpoint_host"],
+  )
+  json.dump({
+      "schema": "floweros.credential-response.v1",
+      "ok": True,
+      "session_verified": True,
+      "audience": request["audience"],
+      "endpoint_host": request["endpoint_host"],
+      "credential": credential,
+      "expires_at": expires_at,
+  }, sys.stdout)
+
+Replace issue_scoped_credential with the Flower login/vault call.  Do not add a
+fallback that accepts an unverified session or long-lived plaintext token.
+
+CONFIGURE
+
+Edit config/web-model.json:
+
+  "enabled": true,
+  "endpoint": "https://models.example.com/v1/chat/completions",
+  "allowed_hosts": ["models.example.com"],
+  "model": "my-model",
+  "allowed_models": ["my-model"],
+  "auth": {
+    "broker_command": ["C:/absolute/path/flower-auth-broker.exe"],
+    "audience": "leafos.web-model",
+    "timeout_seconds": 5,
+    "max_credential_ttl_seconds": 300,
+    "header_name": "Authorization",
+    "scheme": "Bearer"
+  }
+
+CHECK WITHOUT NETWORK OR CREDENTIAL ACCESS
+
+PowerShell:
+
+  pwsh -File .\bin\leaf-web-model.ps1 --doctor
+
+Bash:
+
+  bash bin/leaf-web-model --doctor
+
+SEND ONE REQUEST
+
+PowerShell:
+
+  '{"schema":"leafos.web-model.request.v1","request_id":"demo-1","pack_id":"ficus","messages":[{"role":"user","content":"Propose a safe plan."}]}' |
+    pwsh -File .\bin\leaf-web-model.ps1 --once
+
+Bash:
+
+  printf '%s\n' '{"schema":"leafos.web-model.request.v1","request_id":"demo-1","pack_id":"ficus","messages":[{"role":"user","content":"Propose a safe plan."}]}' |
+    bash bin/leaf-web-model --once
+
+STREAM REQUESTS
+
+Omit --once and keep stdin open.  Send one compact JSON request per line and
+read exactly one compact response per non-empty line.  Diagnostics go to
+stderr; protocol data goes to stdout.  A failed line does not become a shell
+command and does not gain LeafOS execution authority.

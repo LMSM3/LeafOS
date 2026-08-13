@@ -1,8 +1,8 @@
 #Requires -Version 7.0
 $ErrorActionPreference = 'Stop'
 $VaultDir = "$env:USERPROFILE\.cache\huggingface"
-$Exe = 'C:\R\LeafOS0.2.1\ProjectLeaf\install\windows\token_vault.exe'
-$Src = 'C:\R\LeafOS0.2.1\ProjectLeaf\install\windows\token_vault.c'
+$Exe = 'C:\R\LeafOS0.2.3\ProjectLeaf\install\windows\token_vault.exe'
+$Src = 'C:\R\LeafOS0.2.3\ProjectLeaf\install\windows\token_vault.c'
 
 function Build-Vault {
 	New-Item -ItemType Directory -Path $VaultDir -Force | Out-Null

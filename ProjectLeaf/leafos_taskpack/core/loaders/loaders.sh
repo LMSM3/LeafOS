@@ -56,6 +56,11 @@ leaf_loader_run() {
         return 1
     fi
 
+    if ! leaf_motion_enabled; then
+        printf '  %s[READY]%s %s\n' "$C_GREEN_B" "$C_RESET" "$label"
+        return 0
+    fi
+
     local n=${#frames[@]}
     for ((i=0; i<cycles; i++)); do
         printf '\r  %s%s%s  %s%s%s %s' \
@@ -86,13 +91,15 @@ leaf_loader_run_timed() {
     local pid=$!
 
     local i=0
-    while kill -0 "$pid" 2>/dev/null; do
-        printf '\r  %s%s%s  %s%s%s' \
-            "$C_CYAN" "${frames[$((i % n))]}" "$C_RESET" \
-            "$C_DIM" "$label" "$C_RESET"
-        i=$((i+1))
-        sleep "$delay"
-    done
+    if leaf_motion_enabled; then
+        while kill -0 "$pid" 2>/dev/null; do
+            printf '\r  %s%s%s  %s%s%s' \
+                "$C_CYAN" "${frames[$((i % n))]}" "$C_RESET" \
+                "$C_DIM" "$label" "$C_RESET"
+            i=$((i+1))
+            sleep "$delay"
+        done
+    fi
 
     wait "$pid"
     local rc=$?
@@ -112,6 +119,10 @@ leaf_loader_run_timed() {
 leaf_progress_bar() {
     local cur="$1" total="$2" label="${3:-}"
     local width=30
+    if ! leaf_motion_enabled; then
+        printf '  [%3d%%] %s\n' $(( cur * 100 / total )) "$label"
+        return 0
+    fi
     local filled=$(( cur * width / total ))
     local empty=$(( width - filled ))
     local bar_f bar_e
@@ -124,4 +135,3 @@ leaf_progress_bar() {
         $(( cur * 100 / total )) \
         "$label"
 }
-

@@ -4,7 +4,7 @@
   "backend": "vulkan",
   "server": {
     "executable": "C:\\Users\\liamm\\AppData\\Local\\Microsoft\\WinGet\\Packages\\ggml.llamacpp_Microsoft.Winget.Source_8wekyb3d8bbwe\\llama-server.exe",
-    "model": "C:\\R\\LeafOS0.2.1\\ProjectLeaf\\leaf_model_installer\\models\\Gemma4-Coder\\gemma4-coding-Q3_K_M.gguf",
+    "model": "C:\\R\\LeafOS0.2.3\\ProjectLeaf\\leaf_model_installer\\models\\Gemma4-Coder\\gemma4-coding-Q3_K_M.gguf",
     "host": "127.0.0.1",
     "port": 8080,
     "gpu_layers": 999,

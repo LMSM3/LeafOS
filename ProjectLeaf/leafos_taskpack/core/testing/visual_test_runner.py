@@ -92,7 +92,7 @@ def classify_test(test_id: str) -> str:
         return "interface"
     if "telemetry" in value or "hardware" in value:
         return "telemetry"
-    if any(word in value for word in ("board", "catan", "monday_report")):
+    if "monday_report" in value:
         return "game"
     if any(word in value for word in ("runtime", "wakeup")):
         return "runtime"

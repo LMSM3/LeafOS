@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 import json, os, pathlib
 
-base = pathlib.Path(r"C:\R\LeafOS0.2.1\ProjectLeaf\leafos_taskpack\config\experts\yellow")
+base = pathlib.Path(r"C:\R\LeafOS0.2.3\ProjectLeaf\leafos_taskpack\config\experts\yellow")
 base.mkdir(parents=True, exist_ok=True)
 
 repo_qwen = "DavidAU/Qwen3.6-27B-Fable-Fusion-711-Uncensored-Heretic-NM-DAU-NEO-MAX-MTP-GGUF"

@@ -61,9 +61,9 @@ leafctl_ensure_python() {
                      /c/Python313/python.exe \
                      /c/Python312/python.exe \
                      /c/Python311/python.exe \
-                     "$USERPROFILE/AppData/Local/Programs/Python/Python313/python.exe" \
-                     "$USERPROFILE/AppData/Local/Programs/Python/Python312/python.exe" \
-                     "$USERPROFILE/AppData/Local/Programs/Python/Python311/python.exe"; do
+                     "${USERPROFILE:-}/AppData/Local/Programs/Python/Python313/python.exe" \
+                     "${USERPROFILE:-}/AppData/Local/Programs/Python/Python312/python.exe" \
+                     "${USERPROFILE:-}/AppData/Local/Programs/Python/Python311/python.exe"; do
         if [[ -n "$candidate" && -x "$candidate" ]]; then
             echo "$candidate"
             return 0
@@ -91,11 +91,19 @@ case "$cmd" in
     m)   cmd="flower-monitor" ;;
     c)   cmd="chat" ;;
     go)  cmd="live" ;;
+    vtop) cmd="vtop" ;;
+    identity) cmd="pack-identity"; set -- generate "$@" ;;
 esac
 
 leaf_powershell_forward() {
     leaf_detect_pwsh
-    [[ -n "${LEAF_PWSH_CMD:-}" ]] || brand_die "PowerShell 7+ not found"
+    local requested_command="${1:-command}"
+    if ! leaf_pwsh_meets 7.0; then
+        if [[ -n "${LEAF_PWSH_CMD:-}" ]]; then
+            brand_die "PowerShell 7+ is required for '$requested_command'; found ${LEAF_VER_PWSH:-unknown} at ${LEAF_PWSH_CMD}. The PowerShell 5/5.1 fallback is limited to compatible features such as 'indicator'."
+        fi
+        brand_die "PowerShell 7+ is required for '$requested_command'; install PowerShell 7 or repair PATH, then retry."
+    fi
 
     local ps_script="$ROOT_DIR/bin/leafctl.ps1"
     local -a ps_args=("$@")
@@ -157,7 +165,7 @@ usage:
   $PROJECT_CLI memory recover --journal PATH
   $PROJECT_CLI home [--json] [--watch SECONDS]
   $PROJECT_CLI tui [--run RUN] [--native] # seven-page post-inlet operator screen
-  $PROJECT_CLI live [DIR] [--wizard|--new --template catan2] [--objective TEXT] [--mode auto|quiet|full] [--budget MINUTES]
+  $PROJECT_CLI live [DIR] [--wizard|--new --template generic] [--objective TEXT] [--mode auto|quiet|full] [--budget MINUTES]
   $PROJECT_CLI resident start|status|mode|targets|budget|pause|resume|drain|stop [RUN]
   $PROJECT_CLI next [--json]
   $PROJECT_CLI trace [latest|RUN_ID] [--json]
@@ -201,8 +209,6 @@ usage:
   $PROJECT_CLI realbench raw [--target 66]
   $PROJECT_CLI realbench matrix --manifest FILE [--resume] [--dry-run]
   $PROJECT_CLI realbench summary --report FILE [--output-usd-per-million N]
-  $PROJECT_CLI catan2bench --profile 4m|8m|64m [--start-provider] [--provider-mode auto|required|off]
-  $PROJECT_CLI catan2-resident --profile 4m|8m|64m [--provider required|auto|off]
   $PROJECT_CLI telemetry universal-sample RUN_DIR [--run-kind KIND] [--json]
   $PROJECT_CLI telemetry universal-summary RUN_DIR_OR_LOG
   $PROJECT_CLI agent-loop-start --target DIR --work-order FILE --profile local-coding --yes
@@ -225,7 +231,7 @@ usage:
   $PROJECT_CLI transport usb publish ROOT --payload FILE --type TYPE --target-run RUN [--json]
   $PROJECT_CLI passive-report [-RunRoot RUN] [-Open] [-Json]
   $PROJECT_CLI passive-report -StartProject -Project DIR [-BudgetMinutes N] [-Provider off|auto|required]
-  $PROJECT_CLI sandbox-create --target DIR --projects catan2,chess3D --yes
+  $PROJECT_CLI sandbox-create --target DIR --projects chess3D,generic-python-sim --yes
   $PROJECT_CLI sandbox-run RUN_DIR_OR_TARGET
   $PROJECT_CLI continual-live start [--config PATH]
   $PROJECT_CLI continual-live status [--run-dir PATH]
@@ -283,6 +289,10 @@ usage:
   $PROJECT_CLI model info   FILE
   $PROJECT_CLI model pull   NODE FILE [--dest DIR]
   $PROJECT_CLI model serve  [--port N] [--model NAME]
+  $PROJECT_CLI pack create                         # guided flower-pack constructor
+  $PROJECT_CLI pack catalog                        # models, sizes, quants, presets
+  $PROJECT_CLI pack validate PACK.json
+  $PROJECT_CLI indicator status|preview|set|clear|doctor  # PowerShell pack glyph and host diagnosis
   $PROJECT_CLI models-install catalog
   $PROJECT_CLI models-install plan --profile runtime-default
   $PROJECT_CLI models-install resolve PLAN
@@ -511,12 +521,6 @@ HELP
         py="$(command -v python3 || command -v python)"
         [[ -n "$py" ]] || brand_die "python3 not found"
         exec "$py" "$ROOT_DIR/core/python/leaf_resident_supervisor.py" "$@"
-        ;;
-
-    catan2-resident)
-        py="$(command -v python3 || command -v python)"
-        [[ -n "$py" ]] || brand_die "python3 not found"
-        exec "$py" "$ROOT_DIR/core/bench/resident_catan2bench.py" "$@"
         ;;
 
     next)
@@ -1103,6 +1107,11 @@ HELP
         sub="${1:-list}"
         shift || true
         case "$sub" in
+            accept)
+                ccis_cli="$(cd "$ROOT_DIR/../.." && pwd)/ccis/cli.py"
+                [[ -f "$ccis_cli" ]] || brand_die "CCIS CLI not found: $ccis_cli"
+                exec "$LEAFCTL_PYTHON" "$ccis_cli" accept "$@"
+                ;;
             start)  leaf_task_start "$@" ;;
             list)   leaf_task_list "$@" ;;
             logs)   leaf_task_logs "$@" ;;
@@ -1117,6 +1126,12 @@ HELP
             *)      brand_die "unknown task subcommand: $sub" ;;
         esac
         leaf_event task "task $sub"
+        ;;
+
+    ccis)
+        ccis_cli="$(cd "$ROOT_DIR/../.." && pwd)/ccis/cli.py"
+        [[ -f "$ccis_cli" ]] || brand_die "CCIS CLI not found: $ccis_cli"
+        exec "$LEAFCTL_PYTHON" "$ccis_cli" "$@"
         ;;
 
     dashboard)
@@ -1143,12 +1158,6 @@ HELP
         py="$(command -v python3 || command -v python)"
         [[ -n "$py" ]] || brand_die "python3 not found (realbench requires Python 3.8+)"
         "$py" "$ROOT_DIR/core/bench/realbench.py" "$@"
-        ;;
-
-    catan2bench)
-        py="$(command -v python3 || command -v python)"
-        [[ -n "$py" ]] || brand_die "python3 not found (catan2bench requires Python 3.8+)"
-        "$py" "$ROOT_DIR/core/bench/catan2bench.py" "$@"
         ;;
 
     telemetry)
@@ -1244,6 +1253,37 @@ HELP
 
     model)
         exec "$ROOT_DIR/core/ui/chat_json" model "$@"
+        ;;
+
+    pack)
+        [[ -n "${LEAFCTL_PYTHON}" ]] || brand_die "python3 not found"
+        exec "$LEAFCTL_PYTHON" "$ROOT_DIR/core/pack_constructor_cli.py" "$@"
+        ;;
+
+    indicator)
+        leaf_detect_pwsh
+        leaf_pwsh_meets 5.0 || brand_die "PowerShell 5+ not found; install PowerShell or expose powershell.exe/pwsh.exe to this shell"
+        indicator_script="$ROOT_DIR/bin/leaf-indicator.ps1"
+        if [[ "${LEAF_PWSH_KIND:-native}" == windows-interop ]]; then
+            if command -v wslpath &>/dev/null; then
+                indicator_script="$(wslpath -w "$indicator_script")"
+                export LEAF_SHELL_ROUTE=wsl-windows-interop
+                case ":${WSLENV:-}:" in
+                    *:LEAF_SHELL_ROUTE:*) ;;
+                    *) export WSLENV="${WSLENV:+${WSLENV}:}LEAF_SHELL_ROUTE" ;;
+                esac
+            elif command -v cygpath &>/dev/null; then
+                indicator_script="$(cygpath -w "$indicator_script")"
+                export LEAF_SHELL_ROUTE=msys-windows-interop
+            else
+                export LEAF_SHELL_ROUTE=windows-interop
+            fi
+        elif leaf_is_wsl; then
+            export LEAF_SHELL_ROUTE=wsl-native
+        else
+            export LEAF_SHELL_ROUTE=unix-native
+        fi
+        exec "$LEAF_PWSH_CMD" -NoLogo -NoProfile -NonInteractive -File "$indicator_script" "$@"
         ;;
 
     models-install)

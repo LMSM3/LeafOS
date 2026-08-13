@@ -61,7 +61,6 @@
         "target": {"type": "string"},
         "state": {"enum": ["empty", "seed", "documents", "codebase"]},
         "iteration": {"type": "integer", "minimum": 0},
-        "catan2": {"type": "boolean"},
         "last_task_id": {"type": "string"},
         "syntax": {"type": "string"}
       },

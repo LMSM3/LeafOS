@@ -13,13 +13,13 @@ The shortest project route initializes or reattaches the run and opens the activ
 .\bin\leafctl.ps1 live C:\R\MyProject
 ```
 
-The objective is optional. `leafctl live C:\Games\catan2 --new` can begin from a README, skeleton, and JSON seed. See `docs/LIVE_PROJECT_TUI.md`.
+The objective is optional. `leafctl live C:\R\MyNewProject --new` can begin from a README, skeleton, and JSON seed. See `docs/LIVE_PROJECT_TUI.md`.
 
 Start a work-order run:
 
 ```powershell
 .\bin\leafctl.ps1 agent-loop-start `
-  --target C:\R\LeafOS0.2.1\ProjectLeaf\leafos_taskpack `
+  --target C:\R\LeafOS0.2.2\ProjectLeaf\leafos_taskpack `
   --work-order docs\work-orders\WO-031-work-order-loop-v2.md `
   --profile local-coding `
   --yes

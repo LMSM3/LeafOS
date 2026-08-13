@@ -1,6 +1,13 @@
 #!/usr/bin/env bash
 # LeafOS real installation automation for Bash.
 
+# shellcheck source=../ProjectLeaf/leafos_taskpack/core/brand/palette.sh
+_BRAND_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)/ProjectLeaf/leafos_taskpack/core/brand"
+if [[ -f "$_BRAND_DIR/palette.sh" ]]; then source "$_BRAND_DIR/palette.sh"; fi
+unset _BRAND_DIR
+
+
+
 set -euo pipefail
 
 HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -10,7 +17,7 @@ REAL_MODELS="$HERE/real-models.sh"
 RUNTIME_CONFIG="$ROOT_DIR/ProjectLeaf/leafos_taskpack/config/runtime.json"
 PROFILE="runtime-default"
 YES=0
-NO_ANIMATION=0
+NO_ANIMATION="${NO_ANIMATION:-0}"
 SKIP_READINESS=0
 ALLOW_FALLBACK=0
 MAX_WORKERS=8
@@ -51,17 +58,7 @@ log_line() {
 
 animate() {
   local label="$1"
-  if [[ "$NO_ANIMATION" == "1" ]]; then
-    printf '  -> %s\n' "$label"
-    return
-  fi
-  local frames=("🌱" "🌿" "GGUF" "⬇" "✓")
-  local i
-  for i in {0..9}; do
-    printf '\r  \033[36m%s\033[0m %s   ' "${frames[$((i % ${#frames[@]}))]}" "$label"
-    sleep 0.07
-  done
-  printf '\r  \033[32m✓\033[0m %s   \n' "$label"
+  leaf_transition "$label" download 10 "$(leaf_motion_delay 0.07)"
 }
 
 run_step() {
@@ -71,11 +68,11 @@ run_step() {
   log_line "START $name"
   animate "$name"
   if "$@" 2>&1 | tee -a "$LOG"; then
-    printf '\033[32mOK: %s\033[0m\n' "$name"
+    printf '%sOK: %s%s\n' "$C_LEAF" "$name" "$C_RESET"
     log_line "OK $name"
   else
     local code=$?
-    printf '\033[31mFAILED: %s\033[0m\n' "$name"
+    printf '%sFAILED: %s%s\n' "$C_ERROR" "$name" "$C_RESET"
     log_line "FAILED $name code=$code"
     exit "$code"
   fi
@@ -140,20 +137,20 @@ print(f"policy report   : {report_path}")
 PY
 }
 
-printf '\n\033[36m╔══════════════════════════════════════════════════════════════════════╗\033[0m\n'
-printf '\033[32m║                  LeafOS Real Installation                          ║\033[0m\n'
-printf '\033[36m║        resolve • download/resume • verify • report                  ║\033[0m\n'
-printf '\033[36m╚══════════════════════════════════════════════════════════════════════╝\033[0m\n\n'
+printf '\n%s╔══════════════════════════════════════════════════════════════════════╗%s\n' "$C_SKY" "$C_RESET"
+printf '%s║                  LeafOS Real Installation                          ║%s\n' "$C_LEAF" "$C_RESET"
+printf '%s║        resolve • download/resume • verify • report                  ║%s\n' "$C_SKY" "$C_RESET"
+printf '%s╚══════════════════════════════════════════════════════════════════════╝%s\n\n' "$C_SKY" "$C_RESET"
 printf 'root:        %s\n' "$ROOT_DIR"
 printf 'profile:     %s\n' "$PROFILE"
 printf 'reports:     %s\n' "$REPORT_DIR"
 printf 'max workers: %s\n\n' "$MAX_WORKERS"
 
 if [[ "$YES" == "1" ]]; then
-  printf '\033[33mREAL INSTALL ENABLED: this run may download large model weights.\033[0m\n'
+  printf '%sREAL INSTALL ENABLED: this run may download large model weights.%s\n' "$C_BUTTER" "$C_RESET"
 else
-  printf '\033[33mPreview mode: no network resolve and no download will be performed.\033[0m\n'
-  printf '\033[33mTo run the real installation, re-run with --yes.\033[0m\n'
+  printf '%sPreview mode: no network resolve and no download will be performed.%s\n' "$C_BUTTER" "$C_RESET"
+  printf '%sTo run the real installation, re-run with --yes.%s\n' "$C_BUTTER" "$C_RESET"
 fi
 
 run_step "Runtime role policy" write_role_policy_report
@@ -192,9 +189,9 @@ cat > "$MANIFEST" <<EOF
 EOF
 
 if [[ "$YES" == "1" ]]; then
-  printf '\n\033[32mLeafOS real installation automation finished.\033[0m\n'
+  printf '\n%sLeafOS real installation automation finished.%s\n' "$C_LEAF" "$C_RESET"
 else
-  printf '\n\033[32mLeafOS real installation preview finished.\033[0m\n'
+  printf '\n%sLeafOS real installation preview finished.%s\n' "$C_LEAF" "$C_RESET"
   printf 'Run this when ready to download/resume:\n'
   printf '  bash install-real.sh --profile %s --yes\n' "$PROFILE"
 fi

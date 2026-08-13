@@ -73,7 +73,7 @@ The primary ranking measure is validated useful changes per hour. Token rate, fi
 Run this through the canonical Bash CLI before preparing or benchmarking a candidate. It reads policy and candidate state only: it does not download weights, start the provider, execute inference, or alter the incumbent route.
 
 ```powershell
-C:\msys64\usr\bin\bash.exe -lc 'cd /c/R/LeafOS0.2.1/ProjectLeaf/leafos_taskpack && ./bin/leafctl runtime select --json | jq ".selection.medium_moe"'
+C:\msys64\usr\bin\bash.exe -lc 'cd /c/R/LeafOS0.2.2/ProjectLeaf/leafos_taskpack && ./bin/leafctl runtime select --json | jq ".selection.medium_moe"'
 ```
 
 The default output must show `active_route` as `incumbent`, `automatic_promotion` as `false`, and the repository template as unresolved. To inspect a private candidate without modifying the template, set `LEAF_MEDIUM_MOE_CANDIDATE` in the Bash environment before the command. A `resolved` status is declared configuration only; it does not authorize provider activation.

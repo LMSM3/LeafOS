@@ -53,7 +53,7 @@ Provider output is proposal-only. A malformed, empty, truncated, or policy-expan
 :again
 :<plain objective>
 :project PATH
-:new PATH catan2
+:new PATH generic
 :mode auto|quiet|full
 :targets cpu N gpu N
 :budget Nm

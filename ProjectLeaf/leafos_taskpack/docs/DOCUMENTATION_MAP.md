@@ -49,7 +49,6 @@ General live projections follow only after that authority path passes.
 | `CONTINUAL_BLOOM_RUNTIME.md` | Single-persona durable runtime, evidence, cursor, checkpoint, and recovery rules. |
 | `MEDIUM_MOE_MODEL_POLICY.md` | Current local model-selection contract, evidence provenance, SSD truth, and qualification workflow. |
 | `TEST_OBSERVATORY_USAGE.md` | Visual tests and bounded live-stack demonstration. |
-| `CATAN2_BENCHMARK.md` | Gameplay and resident Catan2 benchmark distinction. |
 | `ACTION_RESULTS.md` | Per-action result artifacts used by earlier embedded actions. |
 | `DUAL_THINKING_STREAM.md` | Explicit role-lane artifacts and public reasoning summaries. |
 | `INSTALL.md` | Installation and optional distribution surfaces. |

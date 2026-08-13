@@ -1,6 +1,13 @@
 #!/usr/bin/env bash
 # LeafOS Bash installation/readiness check.
 
+# shellcheck source=../ProjectLeaf/leafos_taskpack/core/brand/palette.sh
+_BRAND_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)/ProjectLeaf/leafos_taskpack/core/brand"
+if [[ -f "$_BRAND_DIR/palette.sh" ]]; then source "$_BRAND_DIR/palette.sh"; fi
+unset _BRAND_DIR
+
+
+
 set -euo pipefail
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
@@ -8,7 +15,7 @@ HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 LEAF="$HERE/leaf.sh"
 MODELS="$HERE/real-models.sh"
 ONESHOT="$HERE/oneshot.sh"
-NO_ANIMATION=0
+NO_ANIMATION="${NO_ANIMATION:-0}"
 SKIP_DOCTOR=0
 SKIP_MODEL_PLAN=0
 SKIP_ONESHOT_PREVIEW=0
@@ -36,27 +43,7 @@ log_line() {
 animate() {
   local label="$1"
   local style="${2:-leaf}"
-  if [[ "$NO_ANIMATION" == "1" ]]; then
-    printf '  -> %s\n' "$label"
-    return
-  fi
-  local frames
-  case "$style" in
-    orbit) frames='◐ ◓ ◑ ◒' ;;
-    bloom) frames='· ✿ ❀ ✽ ❁' ;;
-    comet) frames='⠁ ⠂ ⠄ ⠂' ;;
-    braille) frames='⠋ ⠙ ⠹ ⠸ ⠼ ⠴ ⠦ ⠧ ⠇ ⠏' ;;
-    *) frames='🍃 🌿 ☘ 🌱' ;;
-  esac
-  local frame i
-  # shellcheck disable=SC2086
-  set -- $frames
-  for i in {0..11}; do
-    eval "frame=\${$((i % $# + 1))}"
-    printf '\r  \033[36m%s\033[0m %s   ' "$frame" "$label"
-    sleep 0.06
-  done
-  printf '\r  \033[32m✓\033[0m %s   \n' "$label"
+  leaf_transition "$label" "$style" 12 "$(leaf_motion_delay 0.06)"
 }
 
 run_step() {
@@ -68,24 +55,24 @@ run_step() {
   log_line "START $name"
   animate "$name" "$style"
   if "$@" 2>&1 | tee -a "$LOG"; then
-    printf '\033[32mOK: %s\033[0m\n' "$name"
+    printf '%sOK: %s%s\n' "$C_LEAF" "$name" "$C_RESET"
     log_line "OK $name"
   else
     local code=$?
-    printf '\033[31mFAILED: %s\033[0m\n' "$name"
+    printf '%sFAILED: %s%s\n' "$C_ERROR" "$name" "$C_RESET"
     log_line "FAILED $name code=$code"
     [[ "$optional" == "1" ]] || exit "$code"
   fi
 }
 
-printf '\n\033[36m╔══════════════════════════════════════════════════════════════════════╗\033[0m\n'
-printf '\033[32m║                       LeafOS Bash Installer                         ║\033[0m\n'
-printf '\033[36m║          real models first • offline plan • safe defaults           ║\033[0m\n'
-printf '\033[36m╚══════════════════════════════════════════════════════════════════════╝\033[0m\n\n'
+printf '\n%s╔══════════════════════════════════════════════════════════════════════╗%s\n' "$C_SKY" "$C_RESET"
+printf '%s║                       LeafOS Bash Installer                         ║%s\n' "$C_LEAF" "$C_RESET"
+printf '%s║          real models first • offline plan • safe defaults           ║%s\n' "$C_SKY" "$C_RESET"
+printf '%s╚══════════════════════════════════════════════════════════════════════╝%s\n\n' "$C_SKY" "$C_RESET"
 printf 'root:    %s\n' "$ROOT_DIR"
 printf 'command: %s\n' "$LEAF"
 printf 'reports: %s\n\n' "$REPORT_DIR"
-printf '\033[33mSafety: checks local model files and writes plans, but does not resolve or download weights.\033[0m\n'
+printf '%sSafety: checks local model files and writes plans, but does not resolve or download weights.%s\n' "$C_BUTTER" "$C_RESET"
 
 run_step "Bash version check" orbit 0 bash -c '[[ "${BASH_VERSINFO[0]:-0}" -ge 4 ]]'
 
@@ -117,7 +104,7 @@ cat > "$MANIFEST" <<EOF
 }
 EOF
 
-printf '\n\033[32mLeafOS Bash install automation complete.\033[0m\n'
+printf '\n%sLeafOS Bash install automation complete.%s\n' "$C_LEAF" "$C_RESET"
 printf 'manifest: %s\n' "$MANIFEST"
 printf 'log:      %s\n\n' "$LOG"
 printf 'Next commands:\n'

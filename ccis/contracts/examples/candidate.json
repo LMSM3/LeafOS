@@ -1,0 +1,29 @@
+{
+  "ccis_object": "ccis.candidate",
+  "schema_version": 1,
+  "candidate_id": "candidate_contracts_r0",
+  "task_id": "task_ccis_contracts",
+  "parent_candidate_id": null,
+  "revision": 0,
+  "created_at": "2026-08-03T08:05:00Z",
+  "created_by": "leafos.ccis.candidate_builder",
+  "base_revision": "adbc26665246",
+  "workspace_mode": "isolated",
+  "working_tree_applied": false,
+  "status": "READY",
+  "declared_invariants": ["No automatic working-tree merge."],
+  "changes": [
+    {
+      "path": "ccis/contracts/task-envelope.schema.json",
+      "operation": "add",
+      "previous_path": null,
+      "before_sha256": null,
+      "after_sha256": "sha256:1111111111111111111111111111111111111111111111111111111111111111"
+    }
+  ],
+  "artifact": {
+    "path": ".leafos/ccis/runs/task_ccis_contracts/candidates/candidate_contracts_r0.patch",
+    "sha256": "sha256:2222222222222222222222222222222222222222222222222222222222222222",
+    "media_type": "text/x-diff"
+  }
+}

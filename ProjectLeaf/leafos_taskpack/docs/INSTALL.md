@@ -118,7 +118,7 @@ download or resolve models, start a provider, modify runtime routes, edit a
 shell profile, or alter `PATH`.
 
 ```powershell
-cd C:\R\LeafOS0.2.1
+cd C:\R\LeafOS0.2.3
 
 # Review the exact destination and safety boundary; makes no changes.
 pwsh -NoProfile -File .\PowerShell-Version\install-leafos.ps1 -Action plan

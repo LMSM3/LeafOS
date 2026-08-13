@@ -31,12 +31,20 @@ PACK_ROOT_CANDIDATES = [
     Path(r'C:\flower-pack-1.2.0'),
 ]
 
-DEFAULT_MODEL_ROOT = Path(r'C:\R\LeafOS0.2.1\models')
+DEFAULT_MODEL_ROOT = Path(r'C:\R\LeafOS0.2.3\models')
 DEFAULT_HF_ENDPOINT = 'https://huggingface.co'
 
 
 def print_color(text: str, color: int = 195) -> None:
-    print(f'\033[38;5;{color}m{text}\033[0m')
+    # Map xterm-256 approximations to the FlowerOS pastel/green true-color palette.
+    palette = {
+        195: "\033[38;2;183;240;199m",  # mint / info
+        217: "\033[38;2;255;183;197m",  # bloom / header
+        210: "\033[38;2;255;154;162m",  # error
+        221: "\033[38;2;255;250;181m",  # butter / warning
+    }
+    code = palette.get(color, f"\033[38;5;{color}m")
+    print(f'{code}{text}\033[0m')
 
 
 def find_pack_root() -> Path:

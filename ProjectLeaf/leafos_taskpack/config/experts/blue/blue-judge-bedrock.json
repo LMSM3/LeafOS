@@ -22,7 +22,7 @@
   "notes": "Installed member of the Blue (Banyan Council) stack from flower-pack-1.2.0.",
   "install_state": {
     "status": "installed",
-    "local_path": "C:\\R\\LeafOS0.2.1\\models\\packs\\pack-1\\blue-judge-bedrock\\qwen36-fable-fusion-711-davidau-Q8_0_MTP.gguf",
+    "local_path": "C:\\R\\LeafOS0.2.3\\models\\packs\\pack-1\\blue-judge-bedrock\\qwen36-fable-fusion-711-davidau-Q8_0_MTP.gguf",
     "blob_sha256": null,
     "verified": true,
     "download_attempts": 1

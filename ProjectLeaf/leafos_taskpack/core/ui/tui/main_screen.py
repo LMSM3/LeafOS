@@ -5,8 +5,14 @@ from __future__ import annotations
 
 import textwrap
 import sys
+import os
 from pathlib import Path
 from typing import Any, Callable
+
+BRAND_DIR = os.path.dirname(__file__).replace("/ui/tui", "/brand").replace("\\ui\\tui", "\\brand")
+if BRAND_DIR not in sys.path:
+    sys.path.insert(0, BRAND_DIR)
+from flower_palette import color_enabled, paint  # noqa: E402
 
 TUI_DIR = Path(__file__).resolve().parent
 if str(TUI_DIR) not in sys.path:
@@ -26,6 +32,21 @@ def _section(title: str, width: int) -> list[str]:
     return [title.upper(), "-" * min(width, max(8, len(title)))]
 
 
+def _garden_banner(width: int) -> list[str]:
+    """Pastel garden status banner for the top of full-screen mode."""
+    if not color_enabled():
+        return []
+    # Use ASCII fallbacks when color is forced off.
+    line = "-" * min(width, 60)
+    return [
+        "",
+        paint(line, "leaf"),
+        paint("  LeafOS TUI  ", "mint", "semibold") + paint("|", "leaf") + paint(" FlowerOS root layer  ", "blossom") + paint("|", "leaf") + paint(" Tab/1-7 navigate | ? help", "sky"),
+        paint(line, "leaf"),
+        "",
+    ]
+
+
 def _wrap(value: Any, width: int, indent: str = "") -> list[str]:
     return textwrap.wrap(str(value or ""), width=max(12, width), subsequent_indent=indent) or [""]
 
@@ -38,7 +59,7 @@ def render_overview(snapshot: dict[str, Any], width: int, height: int) -> list[s
     lines = _section("Active work", width)
     project = snapshot.get("project", {})
     if project:
-        label = "CATAN2" if project.get("catan2") else Path(str(project.get("target", "project"))).name
+        label = Path(str(project.get("target", "project"))).name
         lines.append(f"PROJECT {label} | {project.get('state', 'codebase')} | iteration {project.get('iteration', 0)}")
     active = _active_or_last(snapshot)
     if active:
@@ -202,7 +223,7 @@ def render_compact(snapshot: dict[str, Any], width: int, height: int) -> list[st
         _clip(f"Resident {resident.get('profile', 'offline')} | {resident.get('reason', 'not_started')}", width),
         _clip(f"Queue {snapshot['queue']['waiting']} | Failed {snapshot['queue']['blocked']} | checkpoint {snapshot['run']['checkpoint_age']}", width),
         "",
-        "n new/open | Tab next | ? help | q quit",
+        paint("n new/open", "lavender") + " | " + paint("Tab next", "sky") + " | " + paint("? help", "butter") + " | " + paint("q quit", "peach"),
     ]
     return lines[:height]
 
@@ -213,8 +234,9 @@ def render(snapshot: dict[str, Any], page_index: int, width: int, height: int, *
     if width < 80 or height < 24:
         lines = render_compact(snapshot, width, height)
     else:
-        lines = header.render(snapshot, page_index, width)
-        lines += ["=" * width]
+        lines = _garden_banner(width)
+        lines += header.render(snapshot, page_index, width)
+        lines += [paint("=" * width, "forest")]
         body_height = max(4, height - len(lines) - 2)
         lines += RENDERERS[page_index](snapshot, width, body_height)[:body_height]
         footer = message or (

@@ -26,21 +26,33 @@ _leaf_glyph_ascii_mode() {
 # Severity -> ANSI color. Empty when color is disabled or stdout is not a tty.
 _leaf_color() {
 	local sev="$1"
-	if [[ "${NO_COLOR:-0}" == "1" || ! -t 1 ]]; then
+	local off=0
+	if [[ "${NO_COLOR:-0}" == "1" ]]; then
+		off=1
+	elif [[ "${LEAF_COLOR:-${FORCE_COLOR:-0}}" != "1" && ! -t 1 ]]; then
+		off=1
+	fi
+	if (( off )); then
 		printf ''
 		return
 	fi
 	case "$sev" in
-		error) printf '\033[31m' ;;
-		warn)  printf '\033[33m' ;;
-		ok)    printf '\033[32m' ;;
-		info)  printf '\033[36m' ;;
+		error) printf '%s' "$C_ERROR" ;;
+		warn)  printf '%s' "$C_BUTTER" ;;
+		ok)    printf '%s' "$C_LEAF" ;;
+		info)  printf '%s' "$C_SKY" ;;
 		*)     printf '' ;;
 	esac
 }
 _leaf_reset() {
-	[[ "${NO_COLOR:-0}" == "1" || ! -t 1 ]] && return
-	printf '\033[0m'
+	local off=0
+	if [[ "${NO_COLOR:-0}" == "1" ]]; then
+		off=1
+	elif [[ "${LEAF_COLOR:-${FORCE_COLOR:-0}}" != "1" && ! -t 1 ]]; then
+		off=1
+	fi
+	(( off )) && return
+	printf '%s' "$C_RESET"
 }
 
 # Convert one or more hex codepoints to UTF-8 bytes. Pure-bash encoder using

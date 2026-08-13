@@ -146,6 +146,7 @@ leaf_provider_call() {
 		anthropic) _leaf_adapter_anthropic "$task_file" "$raw_file" ;;
 		deepseek)  _leaf_adapter_deepseek  "$task_file" "$raw_file" ;;
 		zai|glm)   _leaf_adapter_zai       "$task_file" "$raw_file" ;;
+		web)       _leaf_adapter_web       "$task_file" "$raw_file" ;;
 		llamacpp)  _leaf_adapter_llamacpp  "$task_file" "$raw_file" ;;
 		*)
 			_leaf_contract_fail "$provider" "contract_error" "0"
@@ -200,6 +201,15 @@ leaf_provider_status() {
 			_leaf_provider_key_check "$LEAF_ZAI_KEY_VAR"
 			printf '  %s model: %s\n' "$(leaf_glyph leaf.model.primary)" "$LEAF_ZAI_MODEL"
 			printf '  %s lane: planner/reviewer advisory; CPU/local coder remains authority\n' "$(leaf_glyph leaf.lane)"
+			;;
+		web)
+			local web_bin="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)/bin/leaf-web-model"
+			if "$web_bin" --doctor --config "$LEAF_WEB_MODEL_CONFIG" 2>/dev/null \
+				| python3 -c 'import json,sys; raise SystemExit(0 if json.load(sys.stdin).get("status") == "ready" else 1)'; then
+				printf '  %s secure web pipe configured (proposal-only)\n' "$(leaf_glyph leaf.pass)"
+			else
+				printf '  %s secure web pipe disabled or awaiting FlowerOS broker\n' "$(leaf_glyph leaf.warn)"
+			fi
 			;;
 		llamacpp)
 			printf '  %s endpoint: %s\n' "$(leaf_glyph leaf.lane)" "$LEAF_LLAMACPP_URL"
@@ -521,6 +531,55 @@ except Exception:
 	mv "$tmp" "$out_file"
 	local bytes; bytes="$(wc -c < "$out_file")"
 	_leaf_contract_ok "zai" "$LEAF_ZAI_MODEL" "$out_file" "$bytes" "$elapsed"
+}
+
+_leaf_adapter_web() {
+	local task_file="$1" out_file="$2"
+	local t0; t0="$(_leaf_ms_now)"
+	local taskpack_root; taskpack_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
+	local web_bin="$taskpack_root/bin/leaf-web-model"
+	local request_file response_file tmp
+	request_file="$(mktemp /tmp/leaf_web_request_XXXXXX)"
+	response_file="$(mktemp /tmp/leaf_web_response_XXXXXX)"
+	tmp="${out_file}.tmp.$$"
+
+	if ! _leaf_build_prompt "$task_file" | python3 -c '
+import json, sys, uuid
+print(json.dumps({
+    "schema": "leafos.web-model.request.v1",
+    "request_id": "provider-" + uuid.uuid4().hex,
+    "messages": [{"role": "user", "content": sys.stdin.read()}],
+}, separators=(",", ":")))
+' >"$request_file"; then
+		rm -f "$request_file" "$response_file" "$tmp"
+		_leaf_contract_fail "web" "contract_error" "$(( $(_leaf_ms_now)-t0 ))"
+		return $_EXIT_CONTRACT
+	fi
+
+	if ! "$web_bin" --once --config "$LEAF_WEB_MODEL_CONFIG" <"$request_file" >"$response_file"; then
+		rm -f "$request_file" "$response_file" "$tmp"
+		_leaf_contract_fail "web" "refused" "$(( $(_leaf_ms_now)-t0 ))"
+		return $_EXIT_PROVIDER
+	fi
+	if ! python3 - "$response_file" "$tmp" <<'PY'
+import json, pathlib, sys
+value = json.loads(pathlib.Path(sys.argv[1]).read_text(encoding="utf-8"))
+if value.get("ok") is not True or value.get("authority") != "proposal-only":
+    raise SystemExit(1)
+content = value.get("content")
+if not isinstance(content, str) or not content:
+    raise SystemExit(1)
+pathlib.Path(sys.argv[2]).write_text(content, encoding="utf-8", newline="")
+PY
+	then
+		rm -f "$request_file" "$response_file" "$tmp"
+		_leaf_contract_fail "web" "bad_json" "$(( $(_leaf_ms_now)-t0 ))"
+		return $_EXIT_PROVIDER
+	fi
+	rm -f "$request_file" "$response_file"
+	mv "$tmp" "$out_file"
+	local bytes; bytes="$(wc -c < "$out_file")"
+	_leaf_contract_ok "web" "configured-web-model" "$out_file" "$bytes" "$(( $(_leaf_ms_now)-t0 ))"
 }
 
 _leaf_adapter_llamacpp() {

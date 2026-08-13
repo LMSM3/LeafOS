@@ -15,13 +15,13 @@ class VisualTestRunnerTests(unittest.TestCase):
         discovered = visual.discover_test_ids()
         self.assertGreaterEqual(sum(map(len, discovered.values())), 124)
         self.assertIn("tests.test_visual_test_runner", discovered)
-        self.assertEqual(12, len(discovered["tests.test_agent_loop"]))
+        self.assertEqual(10, len(discovered["tests.test_agent_loop"]))
 
     def test_domains_distinguish_stack_from_animation_surfaces(self) -> None:
         self.assertEqual("stack", visual.classify_test("tests.test_chat_provider.test_llamacpp"))
         self.assertEqual("memory", visual.classify_test("tests.test_memory_pipeline.test_replay"))
         self.assertEqual("interface", visual.classify_test("tests.test_tui_native.test_render"))
-        self.assertEqual("game", visual.classify_test("tests.test_board_spatial.test_tiles"))
+        self.assertEqual("game", visual.classify_test("tests.test_monday_report.test_tiles"))
 
     def test_private_reasoning_is_counted_but_not_rendered(self) -> None:
         visible, hidden = visual.strip_private_reasoning(
@@ -43,7 +43,7 @@ class VisualTestRunnerTests(unittest.TestCase):
     def test_plain_renderer_emits_start_progress_and_result(self) -> None:
         stream = io.StringIO()
         renderer = visual.VisualRenderer(1, animation=True, plain=True, stream=stream)
-        test_id = "tests.test_board_spatial.BoardSpatialTests.test_standard_catan_topology_counts"
+        test_id = "tests.test_monday_report.MondayReportTests.test_heatmap_has_16_channels_and_slices"
         renderer.start_test(test_id)
         renderer.finish_test({"test_id": test_id, "outcome": "passed", "duration_seconds": 0.01})
         output = stream.getvalue()

@@ -24,6 +24,109 @@ the repository root:
 
 All other arguments are delegated unchanged to the existing matching surface.
 
+## README and version program
+
+The adjacent `program` shell provides a small interactive menu when run without
+arguments. It discovers the active LeafOS repository root, so it behaves consistently even
+when launched through either shell wrapper.
+
+### Interactive menu
+
+Run `.\program.ps1` in PowerShell or `bash program.sh` in Bash. The menu offers:
+
+1. **Update README** — add or refresh the managed local image reference.
+2. **Change version** — preview and synchronize the version authorities.
+3. **Verify asset and README** — check the permanent asset and selected link.
+4. **Preview README update** — report whether a write would change the target.
+5. **List README files** — show practical targets while hiding generated trees.
+6. **Split Markdown [developer]** — split on long underscore or dash chains.
+7. **Exit** — leave without changing anything.
+
+The menu asks before every write. Direct commands are faster for repeat work:
+
+| Goal | PowerShell | Bash |
+|---|---|---|
+| Open the menu | `.\program.ps1` | `bash program.sh` |
+| Verify the permanent image and root README | `.\program.ps1 status` | `bash program.sh status` |
+| Verify another README | `.\program.ps1 status docs\README.md` | `bash program.sh status docs/README.md` |
+| Preview a README update | `.\program.ps1 readme path\README.md --check` | `bash program.sh readme path/README.md --check` |
+| Apply a README update | `.\program.ps1 readme path\README.md --yes` | `bash program.sh readme path/README.md --yes` |
+| Preview a version change | `.\program.ps1 version 0.2.3 --check` | `bash program.sh version 0.2.3 --check` |
+| Apply a version change | `.\program.ps1 version 0.2.3 --yes` | `bash program.sh version 0.2.3 --yes` |
+| Find README targets | `.\program.ps1 list` | `bash program.sh list` |
+| Include archived targets | `.\program.ps1 list --all` | `bash program.sh list --all` |
+
+`readme`, `version`, `verify`, and `list` are concise aliases for
+`update-readme`, `change-version`, `status`, and `list-readmes`.
+
+### Import and brand a README
+
+Use `--source` when the new README text lives elsewhere. Preview first, then
+repeat with `--yes` to apply it:
+
+```powershell
+.\program.ps1 readme README.md `
+  --source "C:\Users\me\Downloads\new-readme.md" `
+  --check
+
+.\program.ps1 readme README.md `
+  --source "C:\Users\me\Downloads\new-readme.md" `
+  --yes
+```
+
+```bash
+bash program.sh readme README.md \
+  --source "$HOME/Downloads/new-readme.md" \
+  --check
+
+bash program.sh readme README.md \
+  --source "$HOME/Downloads/new-readme.md" \
+  --yes
+```
+
+The source may be outside LeafOS, but the target must remain below the LeafOS
+root. For a nested README, `program` computes the correct relative asset path.
+The managed block is inserted immediately after the title's badge group and is
+replaced in place on later runs, so the operation is idempotent.
+
+### Change the LeafOS version
+
+Versions must use numeric semantic form such as `0.2.3`. A version write keeps
+these authorities aligned:
+
+- `VERSION` at the LeafOS root;
+- `ProjectLeaf/leafos_taskpack/VERSION`;
+- the `version` field in `leafos.root.json`;
+- snapshot badges and snapshot wording in each selected README.
+
+Use `--readme` more than once to update additional README files:
+
+```powershell
+.\program.ps1 version 0.2.3 `
+  --readme README.md `
+  --readme ProjectLeaf\leafos_taskpack\README.md `
+  --check
+```
+
+Remove `--check` and add `--yes` only after the preview is correct.
+
+### Permanent asset guarantee
+
+The README image is stored under `assets/brand/immutable/` with a
+content-addressed filename. Before any README write, `program` verifies its
+SHA-256 digest and byte length against `manifest.json`. It refuses the write if
+the file is missing or has changed. To replace the visual deliberately, add a
+new content-addressed file and update the manifest; never overwrite the current
+file in place.
+
+### Automation and exit behavior
+
+Add `--json` to `status`, `readme`, `version`, or `list` for machine-readable
+output. Non-interactive writes require `--yes`; without it, `program` refuses
+to guess. Exit status `0` means success, `1` means a write was declined, `2`
+means validation or input failed, and `127` means a wrapper could not find
+Python 3.
+
 ## Quick syntax
 
 After a user-space install, use `leafos` from any directory. From the source
@@ -55,7 +158,7 @@ Use `leafos help` for the complete command surface. The `q`, `h`, `s`, `d`,
 PowerShell:
 
 ```powershell
-cd C:\R\LeafOS0.2.1\PowerShell-Version
+cd C:\path\to\LeafOS\PowerShell-Version
 pwsh -File .\install.ps1
 ..\leafos.ps1 q
 ..\leafos.ps1 s
@@ -223,7 +326,7 @@ clean handoff folder.
 PowerShell:
 
 ```powershell
-cd C:\R\LeafOS0.2.1\PowerShell-Version
+cd C:\path\to\LeafOS\PowerShell-Version
 .\oneshot.ps1 --oneshot .. C:\R\LeafOS-OneShot
 ```
 
@@ -349,3 +452,47 @@ bash leaf.sh download doctor
 - `ProjectLeaf/leafos_taskpack/docs/USER_GUIDE.md`: deeper taskpack features.
 - `ProjectLeaf/leafos_taskpack/docs/MODEL_INSTALLATION.md`: model installer contract.
 - `ProjectLeaf/leaf_model_installer/README.md`: canonical model acquisition package.
+
+## Developers only
+
+### Split Markdown at long divider chains
+
+`program split-markdown` treats a standalone chain of 12 or more matching
+underscores or hyphens as a section boundary. Spaces between marks are allowed,
+so both forms below are boundaries:
+
+```text
+____________
+- - - - - - - - - - - -
+```
+
+Preview a split without creating files:
+
+```powershell
+.\program.ps1 split-markdown docs\large-reference.md --check
+```
+
+```bash
+bash program.sh split-markdown docs/large-reference.md --check
+```
+
+Apply it after inspecting the reported part names:
+
+```powershell
+.\program.ps1 split docs\large-reference.md --yes
+```
+
+```bash
+bash program.sh split docs/large-reference.md --yes
+```
+
+By default, `large-reference.md` produces a managed sibling directory named
+`large-reference.parts/`. Each part receives a numbered filename derived from
+its first heading. Use `--output path/to/directory` to select another directory
+under the LeafOS root, and add `--json` for machine-readable output.
+
+The original Markdown file is never changed. Divider-looking lines inside
+fenced code blocks are preserved rather than treated as boundaries. Empty
+sections are omitted. The output directory contains
+`.leafos-program-split.json`, which lets later runs update only files created by
+this feature and refuse unrelated directories.

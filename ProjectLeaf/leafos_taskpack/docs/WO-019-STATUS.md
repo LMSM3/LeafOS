@@ -69,7 +69,7 @@ The reflection and checkpoint routes now have consuming code paths; operators ca
 - `config/runtime-profiles.json` (new)
 - `config/continual-live.json`
 - `core/runtime/continual_live.py`
-- `Bash-Version/chat-local.sh` (repo root: `LeafOS0.2.1/Bash-Version/chat-local.sh`)
+- `Bash-Version/chat-local.sh` (repo root: `LeafOS0.2.2/Bash-Version/chat-local.sh`)
 - `core/providers/providers.sh`
 - `core/providers/_providers_new.sh`
 - `schemas/leafos.reasoning-artifact.v1.schema.json` (new)

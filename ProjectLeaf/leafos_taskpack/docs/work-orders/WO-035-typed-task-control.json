@@ -1,7 +1,7 @@
 {
   "work_order_id": "WO-035",
   "title": "Typed task control",
-  "target": "C:\\R\\LeafOS0.2.1\\ProjectLeaf\\leafos_taskpack",
+  "target": "C:\\R\\LeafOS0.2.2\\ProjectLeaf\\leafos_taskpack",
   "objective": "Add schema-constrained dynamic task admission and authoritative priority, retry, approval, cancellation, process interruption, and native control journaling.",
   "scope": ["core/python", "core/ui/tui", "core/tui", "schemas", "config", "tests", "docs", "reports"],
   "constraints": [

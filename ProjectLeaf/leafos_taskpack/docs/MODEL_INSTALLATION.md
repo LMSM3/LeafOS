@@ -101,7 +101,7 @@ Install via the flower-pack CLI (Windows PowerShell):
 
 ```powershell
 cd C:\flower-pack-1.2.0\flower-pack-1.2.0
-$env:FLOWER_MODEL_ROOT = 'C:\R\LeafOS0.2.1\models'
+$env:FLOWER_MODEL_ROOT = 'C:\R\LeafOS0.2.2\models'
 pwsh -NoProfile -ExecutionPolicy Bypass -File .\flower-pack.ps1 install 1 --yes
 ```
 
@@ -112,7 +112,7 @@ pwsh -NoProfile -ExecutionPolicy Bypass -File .\flower-pack.ps1 verify 1
 ```
 
 After the download finishes, the artifacts are placed under
-`C:\R\LeafOS0.2.1\models\packs\pack-1\<entry_id>\`.
+`C:\R\LeafOS0.2.2\models\packs\pack-1\<entry_id>\`.
 
 ### Windows bootstrap
 

@@ -667,10 +667,18 @@ def run_chat(args: argparse.Namespace) -> None:
                 if cmd in ("exit", "quit", "q"):
                     break
                 elif cmd == "help":
-                    print(
-                        "  /help  /theme NAME  /model NAME  /save  /clear  /reset  /exit\n"
-                        "  /tokens  /system PROMPT  /temp N  /ctx N  /nodes  /submit NODE"
-                    )
+                    print(paint("  Chat commands", "mint", "semibold"))
+                    print(paint("    /help               this summary", "leaf"))
+                    print(paint("    /theme NAME         set terminal theme", "sky"))
+                    print(paint("    /model NAME         load a model", "sky"))
+                    print(paint("    /save               export session markdown", "lavender"))
+                    print(paint("    /clear  /reset      redraw or clear history", "butter"))
+                    print(paint("    /tokens             token and throughput stats", "fern"))
+                    print(paint("    /system PROMPT      set system prompt", "peach"))
+                    print(paint("    /temp N  /ctx N     sampling and context", "peach"))
+                    print(paint("    /nodes              list remote nodes", "fern"))
+                    print(paint("    /stack              open the agentic stack inlet (visual demo)", "blossom"))
+                    print(paint("    /exit  /quit        leave chat", "error"))
                 elif cmd == "theme":
                     if rest:
                         theme_name = rest.strip()
@@ -702,6 +710,12 @@ def run_chat(args: argparse.Namespace) -> None:
                         ctx = int(rest)
                     except (ValueError, TypeError):
                         pass
+                elif cmd == "stack":
+                    print(paint("  Agentic Stack inlet (visual demo)", "mint", "semibold"))
+                    print(paint("    [input]  user idea -> flag as user-input", "sky"))
+                    print(paint("    [brain]  accept -> create one or more plans", "leaf"))
+                    print(paint("    [output] push generated plans back to stack", "blossom"))
+                    print(paint("    This is the primary inlet for continual stack item assignments.", "dim"))
                 elif cmd == "nodes":
                     nodes_path = os.path.join(home, "nodes.json")
                     if os.path.isfile(nodes_path):

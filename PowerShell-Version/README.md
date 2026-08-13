@@ -9,7 +9,7 @@ automatically relaunches under an installed `pwsh` executable.
 ## Install / check readiness
 
 ```powershell
-cd C:\R\LeafOS0.2.1\PowerShell-Version
+cd C:\R\LeafOS0.2.2\PowerShell-Version
 pwsh -File .\install.ps1
 ```
 

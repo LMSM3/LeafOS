@@ -238,14 +238,13 @@ class MondayDurableBridge:
                     len(events),
                     {"text": f"[{event_kind}] {capability} by {actor}: {reason}".strip()},
                 )
-                events.append(input_event)
                 _bloom.commit_event(
                     self.instance,
                     events,
                     persona,
                     event_kind,
                     actor,
-                    len(events),
+                    input_event["seq"],
                     {
                         "capability": capability,
                         "actor": actor,

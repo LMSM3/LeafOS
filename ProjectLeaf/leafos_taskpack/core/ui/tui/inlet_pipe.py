@@ -437,7 +437,6 @@ def build_snapshot(run_value: str = "active", *, after: int = 0, event_limit: in
             "target": str(run.get("target", "")),
             "state": str(run.get("live_project", {}).get("state", "codebase")),
             "iteration": int(run.get("live_project", {}).get("iteration", 0)),
-            "catan2": bool(run.get("live_project", {}).get("catan2", False)),
             "last_task_id": str(run.get("live_project", {}).get("last_task_id", "")),
             "syntax": str(run.get("live_project", {}).get("syntax", ":improve | :again | :<objective>")),
         },

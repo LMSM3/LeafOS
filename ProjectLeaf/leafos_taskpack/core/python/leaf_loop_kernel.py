@@ -49,6 +49,27 @@ except Exception:  # pragma: no cover - optional during migrations
     AuthorityError = RuntimeError  # type: ignore
 
 
+# Track locks already held by the current thread so that nested lock
+# acquisition on the same run directory (e.g. queue_write_lock + append_event)
+# does not deadlock on Windows/msvcrt.locking, which is not re-entrant.
+_LOCK_LOCALS = threading.local()
+
+# Per-path in-process threading lock.  msvcrt.locking can report EDEADLK when
+# multiple threads in the same process contend for the same file lock region,
+# so we serialize those threads in-process before touching the OS lock.
+_IN_PROCESS_LOCKS: Dict[Path, threading.Lock] = {}
+_IN_PROCESS_LOCKS_GUARD = threading.Lock()
+
+
+def _thread_lock_for(path: Path) -> threading.Lock:
+    with _IN_PROCESS_LOCKS_GUARD:
+        lock = _IN_PROCESS_LOCKS.get(path)
+        if lock is None:
+            lock = threading.Lock()
+            _IN_PROCESS_LOCKS[path] = lock
+        return lock
+
+
 KERNEL_OBJECT = "leafos.loop_kernel.v1"
 
 
@@ -65,29 +86,52 @@ def _slug(value: str) -> str:
 @contextlib.contextmanager
 def _file_lock(lock_path: Path) -> Iterator[None]:
     lock_path.parent.mkdir(parents=True, exist_ok=True)
-    with lock_path.open("a+b") as handle:
-        handle.seek(0, os.SEEK_END)
-        if handle.tell() == 0:
-            handle.write(b"0")
-            handle.flush()
-        handle.seek(0)
-        if os.name == "nt":
-            import msvcrt
+    held = getattr(_LOCK_LOCALS, "locks", None) or {}
+    if held.get(lock_path, 0) > 0:
+        # Same thread already holds this lock; do not re-acquire.
+        held[lock_path] += 1
+        try:
+            yield
+        finally:
+            held[lock_path] -= 1
+        return
 
-            msvcrt.locking(handle.fileno(), msvcrt.LK_LOCK, 1)
-            try:
-                yield
-            finally:
-                handle.seek(0)
-                msvcrt.locking(handle.fileno(), msvcrt.LK_UNLCK, 1)
-        else:
-            import fcntl
+    with _thread_lock_for(lock_path):
+        with lock_path.open("a+b") as handle:
+            handle.seek(0, os.SEEK_END)
+            if handle.tell() == 0:
+                handle.write(b"0")
+                handle.flush()
+            handle.seek(0)
+            if os.name == "nt":
+                import msvcrt
 
-            fcntl.flock(handle.fileno(), fcntl.LOCK_EX)
-            try:
-                yield
-            finally:
-                fcntl.flock(handle.fileno(), fcntl.LOCK_UN)
+                msvcrt.locking(handle.fileno(), msvcrt.LK_LOCK, 1)
+                held[lock_path] = 1
+                _LOCK_LOCALS.locks = held
+                try:
+                    yield
+                finally:
+                    held[lock_path] -= 1
+                    try:
+                        handle.seek(0)
+                        msvcrt.locking(handle.fileno(), msvcrt.LK_UNLCK, 1)
+                    except OSError:
+                        pass
+            else:
+                import fcntl
+
+                fcntl.flock(handle.fileno(), fcntl.LOCK_EX)
+                held[lock_path] = 1
+                _LOCK_LOCALS.locks = held
+                try:
+                    yield
+                finally:
+                    held[lock_path] -= 1
+                    try:
+                        fcntl.flock(handle.fileno(), fcntl.LOCK_UN)
+                    except OSError:
+                        pass
 
 
 def atomic_write_json(path: Path, value: Any) -> None:

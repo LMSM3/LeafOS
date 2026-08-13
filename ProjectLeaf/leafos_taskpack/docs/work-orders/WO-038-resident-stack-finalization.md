@@ -49,7 +49,7 @@ WO-038 builds on working components rather than creating a second loop:
 - A persistent llama.cpp Vulkan provider with health checks.
 - Universal CPU, GPU, VRAM, RAM, temperature, power, throughput, and instance telemetry.
 - Python and native TUI renderers using an authenticated loopback control bridge.
-- `leafctl live PROJECT`, inferred objectives, repeated improvement tasks, and Catan2-aware validation.
+- `leafctl live PROJECT`, inferred objectives, repeated improvement tasks, and generic CPU validation.
 
 The missing behavior is closed-loop resource control, resident queue supervision, bounded automatic queue refill, foreground awareness, provider recovery policy, and a TUI view that explains every scheduling decision.
 
@@ -192,9 +192,9 @@ Deliverables:
 
 Gate: malformed, unauthenticated, overlong, and shell-like control payloads fail closed; disconnecting either renderer does not interrupt the stack.
 
-### Part 5: Catan2 Soak, Tuning, And Final Cleanup
+### Part 5: Resident Soak, Tuning, And Final Cleanup
 
-Use Catan2 as the final resident-stack benchmark. Start from both the current medium codebase and a fresh three-file Catan2 seed. Let LeafOS repeatedly improve game complexity while new operator objectives are added through the TUI.
+Use a generic project as the final resident-stack benchmark. Start from both the current medium codebase and a fresh three-file generic seed. Let LeafOS repeatedly improve the project while new operator objectives are added through the TUI.
 
 Run profiles:
 
@@ -204,7 +204,7 @@ Run profiles:
 
 Final cleanup removes superseded scheduler paths, duplicate lifecycle logic, and fixtures replaced by recorded or real-provider contracts. Historical telemetry remains readable.
 
-Gate: the 64-minute run produces multiple validated Catan2 increments without lost tasks, duplicate execution, unsafe path expansion, provider duplication, or UI-induced interruption.
+Gate: the 64-minute run produces multiple validated increments without lost tasks, duplicate execution, unsafe path expansion, provider duplication, or UI-induced interruption.
 
 ## Measurement And Acceptance
 
@@ -219,7 +219,7 @@ Gate: the 64-minute run produces multiple validated Catan2 increments without lo
 - Every generated improvement has a source report, bounded objective, dependency, validation gate, checkpoint, and completion report.
 - Exhausted budgets, repeated failures, or absent safe work result in waiting or blocked state rather than invented activity.
 - No private chain-of-thought is displayed or persisted.
-- Focused tests, the complete visual suite, native C build, and 4/8/64-minute Catan2 demonstrations pass.
+- Focused tests, the complete visual suite, native C build, and 4/8/64-minute resident demonstrations pass.
 
 ## Non-Goals
 
@@ -240,4 +240,4 @@ WO-038 is complete only when its report contains:
 - CPU/GPU phase distributions rather than one blended average.
 - Foreground responsiveness percentiles.
 - Queue admission, restart, reconnect, pause, drain, and recovery evidence.
-- Catan2 4-minute, 8-minute, and 64-minute run directories and validated improvement summaries.
+- 4-minute, 8-minute, and 64-minute resident run directories and validated improvement summaries.

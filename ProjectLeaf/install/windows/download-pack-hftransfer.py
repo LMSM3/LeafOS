@@ -50,13 +50,21 @@ PACK_ROOT_CANDIDATES = [
     Path(r'C:\flower-pack-1.2.0'),
 ]
 
-DEFAULT_MODEL_ROOT = Path(r'C:\R\LeafOS0.2.1\models')
+DEFAULT_MODEL_ROOT = Path(r'C:\R\LeafOS0.2.3\models')
 DEFAULT_HF_ENDPOINT = 'https://huggingface.co'
 TOKEN_PATH = Path(os.environ.get('USERPROFILE', '~')) / '.cache' / 'huggingface' / 'token'
 
 
 def print_color(text: str, color: int = 195) -> None:
-    print(f'\033[38;5;{color}m{text}\033[0m')
+    # Map xterm-256 approximations to the FlowerOS pastel/green true-color palette.
+    palette = {
+        195: "\033[38;2;183;240;199m",  # mint / info
+        217: "\033[38;2;255;183;197m",  # bloom / header
+        210: "\033[38;2;255;154;162m",  # error
+        221: "\033[38;2;255;250;181m",  # butter / warning
+    }
+    code = palette.get(color, f"\033[38;5;{color}m")
+    print(f'{code}{text}\033[0m')
 
 
 def find_pack_root() -> Path:
@@ -380,7 +388,7 @@ def main() -> int:
     try:
         artifacts = build_download_plan(pack_root, args.pack_id, args.hf_endpoint, hf_token)
     except HTTPError as e:
-        print(f'\033[38;5;210m[ERROR] HTTP {e.code} while fetching registry or HF API: {e.url}\033[0m', file=sys.stderr)
+        print(f'\033[38;2;255;154;162m[ERROR] HTTP {e.code} while fetching registry or HF API: {e.url}\033[0m', file=sys.stderr)
         return 1
 
     if not artifacts:

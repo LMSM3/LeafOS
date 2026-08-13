@@ -42,6 +42,26 @@ def quiet_call(func, *call_args):
 
 
 class AgentLoopTests(unittest.TestCase):
+    def setUp(self):
+        # Agent-loop unit tests exercise queue and event behavior, not the live
+        # operator journal.  Keep them deterministic and leave Monday state to
+        # the dedicated durable-bridge integration tests.
+        self.authority = mock.patch.object(
+            leaf_agent_loop,
+            "_agent_ticket",
+            side_effect=lambda capability, context=None: {
+                "leafos_object": "leafos.capability_ticket.v1",
+                "capability": capability,
+                "allowed": True,
+                "source": "agent-loop-test",
+                "context": context or {},
+            },
+        )
+        self.authority.start()
+
+    def tearDown(self):
+        self.authority.stop()
+
     def test_concurrent_event_appends_preserve_reconnect_sequence(self):
         with tempfile.TemporaryDirectory() as tmp:
             run_dir = pathlib.Path(tmp)
@@ -93,24 +113,6 @@ class AgentLoopTests(unittest.TestCase):
             self.assertIn("run_start", {event["event_type"] for event in universal})
             self.assertIn("validation", {event["event_type"] for event in universal})
             self.assertIn("checkpoint", {event["event_type"] for event in universal})
-
-    def test_catan2_project_queues_existing_benchmark(self):
-        with tempfile.TemporaryDirectory() as tmp:
-            base = pathlib.Path(tmp)
-            target = base / "Games"
-            run_dir = base / "runs" / "loop"
-            self.assertEqual(
-                0,
-                quiet_call(
-                    leaf_agent_loop.create_run,
-                    args(target=str(target), run_dir=str(run_dir), projects="catan2", profile="local-games")
-                ),
-            )
-            queue = json.loads((run_dir / "queue.json").read_text(encoding="utf-8"))
-            command = queue["tasks"][0]["validation_command"]
-            self.assertIn("catan2bench.py", " ".join(command))
-            self.assertIn("--provider-mode", command)
-            self.assertIn("off", command)
 
     def test_stop_and_resume_are_recorded_in_state_and_events(self):
         with tempfile.TemporaryDirectory() as tmp:
@@ -274,26 +276,6 @@ class AgentLoopTests(unittest.TestCase):
             self.assertFalse(list((run_dir / "artifacts").glob("*.plan.json")))
             self.assertIn("provider.proposal_missing", (run_dir / "events.jsonl").read_text(encoding="utf-8"))
 
-    def test_catan2_tick_promotes_summary_and_score_delta(self):
-        with tempfile.TemporaryDirectory() as tmp:
-            base = pathlib.Path(tmp)
-            target = base / "Games"
-            run_dir = base / "runs" / "loop"
-            self.assertEqual(
-                0,
-                quiet_call(
-                    leaf_agent_loop.create_run,
-                    args(target=str(target), run_dir=str(run_dir), projects="catan2", profile="local-games"),
-                ),
-            )
-            self.assertEqual(0, quiet_call(leaf_agent_loop.tick_run, argparse.Namespace(run=str(run_dir))))
-            queue = json.loads((run_dir / "queue.json").read_text(encoding="utf-8"))
-            benchmark = next(item for item in queue["tasks"][0]["evidence"] if item.get("kind") == "catan2_benchmark")
-            self.assertGreaterEqual(benchmark["score_delta"], 0)
-            self.assertTrue(pathlib.Path(benchmark["project_report"]).is_file())
-            report = (run_dir / "report.md").read_text(encoding="utf-8")
-            self.assertIn("score delta=", report)
 
-
-if __name__ == "__main__":
-    unittest.main()
+    if __name__ == "__main__":
+        unittest.main()

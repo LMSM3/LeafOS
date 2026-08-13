@@ -54,7 +54,7 @@ provider controller, or report authority.
 ## Real Dated Run Snippets
 
 All snippets below are from fresh local runs on 2026-07-24 in
-`C:\R\LeafOS0.2.1\ProjectLeaf\leafos_taskpack`. `python -B` was used for the
+`C:\R\LeafOS0.2.2\ProjectLeaf\leafos_taskpack`. `python -B` was used for the
 test commands so the evidence describes execution rather than bytecode cache
 generation.
 

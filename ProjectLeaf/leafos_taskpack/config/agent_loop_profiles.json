@@ -30,12 +30,7 @@
       "max_minutes": 64,
       "max_attempts": 1,
       "task_timeout_seconds": 120,
-      "first_checkpoint_due_minutes": 30,
-      "catan2": {
-        "profile": "4m",
-        "ticks": 3,
-        "provider_mode": "off"
-      }
+      "first_checkpoint_due_minutes": 30
     },
     "cpu-only": {
       "description": "No provider startup; all validation uses local CPU commands.",
@@ -45,12 +40,7 @@
       "max_minutes": 8,
       "max_attempts": 1,
       "task_timeout_seconds": 120,
-      "first_checkpoint_due_minutes": 30,
-      "catan2": {
-        "profile": "4m",
-        "ticks": 3,
-        "provider_mode": "off"
-      }
+      "first_checkpoint_due_minutes": 30
     },
     "provider-auto": {
       "description": "Use the local llama.cpp stack when configured, otherwise use the bounded CPU validation policy.",
@@ -60,12 +50,7 @@
       "max_minutes": 64,
       "max_attempts": 1,
       "task_timeout_seconds": 180,
-      "first_checkpoint_due_minutes": 30,
-      "catan2": {
-        "profile": "4m",
-        "ticks": 3,
-        "provider_mode": "auto"
-      }
+      "first_checkpoint_due_minutes": 30
     }
   }
 }

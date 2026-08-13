@@ -1,0 +1,4 @@
+# Local CCIS runtime records are durable operator state, not source artifacts.
+ccis/runs/
+ccis/cache/
+ccis/demos/

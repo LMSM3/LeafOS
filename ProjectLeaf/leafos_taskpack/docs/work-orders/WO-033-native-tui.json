@@ -1,7 +1,7 @@
 {
   "work_order_id": "WO-033",
   "title": "Verify native LeafOS TUI",
-  "target": "C:\\R\\LeafOS0.2.1\\ProjectLeaf\\leafos_taskpack",
+  "target": "C:\\R\\LeafOS0.2.2\\ProjectLeaf\\leafos_taskpack",
   "objective": "Build and verify the ncursesw LeafOS TUI, normalized snapshot parser, native bridge, and fail-closed control mailbox without modifying source files during this verification run.",
   "scope": [
     "core/tui",

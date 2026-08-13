@@ -201,8 +201,16 @@ def spawn_supervisor(run_value: str | Path, interval: float = 1.0) -> int:
         log_path = run_dir / LOG_NAME
         command = [sys.executable, str(Path(__file__).resolve()), "drive", str(run_dir), "--interval", str(interval)]
         creationflags = 0
+        startupinfo = None
         if os.name == "nt":
-            creationflags = subprocess.CREATE_NEW_PROCESS_GROUP | subprocess.DETACHED_PROCESS
+            creationflags = (
+                subprocess.CREATE_NEW_PROCESS_GROUP
+                | subprocess.DETACHED_PROCESS
+                | getattr(subprocess, "CREATE_NO_WINDOW", 0)
+            )
+            startupinfo = subprocess.STARTUPINFO()
+            startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
+            startupinfo.wShowWindow = 0  # SW_HIDE
         with log_path.open("a", encoding="utf-8") as log:
             process = subprocess.Popen(
                 command,
@@ -211,6 +219,7 @@ def spawn_supervisor(run_value: str | Path, interval: float = 1.0) -> int:
                 stdout=log,
                 stderr=subprocess.STDOUT,
                 creationflags=creationflags,
+                startupinfo=startupinfo,
                 start_new_session=os.name != "nt",
             )
         engine.write_json(run_dir / LEASE_NAME, {"pid": process.pid, "started_utc": utc_now()})

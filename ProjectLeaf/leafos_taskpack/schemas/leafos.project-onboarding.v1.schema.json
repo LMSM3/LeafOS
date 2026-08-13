@@ -12,7 +12,7 @@
     "target": {"type": "string", "minLength": 1, "maxLength": 1024},
     "workspace_root": {"type": "string", "maxLength": 1024, "default": ""},
     "project_name": {"type": "string", "maxLength": 80, "default": ""},
-    "template": {"enum": ["auto", "generic", "catan2"], "default": "auto"},
+    "template": {"enum": ["auto", "generic"], "default": "auto"},
     "readme": {"type": "string", "maxLength": 65536, "default": ""},
     "skeleton": {"type": "string", "maxLength": 65536, "default": ""},
     "objective": {"type": "string", "maxLength": 2000, "default": ""},

@@ -35,6 +35,8 @@ EXPECTED = {
     "m": ["flower-monitor"],
     "c": ["chat"],
     "go": ["live"],
+    "vtop": ["vtop"],
+    "identity": ["pack-identity", "generate"],
 }
 
 
@@ -78,8 +80,6 @@ class QuickSyntaxContractTests(unittest.TestCase):
 
     def test_post_install_surfaces_advertise_quick_syntax(self) -> None:
         files = (
-            LEAFOS_ROOT / "PowerShell-Version" / "install.ps1",
-            LEAFOS_ROOT / "Bash-Version" / "install.sh",
             TASKPACK / "bin" / "post_install.sh",
             TASKPACK / "bin" / "install_demo.sh",
             TASKPACK / "bin" / "install_mac.sh",
@@ -87,6 +87,14 @@ class QuickSyntaxContractTests(unittest.TestCase):
         for path in files:
             self.assertIn("leafos", path.read_text(encoding="utf-8").lower(), path)
             self.assertIn(" q", path.read_text(encoding="utf-8"), path)
+
+        forwarders = (
+            LEAFOS_ROOT / "PowerShell-Version" / "install.ps1",
+            LEAFOS_ROOT / "Bash-Version" / "install.sh",
+        )
+        for path in forwarders:
+            self.assertIn("leafos", path.read_text(encoding="utf-8").lower(), path)
+            self.assertIn("real-models", path.read_text(encoding="utf-8").lower(), path)
 
 
 @unittest.skipUnless(PWSH, "PowerShell 7 is required")

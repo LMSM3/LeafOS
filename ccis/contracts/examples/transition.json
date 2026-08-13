@@ -1,0 +1,21 @@
+{
+  "ccis_object": "ccis.transition",
+  "schema_version": 1,
+  "transition_id": "transition_contracts_gated_accepted",
+  "task_id": "task_ccis_contracts",
+  "sequence": 4,
+  "occurred_at": "2026-08-03T08:13:00Z",
+  "from_state": "GATED",
+  "to_state": "ACCEPTED",
+  "worker_id": "leafos.ccis.control-plane",
+  "artifact_hash": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+  "reason": "All constitutional questions and validators passed.",
+  "outcome": "ACCEPTED",
+  "trigger": "decision_contracts_r0",
+  "state_hash_before": "sha256:3333333333333333333333333333333333333333333333333333333333333333",
+  "state_hash_after": "sha256:4444444444444444444444444444444444444444444444444444444444444444",
+  "checkpoint_ref": "checkpoint://task_ccis_contracts/sequence-4",
+  "evidence_bundle_ref": "evidence://task_ccis_contracts/transition_contracts_gated_accepted",
+  "decision_ref": "decision_contracts_r0",
+  "rollback": null
+}

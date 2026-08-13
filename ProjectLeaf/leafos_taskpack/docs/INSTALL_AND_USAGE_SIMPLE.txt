@@ -10,7 +10,7 @@ Nothing here downloads model weights unless an apply command is run with --yes.
 
 PowerShell:
 
-  Set-Location C:\R\LeafOS0.2.1\ProjectLeaf\leafos_taskpack
+  Set-Location C:\R\LeafOS0.2.2\ProjectLeaf\leafos_taskpack
   .\bin\flower.ps1 home
   .\bin\flower.ps1 doctor
   .\bin\flower.ps1 versions
@@ -54,9 +54,9 @@ stack entry for a role.
 No objective is required. LeafOS inspects the directory, creates or reattaches
 a durable run, starts the resident supervisor, and opens the TUI.
 
-Start a minimal Catan2 project:
+Start a minimal generic project:
 
-  .\bin\flower.ps1 live C:\Games\catan2 --new --template catan2 --yes --budget 64
+  .\bin\flower.ps1 live C:\R\MyNewProject --new --template generic --yes --budget 64
 
 
 5. GIVE LIGHTWEIGHT INSTRUCTIONS
@@ -94,9 +94,9 @@ confirmed typed-control flow.
 
   .\bin\leafctl.ps1 test visual --plain
   .\bin\leafctl.ps1 test visual --match provider --live-stack --plain
-  .\bin\leafctl.ps1 catan2-resident --contract-only --iterations 3
+  .\bin\leafctl.ps1 resident start --contract-only --iterations 3
 
-The current discovery suite contains 203 tests. A live-stack demonstration is
+The current discovery suite contains 199 tests.
 explicitly real-provider evidence; fixtures and contract mode are labeled and
 do not make that claim.
 

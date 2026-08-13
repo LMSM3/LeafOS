@@ -1,6 +1,13 @@
 #!/usr/bin/env bash
 # LeafOS real-model-first workflow for Bash.
 
+# shellcheck source=../ProjectLeaf/leafos_taskpack/core/brand/palette.sh
+_BRAND_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)/ProjectLeaf/leafos_taskpack/core/brand"
+if [[ -f "$_BRAND_DIR/palette.sh" ]]; then source "$_BRAND_DIR/palette.sh"; fi
+unset _BRAND_DIR
+
+
+
 set -euo pipefail
 
 HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -14,7 +21,7 @@ RESOLVE=0
 APPLY=0
 YES=0
 STATUS_ONLY=0
-NO_ANIMATION=0
+NO_ANIMATION="${NO_ANIMATION:-0}"
 ALLOW_FALLBACK=0
 MAX_WORKERS=8
 CONTINUE_ON_ERROR=0
@@ -64,17 +71,7 @@ mkdir -p "$OUT_DIR"
 
 animate() {
   local label="$1"
-  if [[ "$NO_ANIMATION" == "1" ]]; then
-    printf '  -> %s\n' "$label"
-    return
-  fi
-  local frames=("GGUF" "Q4_K_M" "LOCAL" "READY")
-  local i
-  for i in {0..7}; do
-    printf '\r  \033[36m%s\033[0m  %s   ' "${frames[$((i % ${#frames[@]}))]}" "$label"
-    sleep 0.08
-  done
-  printf '\r  \033[32m✓\033[0m %s   \n' "$label"
+  leaf_transition "$label" model 8 "$(leaf_motion_delay 0.08)"
 }
 
 pick_python() {
@@ -128,9 +125,9 @@ write_status() {
 
 PYTHON_BIN="$(pick_python)"
 
-printf '\n\033[36m╔══════════════════════════════════════════════════════════════════════╗\033[0m\n'
-printf '\033[32m║                 LeafOS Real Models First                           ║\033[0m\n'
-printf '\033[36m╚══════════════════════════════════════════════════════════════════════╝\033[0m\n\n'
+printf '\n%s╔══════════════════════════════════════════════════════════════════════╗%s\n' "$C_SKY" "$C_RESET"
+printf '%s║                 LeafOS Real Models First                           ║%s\n' "$C_LEAF" "$C_RESET"
+printf '%s╚══════════════════════════════════════════════════════════════════════╝%s\n\n' "$C_SKY" "$C_RESET"
 printf 'profile:   %s\n' "$PROFILE"
 printf 'model dir: %s\n' "$MODEL_DIR"
 printf 'reason:    %s\n' "$MODEL_DIR_REASON"
@@ -188,9 +185,9 @@ if [[ "$APPLY" == "1" ]]; then
 fi
 
 if [[ "$complete" == "true" ]]; then
-  printf '\n\033[32mReal model artifacts for %s are present.\033[0m\n' "$PROFILE"
+  printf '\n%sReal model artifacts for %s are present.%s\n' "$C_LEAF" "$PROFILE" "$C_RESET"
 else
-  printf '\n\033[33mReal model artifacts for %s are not complete yet.\033[0m\n' "$PROFILE"
+  printf '\n%sReal model artifacts for %s are not complete yet.%s\n' "$C_BUTTER" "$PROFILE" "$C_RESET"
   printf 'Next safe step:\n  bash real-models.sh --profile %s --resolve\n' "$PROFILE"
   printf 'Download boundary after review:\n  bash real-models.sh --profile %s --resolve --apply --yes\n' "$PROFILE"
 fi

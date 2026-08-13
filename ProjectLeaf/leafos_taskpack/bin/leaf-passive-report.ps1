@@ -15,7 +15,7 @@ param(
     [string]$Project = '',
     [ValidateSet('off', 'auto', 'required')]
     [string]$Provider = 'off',
-    [ValidateSet('auto', 'generic', 'catan2')]
+    [ValidateSet('auto', 'generic')]
     [string]$Template = 'auto',
     [int]$BudgetMinutes = 64,
     [int]$ReportIntervalMinutes = 30,

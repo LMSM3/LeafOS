@@ -2,7 +2,7 @@
 
 Status: proposed, implementation-ready  
 Priority: P0 / super-high-value  
-Target: `C:\R\LeafOS0.2.1`  
+Target: `C:\R\LeafOS0.2.2`
 Primary subsystem: ProjectLeaf continual agent loop  
 Risk class: high; changes affect model context, resume authority, auditability, storage growth, and inference cost  
 Depends on: native `leaf-memory`, LMEM v1 journal, memory event/query schemas, provider contract, checkpoint format  

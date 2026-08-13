@@ -27,7 +27,7 @@ Production runs do not select these fixtures implicitly. CPU fallback may perfor
 
 ## Current Follow-Up Work
 
-1. Run and retain the real 8-minute and 64-minute WO-038 Catan2 resident profiles.
+1. Run and retain the real 8-minute and 64-minute WO-038 generic resident profiles.
 2. Replace remaining mock-provider tests with recorded or live llama.cpp contracts where deterministic coverage remains equivalent.
 3. Add richer TUI task composition and search without granting renderer mutation authority.
 4. Continue model-route tuning under the RAM/VRAM gates rather than raising hard limits.

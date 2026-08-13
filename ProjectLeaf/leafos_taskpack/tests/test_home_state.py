@@ -54,6 +54,7 @@ class HomeStateTests(unittest.TestCase):
                 "leafos_object", "version", "generated_at", "root", "readiness", "provider",
                 "accelerator", "stack", "runtime", "gpu", "work_order", "task_loop",
                 "recent_runs", "next_actions", "operator", "benchmark", "reference",
+                "installer",
             }
             self.assertEqual(required, set(state))
             self.assertEqual("WO-018", state["work_order"]["id"])
@@ -91,7 +92,7 @@ class HomeStateTests(unittest.TestCase):
 
     def test_canonical_layout_uses_root_launcher_for_next_actions(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
-            leafos_root = Path(directory) / "LeafOS0.2.1"
+            leafos_root = Path(directory) / "LeafOS0.2.2"
             taskpack = leafos_root / "ProjectLeaf" / "leafos_taskpack"
             taskpack.mkdir(parents=True)
             (leafos_root / "leafos.ps1").write_text("# root launcher\n", encoding="utf-8")

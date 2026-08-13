@@ -34,7 +34,7 @@
         "unittest",
         "tests.test_resource_governor",
         "tests.test_resident_scheduler",
-        "tests.test_resident_catan2bench",
+
         "tests.test_loop_inlet",
         "tests.test_tui_hardware",
         "tests.test_tui_native",
@@ -50,7 +50,7 @@
     "Automatic queue refill is derived from validated evidence and bounded by time, iteration, failure, and change budgets.",
     "The provider remains warm, uses bounded restart backoff, and never silently substitutes mock output.",
     "Both TUI renderers expose authenticated typed controls for profile, targets, budget, pause, resume, drain, and stop.",
-    "Catan2 passes 4-minute, 8-minute, and 64-minute resident-stack demonstrations with validated iterative improvements."
+    "Generic projects pass 4-minute, 8-minute, and 64-minute resident-stack demonstrations with validated iterative improvements."
   ],
   "approval_mode": "required",
   "allow_mutation": true,

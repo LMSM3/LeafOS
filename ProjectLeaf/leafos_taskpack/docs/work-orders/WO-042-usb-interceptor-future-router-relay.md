@@ -94,7 +94,7 @@ mutation/observation functions.
 ## Real Dated Run Snippets
 
 Recorded from fresh local fixture and regression runs on 2026-07-24 in
-`C:\R\LeafOS0.2.1\ProjectLeaf\leafos_taskpack`:
+`C:\R\LeafOS0.2.2\ProjectLeaf\leafos_taskpack`:
 
 ```text
 > python -B tests/test_transport_envelope.py

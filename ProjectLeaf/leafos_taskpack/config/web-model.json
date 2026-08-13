@@ -1,0 +1,24 @@
+{
+  "schema": "leafos.web-model.config.v1",
+  "enabled": false,
+  "provider": "flower-web",
+  "endpoint": "",
+  "allowed_hosts": [],
+  "model": "",
+  "allowed_models": [],
+  "limits": {
+    "timeout_seconds": 30,
+    "max_request_bytes": 262144,
+    "max_response_bytes": 1048576,
+    "max_messages": 64,
+    "max_output_tokens": 8192
+  },
+  "auth": {
+    "broker_command": [],
+    "audience": "leafos.web-model",
+    "timeout_seconds": 5,
+    "max_credential_ttl_seconds": 300,
+    "header_name": "Authorization",
+    "scheme": "Bearer"
+  }
+}

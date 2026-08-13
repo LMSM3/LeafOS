@@ -185,8 +185,8 @@ def run_project_wizard(
             }
             if mode == "new":
                 request["template"] = _choice(
-                    input_stream, output, "Template [auto/generic/catan2]",
-                    {"auto": "auto", "generic": "generic", "catan2": "catan2"}, default="auto",
+                    input_stream, output, "Template [auto/generic]",
+                    {"auto": "auto", "generic": "generic"}, default="auto",
                 )
                 _screen(output, 3, "Paste README", "The README states what the project is and what useful means.")
                 request["readme"] = _read_document(input_stream, output, "README")

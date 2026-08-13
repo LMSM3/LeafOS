@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import json
+import concurrent.futures
 import shutil
 import subprocess
 import sys
@@ -16,9 +17,34 @@ PWSH = shutil.which("pwsh")
 sys.path.insert(0, str(ROOT / "core" / "python"))
 
 import leaf_continual_bloom as bloom  # noqa: E402
+from leaf_durable_bridge import MondayDurableBridge  # noqa: E402
 
 
 class ContinualBloomTests(unittest.TestCase):
+    def test_concurrent_capability_requests_are_serialized_per_instance(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            instance = Path(directory) / "monday-primary"
+            bloom.initialize(instance)
+            bridge = MondayDurableBridge(instance=instance, source="concurrency-test")
+
+            with concurrent.futures.ThreadPoolExecutor(max_workers=8) as pool:
+                futures = [
+                    pool.submit(
+                        bridge.request_capability,
+                        "loop.event.append",
+                        actor="leafos.test",
+                        reason=f"concurrent request {index}",
+                    )
+                    for index in range(40)
+                ]
+                responses = [future.result() for future in futures]
+
+            self.assertTrue(all(response["payload"]["allowed"] for response in responses))
+            report = bloom.verify(instance)
+            self.assertEqual(81, report["event_count"])
+            events = bloom.read_events(instance)
+            self.assertEqual(list(range(1, 82)), [event["seq"] for event in events])
+
     def make_lifecycle(self, directory: str) -> Path:
         instance = Path(directory) / "monday-primary"
         initialized = bloom.initialize(instance)

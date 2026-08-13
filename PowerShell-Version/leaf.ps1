@@ -28,13 +28,34 @@ try {
 }
 
 if ($PSVersionTable.PSVersion.Major -lt 7) {
-    $Pwsh = Get-Command pwsh -ErrorAction SilentlyContinue
-    if (-not $Pwsh) {
-        Write-Error 'LeafOS requires PowerShell 7+. Install pwsh and run this command again.'
+    # The prompt indicator is deliberately supported in the current Windows
+    # PowerShell 5/5.1 process; switching hosts would decorate the wrong prompt.
+    if ($args.Count -gt 0 -and $args[0] -in @('indicator', 'pack-indicator')) {
+        $legacyRoot = (Resolve-Path (Join-Path $PSScriptRoot '..')).Path
+        $indicatorScript = Join-Path $legacyRoot 'ProjectLeaf\leafos_taskpack\bin\leaf-indicator.ps1'
+        if (-not (Test-Path -LiteralPath $indicatorScript -PathType Leaf)) {
+            Write-Error "LeafOS indicator script is missing: $indicatorScript"
+            exit 1
+        }
+        $indicatorArgs = @($args | Select-Object -Skip 1)
+        & $indicatorScript @indicatorArgs
+        if ($?) { exit 0 }
         exit 1
     }
 
-    & $Pwsh.Source -NoProfile -File $PSCommandPath @args
+    $resolver = Join-Path $PSScriptRoot 'Resolve-LeafPowerShellHost.ps1'
+    if (-not (Test-Path -LiteralPath $resolver -PathType Leaf)) {
+        Write-Error "LeafOS PowerShell resolver is missing: $resolver"
+        exit 1
+    }
+    . $resolver
+    $Pwsh = Resolve-LeafPowerShellHost -MinimumMajor 7
+    if (-not $Pwsh.usable) {
+        Write-Error 'This LeafOS command requires PowerShell 7+. The indicator still works here with: leafos indicator status. Install PowerShell 7 or repair PATH, then retry.'
+        exit 1
+    }
+
+    & $Pwsh.command -NoProfile -File $PSCommandPath @args
     exit $LASTEXITCODE
 }
 

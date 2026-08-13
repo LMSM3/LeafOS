@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://leafos.local/ccis/contracts/allocation/evidence-integrity-diagnostic.v1.schema.json",
+  "title": "CCIS Evidence Integrity Diagnostic",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["ccis_object", "schema_version", "disposition", "target_kind", "target_ref", "first_bad_artifact", "expected_digest", "actual_digest", "declaring_manifest", "affected_decision_or_event", "inspected_files", "inspected_bytes", "read_only"],
+  "properties": {
+    "ccis_object": {"const": "ccis.evidence_integrity_diagnostic"},
+    "schema_version": {"const": 1},
+    "disposition": {"enum": ["CLEAN", "ARTIFACT_TAMPERED", "MANIFEST_TAMPERED", "EVENT_TAMPERED", "INVALID_REFERENCE", "BUDGET_EXCEEDED"]},
+    "target_kind": {"enum": ["ccis-run", "ccis-evidence-bundle", "benchmark-run"]},
+    "target_ref": {"type": "string", "minLength": 1},
+    "first_bad_artifact": {"type": ["string", "null"]},
+    "expected_digest": {"type": ["string", "null"], "pattern": "^sha256:[0-9a-f]{64}$"},
+    "actual_digest": {"type": ["string", "null"], "pattern": "^sha256:[0-9a-f]{64}$"},
+    "declaring_manifest": {"type": ["string", "null"]},
+    "affected_decision_or_event": {"type": ["string", "null"]},
+    "inspected_files": {"type": "integer", "minimum": 0},
+    "inspected_bytes": {"type": "integer", "minimum": 0},
+    "read_only": {"const": true}
+  }
+}

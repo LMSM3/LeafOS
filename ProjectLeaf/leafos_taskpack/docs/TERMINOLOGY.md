@@ -80,7 +80,7 @@ Do not use `stack` as a synonym for one active model unless the document explici
 
 ## Benchmarks
 
-- **`catan2bench`**: gameplay benchmark in which a model proposes RTS harvesting choices and a CPU gate validates them.
-- **`catan2-resident`**: resident project-improvement benchmark in which the full stack repeatedly improves an isolated Catan2 codebase while accepting operator work.
+- **`realbench`**: conversation and raw-inference benchmark that measures provider throughput and correctness against local CPU baselines.
+- **`fullstackbench`**: end-to-end stack benchmark covering routing, provider lifecycle, and universal telemetry.
 - **contract profile**: scheduler/control test without a real-provider claim.
 - **real profile**: wall-clock run requiring the configured provider and measured hardware evidence.

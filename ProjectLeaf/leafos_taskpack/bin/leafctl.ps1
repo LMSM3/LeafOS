@@ -21,6 +21,8 @@ switch ($Command) {
     'm'   { $Command = 'flower-monitor' }
     'c'   { $Command = 'chat' }
     'go'  { $Command = 'live' }
+    'vtop' { $Command = 'vtop' }
+    'identity' { $Command = 'pack-identity'; $Rest = @('generate') + $Rest }
 }
 
 $ScriptDir = Split-Path $MyInvocation.MyCommand.Path
@@ -95,7 +97,7 @@ switch ($Command) {
     'alert'    { Write-LeafAlert -Severity ($Rest[0] ?? 'warn') -Message (($Rest | Select-Object -Skip 1) -join ' ') }
     'versions' { Get-LeafVersions }
     'platform' { Get-LeafPlatform | Format-List }
-    { $_ -in @('home','next','trace','accelerator','model-profile','tui','quick','reference') } {
+    { $_ -in @('home','next','menu','trace','accelerator','model-profile','tui','quick','reference') } {
         $bash = (Get-Command bash -ErrorAction SilentlyContinue)?.Source
         $preferBash = $env:LEAF_PREFER_BASH -eq '1'
         function Invoke-LeafPy {
@@ -113,6 +115,7 @@ switch ($Command) {
         switch ($Command) {
             'home'        { Invoke-LeafPy 'core\ui\home.py' }
             'next'        { Invoke-LeafPy 'core\ui\home.py' --next @Rest }
+            'menu'        { Invoke-LeafPy 'core\ui\menu.py' }
             'trace'       { Invoke-LeafPy 'core\ui\trace.py' }
             'accelerator' { Invoke-LeafPy 'core\ui\accelerator_state.py' }
             'model-profile' { Invoke-LeafPy 'core\runtime\model_profiles.py' }
@@ -280,13 +283,6 @@ switch ($Command) {
         & $py (Join-Path $RootDir 'core' 'bench' 'fullstackbench.py') @Rest
         exit $LASTEXITCODE
     }
-    'catan2bench' {
-        $py = (Get-Command python3 -ErrorAction SilentlyContinue)?.Source ??
-              (Get-Command python  -ErrorAction SilentlyContinue)?.Source
-        if (-not $py) { Write-Error 'python3 not found'; exit 1 }
-        & $py (Join-Path $RootDir 'core' 'bench' 'catan2bench.py') @Rest
-        exit $LASTEXITCODE
-    }
     'telemetry' {
         $py = (Get-Command python3 -ErrorAction SilentlyContinue)?.Source ??
               (Get-Command python  -ErrorAction SilentlyContinue)?.Source
@@ -320,13 +316,6 @@ switch ($Command) {
               (Get-Command python  -ErrorAction SilentlyContinue)?.Source
         if (-not $py) { Write-Error 'python3 not found'; exit 1 }
         & $py (Join-Path $RootDir 'core' 'python' 'leaf_resident_supervisor.py') @Rest
-        exit $LASTEXITCODE
-    }
-    'catan2-resident' {
-        $py = (Get-Command python3 -ErrorAction SilentlyContinue)?.Source ??
-              (Get-Command python  -ErrorAction SilentlyContinue)?.Source
-        if (-not $py) { Write-Error 'python3 not found'; exit 1 }
-        & $py (Join-Path $RootDir 'core' 'bench' 'resident_catan2bench.py') @Rest
         exit $LASTEXITCODE
     }
     'chat' {
@@ -493,6 +482,26 @@ switch ($Command) {
         & $py (Join-Path $RootDir 'core' 'stack' 'stack_cli.py') @Rest
         exit $LASTEXITCODE
     }
+    { $_ -eq 'ccis' -or ($_ -eq 'task' -and $Rest.Count -gt 0 -and $Rest[0] -eq 'accept') } {
+        $py = (Get-Command python3 -ErrorAction SilentlyContinue)?.Source ??
+              (Get-Command python  -ErrorAction SilentlyContinue)?.Source
+        if (-not $py -and (Test-Path 'C:\msys64\ucrt64\bin\python.exe')) {
+            $py = 'C:\msys64\ucrt64\bin\python.exe'
+        }
+        if (-not $py) { Write-Error 'python3 not found'; exit 1 }
+        $RepoRoot = Split-Path (Split-Path $RootDir)
+        $CcisCli = Join-Path $RepoRoot 'ccis\cli.py'
+        if (-not (Test-Path -LiteralPath $CcisCli -PathType Leaf)) {
+            Write-Error "CCIS CLI not found: $CcisCli"; exit 1
+        }
+        [string[]]$CcisArgs = if ($Command -eq 'task') {
+            @('accept') + @($Rest | Select-Object -Skip 1)
+        } else {
+            @($Rest)
+        }
+        & $py $CcisCli @CcisArgs
+        exit $LASTEXITCODE
+    }
     'models-install' {
         $modelsInstallDir = Join-Path (Split-Path $RootDir) 'leaf_model_installer'
         $venvPython = Join-Path $modelsInstallDir '.venv' 'Scripts' 'python.exe'
@@ -508,7 +517,7 @@ switch ($Command) {
     '' {
         Write-Host 'Usage: leaf <command> [args]'
         Write-Host ''
-        Write-Host 'Native PS:  home  tui  live  resident  next  trace  accelerator  doctor  status  flower-monitor  monitor  vtop  loaders  loader  glyph  glyphs  alert  versions  platform  memory  runtime  model-profile  web-state  fullstackbench  realbench  catan2bench  telemetry  test  loop  transport  passive-report  agent-loop-start/status/tick/resume/stop/report  oneshot  wakeup  wakeup-export  chat  model  pack-identity  models-install'
+        Write-Host 'Native PS:  home  tui  live  resident  next  trace  accelerator  doctor  status  flower-monitor  monitor  vtop  loaders  loader  glyph  glyphs  alert  versions  platform  memory  runtime  model-profile  web-state  fullstackbench  realbench  telemetry  test  loop  transport  passive-report  agent-loop-start/status/tick/resume/stop/report  oneshot  wakeup  wakeup-export  chat  model  pack-identity  models-install'
         Write-Host 'Loop monitor: loop monitor [RUN|active] [--interactive|--noninteractive] [--json|--jsonl] [--once]'
         Write-Host 'USB interceptor: transport usb init|status|pump|publish|validate ...'
         Write-Host 'Passive HTML: passive-report [-RunRoot RUN] [-StartProject -Project DIR] [-Open] [-Watch] [-Json]'
@@ -521,10 +530,10 @@ switch ($Command) {
             'home','next','trace','accelerator','doctor','status','flower-monitor','monitor',
             'loaders','loader','glyph','glyphs','alert','versions','platform','memory','runtime',
             'model-profile','tui','quick','reference','dashboard','web-state','fullstackbench',
-            'realbench','catan2bench','telemetry','test','loop','transport','passive-report',
+            'realbench','telemetry','test','loop','transport','passive-report',
             'agent-loop-start','agent-loop-status','agent-loop-tick','agent-loop-resume',
             'agent-loop-stop','agent-loop-report','oneshot','wakeup','wakeup-export','chat',
-            'model','stack','bloom','flower-monitor','live','resident','provider-stack',
+            'model','stack','bloom','flower-monitor','live','resident','provider-stack','ccis','task',
             'vtop','pack-identity','models-install'
         )
         $ls = ($Command | Select-String '^[a-zA-Z0-9_-]+$') ? $Command : ''

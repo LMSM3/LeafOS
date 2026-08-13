@@ -7,7 +7,7 @@
   "priority": "deprioritized",
   "deferred_on": "2026-07-22",
   "deferred_reason": "Operator instruction: skip and deprioritize version hopping while the late-stage release work remains active.",
-  "target": "C:\\R\\LeafOS0.2.1",
+  "target": "C:\\R\\LeafOS0.2.2",
   "objective": "Create a safe dry-run-first version-hopping lane that lets the operator inspect, plan, check, and explicitly apply compatible version-profile switches across LeafOS and FlowerOS release planes without rewriting historical evidence or confusing operator-surface identity with engine contracts.",
   "allowed_paths": [
     "VERSION",

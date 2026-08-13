@@ -1,4 +1,4 @@
-﻿#!/usr/bin/env bash
+#!/usr/bin/env bash
 # bin/post_install.sh -- post-install: optional HF model grab + CUDA/deps loop
 #
 # Usage: bash bin/post_install.sh [--noninteractive]

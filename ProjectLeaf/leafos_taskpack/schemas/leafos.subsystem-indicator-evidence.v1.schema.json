@@ -1,0 +1,94 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://leafos.local/schemas/leafos.subsystem-indicator-evidence.v1.schema.json",
+  "title": "LeafOS PowerShell Subsystem Indicator Evidence",
+  "description": "Typed evidence projected by the PowerShell pack glyph while an owned subsystem is active.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "leafos_object",
+    "version",
+    "active",
+    "subsystem",
+    "process_id",
+    "source",
+    "evidence_grade",
+    "pack_identity_resolved",
+    "pack_id",
+    "claims",
+    "does_not_prove",
+    "observed_at_utc",
+    "reason"
+  ],
+  "properties": {
+    "leafos_object": {"const": "leafos.subsystem_indicator_evidence"},
+    "version": {"const": 1},
+    "active": {"type": "boolean"},
+    "subsystem": {"type": "string"},
+    "process_id": {"type": "integer", "minimum": 0},
+    "source": {
+      "type": "string",
+      "pattern": "^(none|environment-process|environment-demo|provider-pid|active-run:(resident\\.lock|worker\\.lock|active-process\\.json))$"
+    },
+    "evidence_grade": {"enum": ["none", "demo", "process"]},
+    "pack_identity_resolved": {"type": "boolean"},
+    "pack_id": {"type": "string"},
+    "claims": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {"enum": ["subsystem.process.active", "pack.identity.bound"]}
+    },
+    "does_not_prove": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "enum": [
+          "all_pack_models_loaded",
+          "provider_health",
+          "capability_authorization"
+        ]
+      },
+      "allOf": [
+        {"contains": {"const": "all_pack_models_loaded"}},
+        {"contains": {"const": "provider_health"}},
+        {"contains": {"const": "capability_authorization"}}
+      ]
+    },
+    "observed_at_utc": {"type": "string", "format": "date-time"},
+    "reason": {"type": "string", "minLength": 1}
+  },
+  "allOf": [
+    {
+      "if": {"properties": {"active": {"const": true}}, "required": ["active"]},
+      "then": {
+        "properties": {
+          "subsystem": {"minLength": 1},
+          "evidence_grade": {"enum": ["demo", "process"]},
+          "claims": {"contains": {"const": "subsystem.process.active"}}
+        }
+      },
+      "else": {
+        "properties": {
+          "process_id": {"const": 0},
+          "evidence_grade": {"const": "none"},
+          "claims": {"maxItems": 0}
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "active": {"const": true},
+          "pack_identity_resolved": {"const": true}
+        },
+        "required": ["active", "pack_identity_resolved"]
+      },
+      "then": {
+        "properties": {
+          "pack_id": {"minLength": 1},
+          "claims": {"contains": {"const": "pack.identity.bound"}}
+        }
+      }
+    }
+  ]
+}

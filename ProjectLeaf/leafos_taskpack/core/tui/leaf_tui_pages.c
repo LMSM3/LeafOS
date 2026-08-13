@@ -95,7 +95,7 @@ static void overview(const LeafTuiState *state, int row) {
     const LeafTuiTask *task = active_task(state);
     char gpu[32], vram[32], vram_total[32], brain[32], cpu[32];
     draw_line(row++, COLOR_NORMAL, "ACTIVE WORK");
-    draw_line(row++, COLOR_MODEL, "PROJECT %s | %s | iteration %d", state->project_catan2 ? "CATAN2" : state->project_target, state->project_state, state->project_iteration);
+    draw_line(row++, COLOR_MODEL, "PROJECT %s | %s | iteration %d", state->project_target, state->project_state, state->project_iteration);
     if (task) {
         draw_line(row++, status_color(task->status), "%s %s  %s", task->symbol, task->id, task->objective);
         draw_line(row++, COLOR_NORMAL, "  %s | %s | %s | attempts %d/%d", task->status, task->role, task->worker, task->attempts, task->max_attempts);

@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://leafos.local/ccis/contracts/allocation/allocation-event.v1.schema.json",
+  "title": "CCIS Allocation Event",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["ccis_object", "schema_version", "event_id", "sequence", "recorded_at", "logical_tick", "task_id", "event_type", "previous_event_hash", "payload_hash", "payload", "event_hash"],
+  "properties": {
+    "ccis_object": {"const": "ccis.allocation_event"},
+    "schema_version": {"const": 1},
+    "event_id": {"type": "string", "pattern": "^alloc_evt_[0-9]{8}$"},
+    "sequence": {"type": "integer", "minimum": 1},
+    "recorded_at": {"type": "string", "format": "date-time"},
+    "logical_tick": {"type": "integer", "minimum": 0},
+    "task_id": {"type": ["string", "null"]},
+    "event_type": {"enum": ["task.admitted", "task.queued", "allocation.clock_observed", "task.priority_aged", "lease.acquired", "task.started", "task.succeeded", "task.failed", "task.blocked", "task.revise", "task.rejected", "task.escalated", "task.cancelled", "lease.released", "lease.expired"]},
+    "previous_event_hash": {"type": ["string", "null"], "pattern": "^sha256:[0-9a-f]{64}$"},
+    "payload_hash": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"},
+    "payload": {"type": "object"},
+    "event_hash": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"}
+  }
+}

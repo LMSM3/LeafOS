@@ -1,7 +1,7 @@
 {
   "work_order_id": "WO-031",
   "title": "Verify work-order loop v2",
-  "target": "C:\\R\\LeafOS0.2.1\\ProjectLeaf\\leafos_taskpack",
+  "target": "C:\\R\\LeafOS0.2.2\\ProjectLeaf\\leafos_taskpack",
   "objective": "Inspect the work-order policy and tests, run the declared work-order test suite, and record integrity hashes without modifying repository files.",
   "scope": [
     "core/python/leaf_work_order.py",

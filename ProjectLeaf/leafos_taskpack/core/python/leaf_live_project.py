@@ -121,16 +121,11 @@ def _declared_paths(value: Any) -> list[str]:
     return paths
 
 
-def _infer_commands(target: Path, relative_files: set[str], manifest: dict[str, Any], catan2: bool) -> list[list[str]]:
+def _infer_commands(target: Path, relative_files: set[str], manifest: dict[str, Any]) -> list[list[str]]:
     validation = manifest.get("validation", {}) if isinstance(manifest.get("validation"), dict) else {}
     declared = _command_list(validation.get("commands") or manifest.get("validation_commands"))
     if declared:
         return declared
-    if catan2 and "tests/catan2bench.sh" in relative_files:
-        commands = [["bash", "tests/catan2bench.sh"]]
-        if "tests/test_board_spatial.py" in relative_files:
-            commands.insert(0, [sys.executable, "-m", "unittest", "tests.test_board_spatial"])
-        return commands
     if "run_tests.ps1" in relative_files and os.name == "nt":
         return [["pwsh", "-NoProfile", "-File", "run_tests.ps1"]]
     if "run_tests.sh" in relative_files:
@@ -153,12 +148,6 @@ def inspect_project(target_value: str | Path) -> dict[str, Any]:
     source_files = [path for path in files if path.suffix.lower() in SOURCE_SUFFIXES]
     test_files = [path for path in files if "tests" in {part.lower() for part in path.relative_to(target).parts}]
     languages = Counter(LANGUAGES[path.suffix.lower()] for path in source_files if path.suffix.lower() in LANGUAGES)
-    catan2 = (
-        "core/bench/catan2bench.py" in relative_set
-        or str(manifest.get("template", "")).lower() == "catan2"
-        or str(manifest.get("project", "")).lower() == "catan2"
-        or target.name.lower() == "catan2"
-    )
     seed_inputs = bool(readme_path and manifest_path and skeleton_paths)
     if not files:
         state = "empty"
@@ -168,29 +157,20 @@ def inspect_project(target_value: str | Path) -> dict[str, Any]:
         state = "codebase"
     else:
         state = "documents"
-    allowed_paths = _declared_paths(manifest.get("allowed_paths"))
-    if not allowed_paths:
-        if catan2 and "core/bench/catan2bench.py" in relative_set:
-            allowed_paths = [
-                path for path in ("core/bench", "tests/catan2bench.sh", "tests/test_board_spatial.py", "docs/CATAN2_BENCHMARK.md")
-                if path in relative_set or (target / path).is_dir()
-            ]
-        else:
-            allowed_paths = ["."]
+    allowed_paths = _declared_paths(manifest.get("allowed_paths")) or ["."]
     acceptance = _string_list(manifest.get("acceptance")) or [
         "One coherent improvement is implemented within the declared project boundary.",
         "Existing behavior is preserved unless the project intent explicitly changes it.",
         "Deterministic validation or a clear validation artifact covers the increment.",
         "The completion report identifies changed files, evidence, and the next opportunity.",
     ]
-    commands = _infer_commands(target, relative_set, manifest, catan2)
+    commands = _infer_commands(target, relative_set, manifest)
     return {
         "leafos_object": "leafos.live_project_inventory",
         "version": 1,
         "target": str(target),
         "name": str(manifest.get("project") or target.name),
         "state": state,
-        "catan2": catan2,
         "file_count": len(files),
         "inventory_truncated": truncated,
         "source_file_count": len(source_files),
@@ -209,48 +189,21 @@ def inspect_project(target_value: str | Path) -> dict[str, Any]:
 
 
 def _seed_content(template: str, name: str) -> dict[str, str]:
-    if template == "catan2":
-        readme = f"""# {name}
-
-An iterative Catan2 real-time strategy project for the LeafOS live stack.
-
-The starting rules replace dice production with continual resource growth across productive board assignments. Each iteration should make the game more playable, strategic, observable, and complex while retaining deterministic tests and CPU-validated rules.
-"""
-        skeleton = """# Catan2 Skeleton
-
-Suggested initial boundaries:
-
-- `src/`: deterministic game state, board topology, production, building, trading, and bot policy.
-- `tests/`: rules, resource conservation, legal actions, progression, and bot behavior.
-- `reports/`: benchmark and iteration evidence.
-
-Begin with a small playable loop. Improve one coherent system per iteration instead of attempting the entire design at once.
-"""
-        objective = (
-            "Build and repeatedly improve Catan2 as a deterministic real-time strategy game with continual resource production, "
-            "spatial construction, increasingly capable bots, measurable balance, and a clear playable interface."
-        )
-        goals = [
-            "deterministic board and continual production",
-            "legal building and resource spending",
-            "bot strategy and escalating challenge",
-            "trading, progression, balance, and match completion",
-            "operator-visible game state and benchmark evidence",
-        ]
-    else:
-        readme = f"""# {name}
+    if template not in {"generic", "auto"}:
+        raise ValueError(f"unsupported seed template: {template}")
+    readme = f"""# {name}
 
 This project is intentionally minimal. LeafOS should inspect the current state, choose one bounded improvement, implement it, validate it, and leave the next iteration clearer than it found it.
 """
-        skeleton = """# Project Skeleton
+    skeleton = """# Project Skeleton
 
 - Add the smallest coherent source boundary needed for the current objective.
 - Add deterministic validation alongside behavior.
 - Keep generated artifacts and reports separate from source.
 - Prefer repeated bounded improvements over one oversized rewrite.
 """
-        objective = "Turn this seed into a useful, tested project through repeated bounded improvements."
-        goals = ["working baseline", "deterministic validation", "incremental complexity", "clear operator evidence"]
+    objective = "Turn this seed into a useful, tested project through repeated bounded improvements."
+    goals = ["working baseline", "deterministic validation", "incremental complexity", "clear operator evidence"]
     manifest = {
         "leafos_object": "leafos.live_project",
         "version": 1,
@@ -327,8 +280,8 @@ def validate_onboarding_request(value: Any) -> dict[str, Any]:
         workspace_root = target.parent
         project_name = target.name
     template = str(value.get("template", "auto")).strip().lower()
-    if template not in {"auto", "generic", "catan2"}:
-        raise ValueError("project template must be auto, generic, or catan2")
+    if template not in {"auto", "generic"}:
+        raise ValueError("project template must be auto or generic")
     provider = str(value.get("provider", "required")).strip().lower()
     if provider not in {"required", "auto", "off"}:
         raise ValueError("project provider must be required, auto, or off")
@@ -403,9 +356,7 @@ def preview_project_onboarding(value: Any) -> dict[str, Any]:
     if target.exists() and not target.is_dir():
         raise ValueError(f"new project target is not a directory: {target}")
     conflicts = [name for name in ("README.md", "skeleton.md", "leafos.project.json") if (target / name).exists()]
-    selected_template = "catan2" if request["template"] == "catan2" or (
-        request["template"] == "auto" and target.name.lower() == "catan2"
-    ) else "generic"
+    selected_template = "generic"
     return {
         "leafos_object": "leafos.project_onboarding_preview",
         "version": 1,
@@ -580,7 +531,7 @@ def initialize_seed(target_value: str | Path, template: str = "auto") -> list[st
     if not target.is_dir():
         raise ValueError(f"seed target is not a directory: {target}")
     requested = template.lower()
-    template = "catan2" if requested == "catan2" or (requested == "auto" and target.name.lower() == "catan2") else "generic"
+    template = "generic" if requested in {"auto", "generic"} else requested
     files = _seed_content(template, target.name or "LeafOS Project")
     conflicts = [name for name in files if (target / name).exists()]
     if conflicts:
@@ -613,21 +564,7 @@ def derive_objective(inventory: dict[str, Any], explicit: str = "", iteration: i
     intent = inventory.get("intent", {})
     objective = str(intent.get("objective") or intent.get("intent") or "").strip()
     goals = _string_list(intent.get("improvement_goals"), limit=12)
-    if inventory.get("catan2") and inventory.get("state") == "seed":
-        base = (
-            f"Catan2 improvement iteration {number}: create the smallest runnable deterministic continual-production baseline. "
-            "Use no more than three concise source/test files and 200 total source lines; model a tiny resource state, one real-time "
-            "production tick, and deterministic tests. Use only the exact declared test command. Do not build UI, trading, bots, "
-            "large fixture tables, or placeholder code in this first increment."
-        )
-    elif inventory.get("catan2"):
-        base = (
-            f"Catan2 improvement iteration {number}: inspect the current game and implement the highest-value bounded increase "
-            "in playable RTS complexity. Consider rules, continual production, spatial building, trading, progression, bot "
-            "strategy, balance, match completion, observability, or interface quality. Preserve deterministic CPU authority, "
-            "strengthen tests, run the declared Catan2 benchmark, and leave a measured next-step recommendation."
-        )
-    elif objective:
+    if objective:
         base = f"Project improvement iteration {number}: advance this intent through one coherent bounded increment: {objective}"
     else:
         base = (
@@ -674,7 +611,6 @@ def create_intake_work_order(inventory: dict[str, Any], objective: str, *, appro
         "timeout_seconds": 900,
         "live_project": {
             "state": inventory["state"],
-            "catan2": inventory["catan2"],
             "source_files": inventory["source_file_count"],
             "tests": inventory["test_file_count"],
         },
@@ -769,12 +705,12 @@ def start_project(
     created = inlet.create_work_order_run(args)
     run = engine.read_json(created / "run.json", {})
     run["live_project"] = {
-        "state": inventory["state"], "iteration": 0, "catan2": inventory["catan2"],
+        "state": inventory["state"], "iteration": 0,
         "intake": str(work_order),
         "syntax": ":improve | :again | :<objective> | :mode | :targets | :budget",
     }
     engine.write_json(created / "run.json", run)
-    engine.append_event(created, "project.intake", state=inventory["state"], catan2=inventory["catan2"], source_files=inventory["source_file_count"])
+    engine.append_event(created, "project.intake", state=inventory["state"], source_files=inventory["source_file_count"])
     worker_pid = 0
     resident_pid = 0
     if spawn:
@@ -859,7 +795,7 @@ def queue_improvement(
             task = current
     run = engine.read_json(run_dir / "run.json", run)
     live = run.setdefault("live_project", {})
-    live.update(iteration=iteration, last_task_id=task["task_id"], last_objective=derived, state=inventory["state"], catan2=inventory["catan2"])
+    live.update(iteration=iteration, last_task_id=task["task_id"], last_objective=derived, state=inventory["state"])
     engine.write_json(run_dir / "run.json", run)
     engine.append_event(
         run_dir, "project.improvement_queued", task_id=task["task_id"], iteration=iteration,
@@ -918,10 +854,10 @@ def parse_active_command(value: str) -> dict[str, Any]:
     if verb == "new":
         parts = _split_arguments(remainder)
         if not 1 <= len(parts) <= 2:
-            raise ValueError(':new requires PATH and optional template "catan2" or "generic"')
+            raise ValueError(':new requires PATH and optional template "generic"')
         template = parts[1].lower() if len(parts) == 2 else "auto"
-        if template not in {"auto", "catan2", "generic"}:
-            raise ValueError("live project template must be auto, catan2, or generic")
+        if template not in {"auto", "generic"}:
+            raise ValueError("live project template must be auto or generic")
         return {"action": "project", "target": parts[0], "create": True, "template": template}
     if verb == "status":
         return {"action": "status"}
@@ -995,7 +931,7 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--new", action="store_true", help="create the three-file seed before intake")
     parser.add_argument("--wizard", action="store_true", help="open guided new/existing project onboarding")
     parser.add_argument("--onboard-json", help="apply a typed project onboarding request from JSON")
-    parser.add_argument("--template", choices=("auto", "generic", "catan2"), default="auto")
+    parser.add_argument("--template", choices=("auto", "generic"), default="auto")
     parser.add_argument("--objective", default="", help="optional first objective; project discovery is the default")
     parser.add_argument("--provider", choices=("required", "auto", "off"), default="required")
     parser.add_argument("--yes", action="store_true", help="pre-approve the initial mutation gate")

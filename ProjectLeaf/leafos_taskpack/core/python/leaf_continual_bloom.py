@@ -30,6 +30,12 @@ FULL_NAME = "Monday — Rescue and Analysis"
 GENESIS = "GENESIS"
 CLAIM_ID = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$")
 
+# Windows file locks are process-scoped enough that two Python threads can
+# receive EDEADLK instead of waiting for each other.  Serialize contenders in
+# this process first; the file lock below remains the cross-process authority.
+_INSTANCE_THREAD_LOCKS: dict[str, threading.Lock] = {}
+_INSTANCE_THREAD_LOCKS_GUARD = threading.Lock()
+
 
 class BloomError(RuntimeError):
     """A closed-boundary continual-bloom contract failure."""
@@ -117,29 +123,34 @@ def write_ndjson(path: Path, items: list[dict[str, Any]]) -> None:
 def instance_lock(instance: Path) -> Iterator[None]:
     lock_path = instance / ".instance.lock"
     lock_path.parent.mkdir(parents=True, exist_ok=True)
-    with lock_path.open("a+b") as handle:
-        handle.seek(0, os.SEEK_END)
-        if handle.tell() == 0:
-            handle.write(b"0")
-            handle.flush()
-        handle.seek(0)
-        if os.name == "nt":
-            import msvcrt
+    lock_key = os.path.normcase(str(lock_path.resolve()))
+    with _INSTANCE_THREAD_LOCKS_GUARD:
+        thread_lock = _INSTANCE_THREAD_LOCKS.setdefault(lock_key, threading.Lock())
 
-            msvcrt.locking(handle.fileno(), msvcrt.LK_LOCK, 1)
-            try:
-                yield
-            finally:
-                handle.seek(0)
-                msvcrt.locking(handle.fileno(), msvcrt.LK_UNLCK, 1)
-        else:
-            import fcntl
+    with thread_lock:
+        with lock_path.open("a+b") as handle:
+            handle.seek(0, os.SEEK_END)
+            if handle.tell() == 0:
+                handle.write(b"0")
+                handle.flush()
+            handle.seek(0)
+            if os.name == "nt":
+                import msvcrt
 
-            fcntl.flock(handle.fileno(), fcntl.LOCK_EX)
-            try:
-                yield
-            finally:
-                fcntl.flock(handle.fileno(), fcntl.LOCK_UN)
+                msvcrt.locking(handle.fileno(), msvcrt.LK_LOCK, 1)
+                try:
+                    yield
+                finally:
+                    handle.seek(0)
+                    msvcrt.locking(handle.fileno(), msvcrt.LK_UNLCK, 1)
+            else:
+                import fcntl
+
+                fcntl.flock(handle.fileno(), fcntl.LOCK_EX)
+                try:
+                    yield
+                finally:
+                    fcntl.flock(handle.fileno(), fcntl.LOCK_UN)
 
 
 def load_contract(path: Path = CONTRACT_PATH) -> dict[str, Any]:

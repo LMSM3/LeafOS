@@ -14,7 +14,7 @@ relaunches the command under PowerShell 7. The installer itself should be run
 with `pwsh`.
 
 ```powershell
-cd C:\R\LeafOS0.2.1\PowerShell-Version
+cd C:\path\to\LeafOS\PowerShell-Version
 pwsh -File .\install.ps1
 ```
 

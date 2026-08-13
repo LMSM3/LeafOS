@@ -51,7 +51,7 @@ ROOT = Path(__file__).resolve().parents[2]
 DEFAULT_PROFILES = ROOT / "config" / "agent_loop_profiles.json"
 RUNS_ROOT = ROOT / "runs" / "agent-loop"
 TASK_STATES_TERMINAL = {"complete", "blocked", "failed"}
-SAFE_PROJECTS = {"catan2", "chess3D", "generic-c-game", "generic-python-sim"}
+SAFE_PROJECTS = {"chess3D", "generic-c-game", "generic-python-sim"}
 
 
 def slug(value: str) -> str:
@@ -205,7 +205,7 @@ def append_agent_telemetry(
             "quantization": str(run.get("quantization") or "") or None,
         },
         provider={
-            "mode": provider_mode if provider_mode in {"off", "mock", "auto", "required", "llamacpp", "ollama", "openai", "other"} else "other",
+            "mode": provider_mode if provider_mode in {"off", "mock", "auto", "required", "llamacpp", "ollama", "openai", "web", "other"} else "other",
             "backend": "vulkan" if provider_mode in {"auto", "required"} else None,
             "endpoint": str(run.get("provider_endpoint") or "") or None,
             "status": provider_status,
@@ -246,7 +246,6 @@ def append_agent_telemetry(
 
 def project_readme(project: str) -> str:
     titles = {
-        "catan2": "Catan2 Benchmark Workspace",
         "chess3D": "Chess3D Workspace",
         "generic-c-game": "Generic C Game Workspace",
         "generic-python-sim": "Generic Python Simulation Workspace",
@@ -263,7 +262,6 @@ def project_readme(project: str) -> str:
 
 def project_work_order(project: str) -> str:
     objective = {
-        "catan2": "Run the Catan2 real-time resource benchmark and improve measurable play.",
         "chess3D": "Build a deterministic Chess3D rules skeleton before visuals.",
         "generic-c-game": "Create a small C game loop with deterministic tests.",
         "generic-python-sim": "Create a small Python simulation with deterministic tests.",
@@ -305,18 +303,8 @@ def write_project_files(target: Path, project: str, force: bool) -> list[str]:
         "WORK_ORDER.md": project_work_order(project),
         "project_state.json": json.dumps(state, indent=2, ensure_ascii=True) + "\n",
     }
-    if project == "catan2":
-        ps = (
-            "$ErrorActionPreference = 'Stop'\n"
-            f"& pwsh -NoProfile -File '{ROOT / 'bin' / 'leafctl.ps1'}' catan2bench --profile 4m --ticks 3 --fast --quiet --provider-mode off --json\n"
-        )
-        sh = (
-            "#!/usr/bin/env bash\nset -euo pipefail\n"
-            f"\"{ROOT / 'bin' / 'leafctl'}\" catan2bench --profile 4m --ticks 3 --fast --quiet --provider-mode off --json\n"
-        )
-    else:
-        ps = "$ErrorActionPreference = 'Stop'\nWrite-Host 'baseline skeleton validation passed'\n"
-        sh = "#!/usr/bin/env bash\nset -euo pipefail\necho 'baseline skeleton validation passed'\n"
+    ps = "$ErrorActionPreference = 'Stop'\nWrite-Host 'baseline skeleton validation passed'\n"
+    sh = "#!/usr/bin/env bash\nset -euo pipefail\necho 'baseline skeleton validation passed'\n"
     files["run_tests.ps1"] = ps
     files["run_tests.sh"] = sh
     written: list[str] = []
@@ -328,26 +316,6 @@ def write_project_files(target: Path, project: str, force: bool) -> list[str]:
 
 
 def validation_command(project: str, project_dir: Path, run_dir: Path, profile: dict[str, Any]) -> list[str]:
-    if project == "catan2":
-        catan = profile.get("catan2", {})
-        artifact_dir = run_dir / "artifacts" / "catan2"
-        return [
-            sys.executable,
-            str(ROOT / "core" / "bench" / "catan2bench.py"),
-            "--profile",
-            str(catan.get("profile", "4m")),
-            "--ticks",
-            str(catan.get("ticks", 3)),
-            "--fast",
-            "--quiet",
-            "--provider-mode",
-            str(catan.get("provider_mode", "off")),
-            "--run-dir",
-            str(artifact_dir),
-            "--out",
-            str(artifact_dir / "summary.json"),
-            "--json",
-        ]
     if os.name == "nt":
         return ["pwsh", "-NoProfile", "-File", str(project_dir / "run_tests.ps1")]
     return ["bash", str(project_dir / "run_tests.sh")]
@@ -385,7 +353,6 @@ def write_checkpoint(
     stop_reason: str,
     ticket: dict[str, Any] | None = None,
 ) -> None:
-    ticket = ticket or _agent_ticket("loop.checkpoint", {"run_dir": str(run_dir), "reason": stop_reason})
     events = read_events(run_dir)
     tasks = queue.get("tasks", [])
     checkpoint = {
@@ -401,7 +368,7 @@ def write_checkpoint(
         "stop_reason": stop_reason,
     }
     write_json(run_dir / "checkpoint.json", checkpoint)
-    append_event(run_dir, "checkpoint.written", ticket=ticket, stop_reason=stop_reason, queue_digest=checkpoint["queue_digest"])
+    append_event(run_dir, "checkpoint.written", stop_reason=stop_reason, queue_digest=checkpoint["queue_digest"])
     append_agent_telemetry(
         run_dir,
         "checkpoint",
@@ -495,10 +462,10 @@ def create_run(args: argparse.Namespace) -> int:
     write_json(run_dir / "state.json", state)
     (run_dir / "journal.jsonl").write_text("", encoding="utf-8")
     write_json(target / "run.json", {"leafos_object": "agent_loop_target_pointer", "latest_run_dir": str(run_dir), "run_id": run_id})
-    append_event(run_dir, "run.started", ticket=create_ticket, target=str(target), projects=projects, provider_mode=provider_mode)
+    append_event(run_dir, "run.started", target=str(target), projects=projects, provider_mode=provider_mode)
     append_agent_telemetry(run_dir, "run_start", "startup", validation_status="pending", collect_hardware=True)
     if provider_mode == "auto" and provider_error:
-        append_event(run_dir, "provider.startup_failed", ticket=create_ticket, provider_mode=provider_mode, error=provider_error, fallback="cpu-validation-policy")
+        append_event(run_dir, "provider.startup_failed", provider_mode=provider_mode, error=provider_error, fallback="cpu-validation-policy")
         append_agent_telemetry(
             run_dir,
             "provider_start",
@@ -507,10 +474,10 @@ def create_run(args: argparse.Namespace) -> int:
             notes=[provider_error, "Provider auto mode continued with the bounded CPU validation policy."],
         )
     for project in projects:
-        append_event(run_dir, "project.created", ticket=create_ticket, project=project, path=str(target / project))
+        append_event(run_dir, "project.created", project=project, path=str(target / project))
     for task in queue["tasks"]:
-        append_event(run_dir, "task.queued", ticket=create_ticket, task_id=task["task_id"], project=task["project"])
-    write_checkpoint(run_dir, run, queue, "created", ticket=create_ticket)
+        append_event(run_dir, "task.queued", task_id=task["task_id"], project=task["project"])
+    write_checkpoint(run_dir, run, queue, "created")
     write_report(run_dir)
     print(str(run_dir))
     return 0
@@ -663,27 +630,18 @@ def run_task(run_dir: Path, run: dict[str, Any], queue: dict[str, Any], task: di
         )
         task["status"] = "validating"
         if result.returncode == 0:
-            benchmark = capture_benchmark_evidence(run_dir, task)
-            score_delta = benchmark.get("score_delta") if benchmark else None
-            if isinstance(score_delta, (int, float)) and score_delta < 0:
-                task["status"] = "failed"
-                task["reason"] = "benchmark_regression"
-                append_event(run_dir, "validation.failed", task_id=task["task_id"], attempt=attempt, reason="benchmark_regression", score_delta=score_delta)
-                append_agent_telemetry(run_dir, "validation", "validation", task=task, validation_status="failed", score_delta=float(score_delta))
-                queue_repair(run_dir, queue, task)
-            else:
-                task["status"] = "complete"
-                repaired_task_id = next(
-                    (item.get("failed_task_id") for item in task.get("evidence", []) if item.get("failed_task_id")),
-                    None,
-                )
-                if repaired_task_id:
-                    repaired = next((item for item in queue.get("tasks", []) if item.get("task_id") == repaired_task_id), None)
-                    if repaired:
-                        repaired["status"] = "complete"
-                        repaired["repaired_by"] = task["task_id"]
-                append_event(run_dir, "validation.passed", task_id=task["task_id"], attempt=attempt, score_delta=score_delta)
-                append_agent_telemetry(run_dir, "validation", "validation", task=task, validation_status="passed", score_delta=score_delta)
+            task["status"] = "complete"
+            repaired_task_id = next(
+                (item.get("failed_task_id") for item in task.get("evidence", []) if item.get("failed_task_id")),
+                None,
+            )
+            if repaired_task_id:
+                repaired = next((item for item in queue.get("tasks", []) if item.get("task_id") == repaired_task_id), None)
+                if repaired:
+                    repaired["status"] = "complete"
+                    repaired["repaired_by"] = task["task_id"]
+            append_event(run_dir, "validation.passed", task_id=task["task_id"], attempt=attempt)
+            append_agent_telemetry(run_dir, "validation", "validation", task=task, validation_status="passed")
         else:
             task["status"] = "failed"
             append_event(run_dir, "validation.failed", task_id=task["task_id"], attempt=attempt, exit_code=result.returncode)
@@ -708,34 +666,6 @@ def run_task(run_dir: Path, run: dict[str, Any], queue: dict[str, Any], task: di
         append_event(run_dir, "step.timeout", task_id=task["task_id"], attempt=attempt, elapsed_seconds=elapsed)
         append_agent_telemetry(run_dir, "run_error", "error", task=task, validation_status="failed", notes=["Task timed out."])
         queue_repair(run_dir, queue, task)
-
-
-def capture_benchmark_evidence(run_dir: Path, task: dict[str, Any]) -> dict[str, Any]:
-    if task.get("project") != "catan2":
-        return {}
-    summary_path = run_dir / "artifacts" / "catan2" / "summary.json"
-    summary = read_json(summary_path, {})
-    if not isinstance(summary, dict) or summary.get("leafos_object") != "catan2bench":
-        return {}
-    players = summary.get("players", [])
-    leafos_total = next((item.get("total") for item in players if item.get("role") == "leafos_dual_brain"), None)
-    bot_total = next((item.get("total") for item in players if item.get("role") == "bot"), None)
-    score_delta = float(leafos_total - bot_total) if isinstance(leafos_total, (int, float)) and isinstance(bot_total, (int, float)) else None
-    report_dir = Path(str(task.get("workdir", ""))) / "reports"
-    report_dir.mkdir(parents=True, exist_ok=True)
-    report_path = report_dir / f"{task['task_id']}.catan2.summary.json"
-    shutil.copy2(summary_path, report_path)
-    evidence = {
-        "kind": "catan2_benchmark",
-        "summary": str(summary_path),
-        "project_report": str(report_path),
-        "score_delta": score_delta,
-        "leafos_total": leafos_total,
-        "bot_total": bot_total,
-        "provider_status": summary.get("provider", {}).get("status"),
-    }
-    task.setdefault("evidence", []).append(evidence)
-    return evidence
 
 
 def queue_repair(run_dir: Path, queue: dict[str, Any], failed_task: dict[str, Any]) -> None:
@@ -884,21 +814,19 @@ def status_run(args: argparse.Namespace) -> int:
 
 def resume_run(args: argparse.Namespace) -> int:
     run_dir = resolve_run_dir(args.run)
-    ticket = _agent_ticket("loop.event.append", {"run_dir": str(run_dir), "action": "resume"})
     read_events(run_dir)
     state = read_json(run_dir / "state.json", {})
     state["status"] = "resumed"
     state["last_tick_utc"] = utc_now()
     state["next_action"] = "agent-loop-tick"
     write_json(run_dir / "state.json", state)
-    append_event(run_dir, "run.resumed", ticket=ticket)
+    append_event(run_dir, "run.resumed")
     print(status_text(run_dir))
     return 0
 
 
 def stop_run(args: argparse.Namespace) -> int:
     run_dir = resolve_run_dir(args.run)
-    ticket = _agent_ticket("loop.checkpoint", {"run_dir": str(run_dir), "action": "stop"})
     read_events(run_dir)
     run = read_json(run_dir / "run.json", {})
     queue = read_json(run_dir / "queue.json", {})
@@ -908,8 +836,8 @@ def stop_run(args: argparse.Namespace) -> int:
     state["stop_policy"] = "after-current-step" if args.after_current_step else "now"
     state["next_action"] = "agent-loop-resume"
     write_json(run_dir / "state.json", state)
-    append_event(run_dir, "run.paused", ticket=ticket, stop_policy=state["stop_policy"])
-    write_checkpoint(run_dir, run, queue, "operator_paused", ticket=ticket)
+    append_event(run_dir, "run.paused", stop_policy=state["stop_policy"])
+    write_checkpoint(run_dir, run, queue, "operator_paused")
     write_report(run_dir)
     print(status_text(run_dir))
     return 0
@@ -941,12 +869,7 @@ def write_report(run_dir: Path) -> Path:
         for evidence in task.get("evidence", [])[-2:]:
             if "stdout" in evidence:
                 lines.append(f"  evidence: exit={evidence.get('exit_code')} stdout=`{evidence.get('stdout')}`")
-            if evidence.get("kind") == "catan2_benchmark":
-                lines.append(
-                    f"  benchmark: score delta={evidence.get('score_delta')} "
-                    f"LeafOS={evidence.get('leafos_total')} bot={evidence.get('bot_total')} "
-                    f"report=`{evidence.get('project_report')}`"
-                )
+
     lines.extend(["", "## Provider And Hardware", ""])
     if provider_failures:
         for event in provider_failures:

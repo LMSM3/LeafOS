@@ -16,7 +16,7 @@ run budget in minutes; it is not a token count or a report refresh interval.
 ```powershell
 $T = 64
 $ReportInterval = 30
-$Repo = 'C:\R\LeafOS0.2.1\ProjectLeaf\leafos_taskpack'
+$Repo = 'C:\R\LeafOS0.2.2\ProjectLeaf\leafos_taskpack'
 $Project = 'C:\R\MyProject'
 $Prefix = Join-Path $env:LOCALAPPDATA 'leafos'
 $ModelDir = Join-Path $env:LOCALAPPDATA 'leafos\models'

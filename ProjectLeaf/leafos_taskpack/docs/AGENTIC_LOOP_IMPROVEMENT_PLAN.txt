@@ -27,8 +27,8 @@ checkpoint -> report -> choose next task -> repeat or stop.
 
 This is the top end of the local agentic workflow. It should eventually be able
 to create a directory such as C:\Games, scaffold projects like chess3D and
-catan2, assign work orders, run improvement cycles, play/benchmark the games,
-and leave evidence that can be resumed.
+generic-python-sim, assign work orders, run improvement cycles, validate with
+CPU baselines, and leave evidence that can be resumed.
 
 Five-Part Unification Spine
 ---------------------------
@@ -49,8 +49,9 @@ order should be driven by these five shippable pieces:
    allowlisted steps, run validation, and create repair tasks on failure.
 
 4. Game benchmark integration:
-   make catan2 the first real loop target, then add chess3D after the runner is
-   stable. Benchmarks should produce score deltas and evidence artifacts.
+   make chess3D the first real loop target, then add generic-python-sim after the
+   runner is stable. Benchmarks should produce validation results and evidence
+   artifacts.
 
 5. Observability and dual-brain provider closure:
    expose the loop through status/report commands and a live reasoning/action
@@ -100,11 +101,11 @@ Target Command Shape
 --------------------
 The desired user-facing command should be close to:
 
-pwsh -NoProfile -File C:\R\LeafOS0.2.1\ProjectLeaf\leafos_taskpack\bin\leafctl.ps1 agent-loop-start --target C:\Games --projects chess3D,catan2 --profile local-games --yes
+pwsh -NoProfile -File C:\R\LeafOS0.2.2\ProjectLeaf\leafos_taskpack\bin\leafctl.ps1 agent-loop-start --target C:\Games --projects chess3D,generic-python-sim --profile local-games --yes
 
 Optional variations:
 
-leafctl sandbox-create --target C:\Games --projects chess3D,catan2 --yes
+leafctl sandbox-create --target C:\Games --projects chess3D,generic-python-sim --yes
 leafctl sandbox-run C:\Games --max-minutes 64 --yes
 leafctl agent-loop-status C:\Games
 leafctl agent-loop-stop C:\Games --after-current-step
@@ -167,7 +168,6 @@ Add a skeleton creator for local improvement projects.
 Initial templates:
 
 - chess3D
-- catan2
 - generic-c-game
 - generic-python-sim
 
@@ -187,13 +187,13 @@ For C:\Games:
 C:\Games\
   run.json
   chess3D\
-  catan2\
+  generic-python-sim\
   shared\
   reports\
 
 Acceptance:
 
-- The command can create C:\Games\chess3D and C:\Games\catan2 without prompts.
+- The command can create C:\Games\chess3D and C:\Games\generic-python-sim without prompts.
 - Existing directories are not overwritten unless --force is passed.
 - Each project has at least one passing baseline test.
 
@@ -327,12 +327,6 @@ Phase 7 - Game Loop Integration
 -------------------------------
 Add project-specific run modes for games.
 
-Catan2:
-
-- Run catan2bench fast CPU-only baseline.
-- Run catan2bench real 4m/8m/64m after provider config.
-- Store events, brain trace, summary, and topology report.
-
 Chess3D:
 
 - Start with a skeleton board/rules engine.
@@ -346,13 +340,12 @@ Game improvement loop:
 2. Identify one measurable weakness.
 3. Generate a small patch.
 4. Run tests and replay.
-5. Record score delta.
+5. Record validation result.
 6. Accept only if validation passes.
 
 Acceptance:
 
-- catan2 project can be created under C:\Games.
-- catan2 benchmark can be run from the loop.
+- chess3D project can be created under C:\Games.
 - A game score/report artifact is written per iteration.
 
 Phase 8 - Operator Surface
@@ -409,7 +402,7 @@ Phase 10 - Tests and Gates
 Minimum test set:
 
 1. Create run directory dry-run.
-2. Create C:\Games-like temp workspace with chess3D and catan2 skeletons.
+2. Create C:\Games-like temp workspace with chess3D and generic-python-sim skeletons.
 3. Refuse overwrite without --force.
 4. Queue two tasks and execute one tick.
 5. Mock provider plan generation.
@@ -429,25 +422,25 @@ Near-Term Implementation Order
 6. Add Bash command bridge in bin/leafctl.
 7. Add tests/test_agent_loop.py.
 8. Add tests/agent_loop.sh.
-9. Wire catan2bench as the first real game validation command.
-10. Add chess3D skeleton after the loop runner is stable.
+9. Wire chess3D skeleton validation as the first real game validation command.
+10. Add generic-python-sim skeleton after the loop runner is stable.
 
 First Useful Milestone
 ----------------------
 The smallest useful milestone is:
 
-pwsh -NoProfile -File C:\R\LeafOS0.2.1\ProjectLeaf\leafos_taskpack\bin\leafctl.ps1 agent-loop-start --target C:\Games --projects catan2 --profile local-games --dry-run
+pwsh -NoProfile -File C:\R\LeafOS0.2.2\ProjectLeaf\leafos_taskpack\bin\leafctl.ps1 agent-loop-start --target C:\Games --projects chess3D --profile local-games --dry-run
 
 Then:
 
-pwsh -NoProfile -File C:\R\LeafOS0.2.1\ProjectLeaf\leafos_taskpack\bin\leafctl.ps1 agent-loop-start --target C:\Games --projects catan2 --profile local-games --yes
+pwsh -NoProfile -File C:\R\LeafOS0.2.2\ProjectLeaf\leafos_taskpack\bin\leafctl.ps1 agent-loop-start --target C:\Games --projects chess3D --profile local-games --yes
 
 Expected result:
 
-- C:\Games\catan2 exists.
+- C:\Games\chess3D exists.
 - A run manifest exists.
 - A queue file exists.
-- One baseline Catan2 validation task exists.
+- One baseline chess3D validation task exists.
 - Status reports the next action.
 - No model or GPU provider is started unless explicitly requested.
 

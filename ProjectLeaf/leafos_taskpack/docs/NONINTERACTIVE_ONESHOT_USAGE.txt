@@ -9,19 +9,19 @@ There are two different noninteractive needs. Use the correct one.
 
 Read-only intake:
 
-  pwsh -NoProfile -File C:\R\LeafOS0.2.1\ProjectLeaf\leafos_taskpack\bin\leafctl.ps1 live C:\R\MyProject --inspect --json
+  pwsh -NoProfile -File C:\R\LeafOS0.2.2\ProjectLeaf\leafos_taskpack\bin\leafctl.ps1 live C:\R\MyProject --inspect --json
 
 Start a work-order-driven run:
 
-  pwsh -NoProfile -File C:\R\LeafOS0.2.1\ProjectLeaf\leafos_taskpack\bin\leafctl.ps1 agent-loop-start --target C:\R\MyProject --work-order C:\R\MyProject\WO.json --profile local-coding --yes
+  pwsh -NoProfile -File C:\R\LeafOS0.2.2\ProjectLeaf\leafos_taskpack\bin\leafctl.ps1 agent-loop-start --target C:\R\MyProject --work-order C:\R\MyProject\WO.json --profile local-coding --yes
 
 Submit one task to a live run:
 
-  pwsh -NoProfile -File C:\R\LeafOS0.2.1\ProjectLeaf\leafos_taskpack\bin\leafctl.ps1 loop task submit active C:\R\MyProject\task-request.json
+  pwsh -NoProfile -File C:\R\LeafOS0.2.2\ProjectLeaf\leafos_taskpack\bin\leafctl.ps1 loop task submit active C:\R\MyProject\task-request.json
 
 Send the same minimal instruction parser used by the TUI:
 
-  pwsh -NoProfile -File C:\R\LeafOS0.2.1\ProjectLeaf\leafos_taskpack\bin\leafctl.ps1 live --command ":improve add deterministic replay" --json
+  pwsh -NoProfile -File C:\R\LeafOS0.2.2\ProjectLeaf\leafos_taskpack\bin\leafctl.ps1 live --command ":improve add deterministic replay" --json
 
 These commands use the current typed inlet, queue, provider proposal,
 CPU-authoritative execution, validation, checkpoint, and report path.
@@ -30,11 +30,11 @@ CPU-authoritative execution, validation, checkpoint, and report path.
 2. CREATE A PORTABLE HANDOFF BUNDLE
 -----------------------------------
 
-  pwsh -NoProfile -File C:\R\LeafOS0.2.1\ProjectLeaf\leafos_taskpack\bin\leafctl.ps1 oneshot --oneshot C:\R\LeafOS0.2.1\ProjectLeaf\leafos_taskpack C:\R2\LeafOS-OneShot --force
+  pwsh -NoProfile -File C:\R\LeafOS0.2.2\ProjectLeaf\leafos_taskpack\bin\leafctl.ps1 oneshot --oneshot C:\R\LeafOS0.2.2\ProjectLeaf\leafos_taskpack C:\R2\LeafOS-OneShot --force
 
 Safe preview:
 
-  pwsh -NoProfile -File C:\R\LeafOS0.2.1\ProjectLeaf\leafos_taskpack\bin\leafctl.ps1 oneshot --oneshot C:\R\LeafOS0.2.1\ProjectLeaf\leafos_taskpack C:\R2\LeafOS-OneShot --dry-run --no-zip
+  pwsh -NoProfile -File C:\R\LeafOS0.2.2\ProjectLeaf\leafos_taskpack\bin\leafctl.ps1 oneshot --oneshot C:\R\LeafOS0.2.2\ProjectLeaf\leafos_taskpack C:\R2\LeafOS-OneShot --dry-run --no-zip
 
 Options:
 
@@ -49,10 +49,10 @@ an optional zip. It does not start a provider, create a resident run, mutate a
 project through the agent loop, or play a game.
 
 
-3. CREATE A MINIMAL CATAN2 PROJECT
-----------------------------------
+3. CREATE A MINIMAL GENERIC PROJECT
+-----------------------------------
 
-  pwsh -NoProfile -File C:\R\LeafOS0.2.1\ProjectLeaf\leafos_taskpack\bin\leafctl.ps1 live C:\Games\catan2 --new --template catan2 --yes --budget 64
+  pwsh -NoProfile -File C:\R\LeafOS0.2.2\ProjectLeaf\leafos_taskpack\bin\leafctl.ps1 live C:\R\MyProject --new --template generic --yes --budget 64
 
 The live command is the current top-level project inlet. It can also begin
 from an existing repository, documentation-only project, or empty directory.
@@ -61,7 +61,7 @@ from an existing repository, documentation-only project, or empty directory.
 4. VERIFY WITHOUT REAL INFERENCE
 --------------------------------
 
-  pwsh -NoProfile -File C:\R\LeafOS0.2.1\ProjectLeaf\leafos_taskpack\bin\leafctl.ps1 catan2-resident --contract-only --iterations 3
+  pwsh -NoProfile -File C:\R\LeafOS0.2.2\ProjectLeaf\leafos_taskpack\bin\leafctl.ps1 resident start --contract-only --iterations 3
 
 Contract mode tests scheduling and evidence only. It is not real-provider
 evidence. Use --profile 4m --provider required for the real acceptance path.

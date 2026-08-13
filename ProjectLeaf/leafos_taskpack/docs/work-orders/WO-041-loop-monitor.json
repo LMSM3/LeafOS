@@ -4,7 +4,7 @@
   "work_order_id": "WO-041",
   "title": "Hands-Off Loop Monitor",
   "status": "done",
-  "target": "C:\\R\\LeafOS0.2.1",
+  "target": "C:\\R\\LeafOS0.2.2",
   "objective": "Implement one read-only loop monitor with interactive terminal rendering, non-interactive JSONL output, reconnect cursors, and stale-heartbeat detection.",
   "allowed_paths": [
     "ProjectLeaf/leafos_taskpack/bin/leafctl",

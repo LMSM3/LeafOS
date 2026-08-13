@@ -23,7 +23,7 @@ Read `docs/DOCUMENTATION_MAP.md`, `docs/ARCHITECTURE.md`, and `docs/AGENTIC_CLI.
 
 - Use **stack** for all downloaded and locally available models in the instance.
 - Distinguish the resident project stack from the optional SSH node subsystem.
-- Distinguish `catan2bench` gameplay from `catan2-resident` project improvement.
+- Distinguish `realbench` and `fullstackbench` gameplay from resident project improvement.
 - Mark contract, fixture, synthetic, and real-provider evidence explicitly.
 - Preserve historical work orders and reports as dated evidence; update current guides instead of rewriting history.
 - Update `docs/DOCUMENTATION_MAP.md` when adding an operator-facing document.
@@ -47,8 +47,8 @@ python -m unittest tests.test_tui_native
 For resident scheduling changes:
 
 ```powershell
-.\bin\leafctl.ps1 catan2-resident --contract-only --iterations 3
-.\bin\leafctl.ps1 catan2-resident --profile 4m --provider required
+.\bin\leafctl.ps1 resident start --contract-only --iterations 3
+.\bin\leafctl.ps1 resident start --profile 4m --provider required
 ```
 
 Never claim the 8-minute or 64-minute soak passed unless its retained summary is present and successful.

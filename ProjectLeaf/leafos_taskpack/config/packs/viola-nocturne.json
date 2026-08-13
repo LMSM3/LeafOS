@@ -76,10 +76,10 @@
       {"catalog_key": "viola-fable5-distill-35b-a3b", "quant": "Q4_K_M", "profile_id": "viola-nocturne.deep-reasoner-q4"},
       {"catalog_key": "viola-fable5-distill-35b-a3b", "quant": "Q6_K", "profile_id": "viola-nocturne.judge-q6"},
       {"catalog_key": "viola-fable5-distill-35b-a3b", "quant": "Q4_K_M", "profile_id": "viola-nocturne.critic-q4"},
-      {"catalog_key": "viola-fablevibes-14b-a3b", "quant": "Q4_K_M", "profile_id": "viola-nocturne.experimental-fable-vision"},
-      {"catalog_key": "viola-fablevibes-14b-a3b", "quant": "Q4_K_M", "profile_id": "viola-nocturne.experimental-moe-router"},
-      {"catalog_key": "viola-opus-deepseek-27b-1m", "quant": "Q4_K_M", "profile_id": "viola-nocturne.experimental-long-context"},
-      {"catalog_key": "viola-opus-sonnet-27b-v2", "quant": "Q4_K_M", "profile_id": "viola-nocturne.experimental-reasoning-control"}
+      {"catalog_key": "viola-fablevibes-14b-a3b", "quant": "Q4_K_M", "profile_id": "viola-nocturne.experimental-fable-vision", "experimental": true},
+      {"catalog_key": "viola-fablevibes-14b-a3b", "quant": "Q4_K_M", "profile_id": "viola-nocturne.experimental-moe-router", "experimental": true},
+      {"catalog_key": "viola-opus-deepseek-27b-1m", "quant": "Q4_K_M", "profile_id": "viola-nocturne.experimental-long-context", "experimental": true},
+      {"catalog_key": "viola-opus-sonnet-27b-v2", "quant": "Q4_K_M", "profile_id": "viola-nocturne.experimental-reasoning-control", "experimental": true}
     ]
   },
   "notes": [

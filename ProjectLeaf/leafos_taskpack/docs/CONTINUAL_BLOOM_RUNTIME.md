@@ -12,7 +12,7 @@ descriptions; they are not initialized as sibling durable instances.
 
 ## Quick access
 
-From `C:\R\LeafOS0.2.1` in PowerShell:
+From `C:\R\LeafOS0.2.2` in PowerShell:
 
 ```powershell
 .\leafos.ps1 bloom init
@@ -113,6 +113,6 @@ evidence.
 - Model and coder selections are preferences, not execution authority.
 
 The canonical design reference is
-`C:\R\LeafOS0.2.1\LEAFOS-CONTINUAL-BLOOM-PRIMARY-REFERENCE.md`, with its
+`C:\R\LeafOS0.2.2\LEAFOS-CONTINUAL-BLOOM-PRIMARY-REFERENCE.md`, with its
 formatless TeX companion beside it. The machine-readable runtime contract is
 `config/continual-bloom-monday.json`.

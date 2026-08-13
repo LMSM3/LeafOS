@@ -1,0 +1,44 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://leafos.local/ccis/contracts/transition.v1.schema.json",
+  "title": "CCIS State Transition",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["ccis_object", "schema_version", "transition_id", "task_id", "sequence", "occurred_at", "from_state", "to_state", "worker_id", "artifact_hash", "reason", "trigger", "state_hash_before", "state_hash_after", "checkpoint_ref", "evidence_bundle_ref"],
+  "properties": {
+    "ccis_object": {"const": "ccis.transition"},
+    "schema_version": {"const": 1},
+    "transition_id": {"$ref": "#/$defs/id"},
+    "task_id": {"$ref": "#/$defs/id"},
+    "sequence": {"type": "integer", "minimum": 1},
+    "occurred_at": {"type": "string", "format": "date-time"},
+    "from_state": {"$ref": "#/$defs/state"},
+    "to_state": {"$ref": "#/$defs/state"},
+    "worker_id": {"type": "string", "minLength": 1},
+    "artifact_hash": {"$ref": "#/$defs/hash"},
+    "reason": {"type": "string", "minLength": 1},
+    "outcome": {"oneOf": [{"$ref": "#/$defs/outcome"}, {"type": "null"}]},
+    "trigger": {"type": "string", "minLength": 1},
+    "state_hash_before": {"$ref": "#/$defs/hash"},
+    "state_hash_after": {"$ref": "#/$defs/hash"},
+    "checkpoint_ref": {"type": "string", "pattern": "^checkpoint://"},
+    "evidence_bundle_ref": {"type": "string", "pattern": "^evidence://"},
+    "decision_ref": {"type": ["string", "null"]},
+    "rollback": {
+      "type": ["object", "null"],
+      "additionalProperties": false,
+      "required": ["target_hash", "restored_hash", "verified"],
+      "properties": {
+        "target_hash": {"$ref": "#/$defs/hash"},
+        "restored_hash": {"$ref": "#/$defs/hash"},
+        "verified": {"type": "boolean"}
+      }
+    }
+  },
+  "$defs": {
+    "id": {"type": "string", "pattern": "^[A-Za-z][A-Za-z0-9._-]{2,127}$"},
+    "hash": {"type": "string", "pattern": "^sha256:[a-f0-9]{64}$"},
+    "state": {"enum": ["CREATED", "SNAPSHOTTED", "OBJECTIVE_DEFINED", "INSPECTING", "CANDIDATES_GENERATED", "CANDIDATE_SELECTED", "MUTATING", "VALIDATING", "GATED", "ACCEPTED", "REVISE", "REJECTED", "BLOCKED", "ESCALATED", "STAGED", "ROLLED_BACK"]},
+    "outcome": {"enum": ["ACCEPTED", "REVISE", "REJECTED", "BLOCKED", "ESCALATED"]}
+  }
+}

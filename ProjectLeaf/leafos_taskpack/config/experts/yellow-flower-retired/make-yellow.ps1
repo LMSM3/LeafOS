@@ -1,4 +1,4 @@
-$base = "C:\R\LeafOS0.2.1\ProjectLeaf\leafos_taskpack\config\experts\yellow"
+$base = "C:\R\LeafOS0.2.3\ProjectLeaf\leafos_taskpack\config\experts\yellow"
 function WriteExpert($name, $content) {
 	Set-Content -Path (Join-Path $base "$name.json") -Value $content
 }

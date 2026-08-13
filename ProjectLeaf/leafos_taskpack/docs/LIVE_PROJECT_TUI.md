@@ -54,7 +54,7 @@ Press `:` in the TUI and enter one of these lines:
 :again
 :make the board easier to inspect during play
 :project "C:\R\Another Project"
-:new "C:\Games\catan2" catan2
+:new "C:\R\MyProject" generic
 :mode quiet
 :targets cpu 80 gpu 90
 :budget 64m
@@ -69,7 +69,7 @@ Press `:` in the TUI and enter one of these lines:
 - `:again` queues the next iteration after the latest live task.
 - Any unrecognized line is treated as a plain-language improvement objective, so command vocabulary is optional.
 - `:project` opens or starts any existing directory.
-- `:new` creates a project from exactly three seed inputs: `README.md`, `skeleton.md`, and `leafos.project.json`. The template is inferred from a `catan2` directory name or can be stated explicitly.
+- `:new` creates a project from exactly three seed inputs: `README.md`, `skeleton.md`, and `leafos.project.json`. The template is always generic; infer it from the directory name or state it explicitly.
 - Paths containing spaces must be quoted.
 - `:mode`, `:targets`, and `:budget` control adaptive resident scheduling without changing project authority.
 - `:pause`, `:resume`, and `:drain` route to the existing safe-boundary lifecycle controls.
@@ -81,39 +81,32 @@ An accepted objective is acknowledged with a durable task ID. Operator tasks
 may be submitted while another task is running and receive priority at the next
 safe claim boundary; the active command is not interrupted mid-step.
 
-## Catan2 Benchmark Project
+## Generic Live Project Example
 
-The current LeafOS repository is itself a medium-sized Catan2 demonstration target:
-
-```powershell
-.\bin\leafctl.ps1 live C:\R\LeafOS0.2.1\ProjectLeaf\leafos_taskpack --fresh-run
-```
-
-Discovery recognizes `core/bench/catan2bench.py` and constrains work to:
-
-- `core/bench`
-- `tests/catan2bench.sh`
-- `tests/test_board_spatial.py`
-- `docs/CATAN2_BENCHMARK.md`
-
-It also declares the spatial unit tests and Catan2 benchmark as CPU validation gates. Repeated `:improve` or `:again` requests ask the stack to choose one coherent increase in RTS complexity from rules, continual production, construction, trading, progression, bot policy, balance, match completion, observability, or interface quality.
-
-The loop is intentionally iterative. Each task records an iteration number, uses the prior live task as its dependency when appropriate, validates the resulting game, and leaves a recommendation for the next increment.
-
-## Blank Catan2 Seed
+The current LeafOS repository can be opened as a generic live project:
 
 ```powershell
-.\bin\leafctl.ps1 live C:\Games\catan2 --new
+.\bin\leafctl.ps1 live C:\R\LeafOS0.2.2\ProjectLeaf\leafos_taskpack --fresh-run
 ```
 
-No source layout is required. The three seed files describe intent, suggested boundaries, long-term goals, safety constraints, and a validation command. The normal inspection and plan-v2 path decides what source and tests are needed. There is no separate blank-project engine or Catan-only executor.
+Discovery infers the validation command from the project state. Repeated `:improve` or `:again` requests ask the stack to choose one coherent bounded improvement.
+
+The loop is intentionally iterative. Each task records an iteration number, uses the prior live task as its dependency when appropriate, validates the result, and leaves a recommendation for the next increment.
+
+## Blank Generic Seed
+
+```powershell
+.\bin\leafctl.ps1 live C:\R\MyProject --new
+```
+
+No source layout is required. The three seed files describe intent, suggested boundaries, long-term goals, safety constraints, and a validation command. The normal inspection and plan-v2 path decides what source and tests are needed.
 
 ## Intake Procedure
 
 1. Walk the project with a 4,000-file bound while ignoring generated, dependency, VCS, environment, and run directories.
 2. Classify the state as empty, seed, documents, or codebase.
 3. Read only root project intent or a small seed's JSON; nested repository JSON is not mistaken for authority.
-4. Infer language, source, tests, allowed paths, validation commands, and optional Catan2 identity.
+4. Infer language, source, tests, allowed paths, and validation commands.
 5. Write the generated intake work order under `runs/agent-loop/live-intake`, not inside the target.
 6. Start or reattach the persistent version-2 loop and open the TUI.
 7. Normalize every improvement into the existing typed task request, native LMEM control journal, provider proposal, CPU executor, validator, checkpoint, and report path.
@@ -131,4 +124,4 @@ Existing projects receive no LeafOS control files during intake. A seed is modif
 
 These routes use the same parser and inlet authority as the active window. They are useful for scripts and parser diagnostics, not an alternate execution path.
 
-See `docs/RESIDENT_STACK_USAGE.md` for resource profiles, budgets, provider recovery, resident lifecycle commands, and Catan2 soak profiles.
+See `docs/RESIDENT_STACK_USAGE.md` for resource profiles, budgets, provider recovery, and resident lifecycle commands.

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Deterministic cosmetic identity for LeafOS model packs.
+"""Deterministic visual identity for LeafOS model packs.
 
 This module assigns only display-level attributes to packs:
   - flower (visual seed)
@@ -18,10 +18,14 @@ It must NOT assign or influence:
   - validation policy
   - runtime state
 
+An owning runtime may render this identity as part of a separately validated
+subsystem-presence evidence object. That does not make the identity generator
+itself a capability, health, authorization, or process-liveness authority.
+
 Randomization is limited to *flower* and *colour*. The symbol follows the
 flower deterministically. A stable seed derived from the pack id makes the
 default identity reproducible, while different pack ids still receive
-distinct cosmetic identities.
+distinct visual identities.
 """
 
 from __future__ import annotations
@@ -72,10 +76,12 @@ def build_identity(
     flower: str | None = None,
     colour: str | None = None,
 ) -> dict[str, Any]:
-    """Return a purely cosmetic identity for a pack.
+    """Return a deterministic visual identity for a pack.
 
     *seed_value* should be a stable identifier such as pack_id or pack path.
     Any supplied *flower* or *colour* overrides the deterministic default.
+    The identity is passive at rest; an owning runtime can bind it to separately
+    validated subsystem-presence evidence.
     """
     _validate(flower, colour)
     rng = random.Random(seed_value)

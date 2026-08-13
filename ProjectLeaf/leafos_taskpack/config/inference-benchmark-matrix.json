@@ -43,7 +43,7 @@
       "id": "historical-candidate-gemma-q4-t24",
       "label": "Historical protocol reconstruction, model identity unverified",
       "phase": "historical-reconstruction",
-      "model": "C:\\R\\LeafOS0.2.1\\ProjectLeaf\\leaf_model_installer\\models\\Gemma4-Opus-Assistant\\gemma4-opus48-Q4_K_M.gguf",
+      "model": "C:\\R\\LeafOS0.2.3\\ProjectLeaf\\leaf_model_installer\\models\\Gemma4-Opus-Assistant\\gemma4-opus48-Q4_K_M.gguf",
       "prompt_tokens": 512,
       "generated_tokens": 128,
       "repetitions": 3,
@@ -56,115 +56,115 @@
     },
     {
       "id": "gemma-opus-q4-cpu-t8", "phase": "cpu-thread-sweep",
-      "model": "C:\\R\\LeafOS0.2.1\\ProjectLeaf\\leaf_model_installer\\models\\Gemma4-Opus-Assistant\\gemma4-opus48-Q4_K_M.gguf",
+      "model": "C:\\R\\LeafOS0.2.3\\ProjectLeaf\\leaf_model_installer\\models\\Gemma4-Opus-Assistant\\gemma4-opus48-Q4_K_M.gguf",
       "prompt_tokens": 512, "generated_tokens": 256, "repetitions": 5, "threads": 8,
       "gpu_layers": 0, "kv_key_type": "f16", "kv_value_type": "f16"
     },
     {
       "id": "gemma-opus-q4-cpu-t16", "phase": "cpu-thread-sweep",
-      "model": "C:\\R\\LeafOS0.2.1\\ProjectLeaf\\leaf_model_installer\\models\\Gemma4-Opus-Assistant\\gemma4-opus48-Q4_K_M.gguf",
+      "model": "C:\\R\\LeafOS0.2.3\\ProjectLeaf\\leaf_model_installer\\models\\Gemma4-Opus-Assistant\\gemma4-opus48-Q4_K_M.gguf",
       "prompt_tokens": 512, "generated_tokens": 256, "repetitions": 5, "threads": 16,
       "gpu_layers": 0, "kv_key_type": "f16", "kv_value_type": "f16"
     },
     {
       "id": "gemma-opus-q4-cpu-t24", "phase": "cpu-thread-sweep",
-      "model": "C:\\R\\LeafOS0.2.1\\ProjectLeaf\\leaf_model_installer\\models\\Gemma4-Opus-Assistant\\gemma4-opus48-Q4_K_M.gguf",
+      "model": "C:\\R\\LeafOS0.2.3\\ProjectLeaf\\leaf_model_installer\\models\\Gemma4-Opus-Assistant\\gemma4-opus48-Q4_K_M.gguf",
       "prompt_tokens": 512, "generated_tokens": 256, "repetitions": 5, "threads": 24,
       "gpu_layers": 0, "kv_key_type": "f16", "kv_value_type": "f16"
     },
     {
       "id": "gemma-opus-q4-cpu-t32", "phase": "cpu-thread-sweep",
-      "model": "C:\\R\\LeafOS0.2.1\\ProjectLeaf\\leaf_model_installer\\models\\Gemma4-Opus-Assistant\\gemma4-opus48-Q4_K_M.gguf",
+      "model": "C:\\R\\LeafOS0.2.3\\ProjectLeaf\\leaf_model_installer\\models\\Gemma4-Opus-Assistant\\gemma4-opus48-Q4_K_M.gguf",
       "prompt_tokens": 512, "generated_tokens": 256, "repetitions": 5, "threads": 32,
       "gpu_layers": 0, "kv_key_type": "f16", "kv_value_type": "f16"
     },
     {
       "id": "qwen14-a3b-moe-cpu-t8", "phase": "cpu-thread-sweep",
-      "model": "C:\\R\\LeafOS0.2.1\\ProjectLeaf\\leaf_model_installer\\models\\Qwen3.5-Claude-Reasoning\\Qwen3.5-14B-A3B-Claude-Opus-Reasoning-Distilled-4.6-MXFP4_MOE.gguf",
+      "model": "C:\\R\\LeafOS0.2.3\\ProjectLeaf\\leaf_model_installer\\models\\Qwen3.5-Claude-Reasoning\\Qwen3.5-14B-A3B-Claude-Opus-Reasoning-Distilled-4.6-MXFP4_MOE.gguf",
       "prompt_tokens": 512, "generated_tokens": 256, "repetitions": 5, "threads": 8,
       "gpu_layers": 0, "kv_key_type": "f16", "kv_value_type": "f16"
     },
     {
       "id": "qwen14-a3b-moe-cpu-t16", "phase": "cpu-thread-sweep",
-      "model": "C:\\R\\LeafOS0.2.1\\ProjectLeaf\\leaf_model_installer\\models\\Qwen3.5-Claude-Reasoning\\Qwen3.5-14B-A3B-Claude-Opus-Reasoning-Distilled-4.6-MXFP4_MOE.gguf",
+      "model": "C:\\R\\LeafOS0.2.3\\ProjectLeaf\\leaf_model_installer\\models\\Qwen3.5-Claude-Reasoning\\Qwen3.5-14B-A3B-Claude-Opus-Reasoning-Distilled-4.6-MXFP4_MOE.gguf",
       "prompt_tokens": 512, "generated_tokens": 256, "repetitions": 5, "threads": 16,
       "gpu_layers": 0, "kv_key_type": "f16", "kv_value_type": "f16"
     },
     {
       "id": "qwen14-a3b-moe-cpu-t24", "phase": "cpu-thread-sweep",
-      "model": "C:\\R\\LeafOS0.2.1\\ProjectLeaf\\leaf_model_installer\\models\\Qwen3.5-Claude-Reasoning\\Qwen3.5-14B-A3B-Claude-Opus-Reasoning-Distilled-4.6-MXFP4_MOE.gguf",
+      "model": "C:\\R\\LeafOS0.2.3\\ProjectLeaf\\leaf_model_installer\\models\\Qwen3.5-Claude-Reasoning\\Qwen3.5-14B-A3B-Claude-Opus-Reasoning-Distilled-4.6-MXFP4_MOE.gguf",
       "prompt_tokens": 512, "generated_tokens": 256, "repetitions": 5, "threads": 24,
       "gpu_layers": 0, "kv_key_type": "f16", "kv_value_type": "f16"
     },
     {
       "id": "qwen14-a3b-moe-cpu-t32", "phase": "cpu-thread-sweep",
-      "model": "C:\\R\\LeafOS0.2.1\\ProjectLeaf\\leaf_model_installer\\models\\Qwen3.5-Claude-Reasoning\\Qwen3.5-14B-A3B-Claude-Opus-Reasoning-Distilled-4.6-MXFP4_MOE.gguf",
+      "model": "C:\\R\\LeafOS0.2.3\\ProjectLeaf\\leaf_model_installer\\models\\Qwen3.5-Claude-Reasoning\\Qwen3.5-14B-A3B-Claude-Opus-Reasoning-Distilled-4.6-MXFP4_MOE.gguf",
       "prompt_tokens": 512, "generated_tokens": 256, "repetitions": 5, "threads": 32,
       "gpu_layers": 0, "kv_key_type": "f16", "kv_value_type": "f16"
     },
     {
       "id": "qwopus9b-q4-cpu-t8", "phase": "cpu-thread-sweep",
-      "model": "C:\\R\\LeafOS0.2.1\\ProjectLeaf\\leaf_model_installer\\models\\Qwopus3.5-9B-Coder-MTP\\Qwopus3.5-9B-Coder-MTP-Q4_K_M.gguf",
+      "model": "C:\\R\\LeafOS0.2.3\\ProjectLeaf\\leaf_model_installer\\models\\Qwopus3.5-9B-Coder-MTP\\Qwopus3.5-9B-Coder-MTP-Q4_K_M.gguf",
       "prompt_tokens": 512, "generated_tokens": 256, "repetitions": 5, "threads": 8,
       "gpu_layers": 0, "kv_key_type": "f16", "kv_value_type": "f16"
     },
     {
       "id": "qwopus9b-q4-cpu-t16", "phase": "cpu-thread-sweep",
-      "model": "C:\\R\\LeafOS0.2.1\\ProjectLeaf\\leaf_model_installer\\models\\Qwopus3.5-9B-Coder-MTP\\Qwopus3.5-9B-Coder-MTP-Q4_K_M.gguf",
+      "model": "C:\\R\\LeafOS0.2.3\\ProjectLeaf\\leaf_model_installer\\models\\Qwopus3.5-9B-Coder-MTP\\Qwopus3.5-9B-Coder-MTP-Q4_K_M.gguf",
       "prompt_tokens": 512, "generated_tokens": 256, "repetitions": 5, "threads": 16,
       "gpu_layers": 0, "kv_key_type": "f16", "kv_value_type": "f16"
     },
     {
       "id": "qwopus9b-q4-cpu-t24", "phase": "cpu-thread-sweep",
-      "model": "C:\\R\\LeafOS0.2.1\\ProjectLeaf\\leaf_model_installer\\models\\Qwopus3.5-9B-Coder-MTP\\Qwopus3.5-9B-Coder-MTP-Q4_K_M.gguf",
+      "model": "C:\\R\\LeafOS0.2.3\\ProjectLeaf\\leaf_model_installer\\models\\Qwopus3.5-9B-Coder-MTP\\Qwopus3.5-9B-Coder-MTP-Q4_K_M.gguf",
       "prompt_tokens": 512, "generated_tokens": 256, "repetitions": 5, "threads": 24,
       "gpu_layers": 0, "kv_key_type": "f16", "kv_value_type": "f16"
     },
     {
       "id": "qwopus9b-q4-cpu-t32", "phase": "cpu-thread-sweep",
-      "model": "C:\\R\\LeafOS0.2.1\\ProjectLeaf\\leaf_model_installer\\models\\Qwopus3.5-9B-Coder-MTP\\Qwopus3.5-9B-Coder-MTP-Q4_K_M.gguf",
+      "model": "C:\\R\\LeafOS0.2.3\\ProjectLeaf\\leaf_model_installer\\models\\Qwopus3.5-9B-Coder-MTP\\Qwopus3.5-9B-Coder-MTP-Q4_K_M.gguf",
       "prompt_tokens": 512, "generated_tokens": 256, "repetitions": 5, "threads": 32,
       "gpu_layers": 0, "kv_key_type": "f16", "kv_value_type": "f16"
     },
     {
       "id": "gemma-coder-q3-cpu-t24", "phase": "current-stack-reference",
-      "model": "C:\\R\\LeafOS0.2.1\\ProjectLeaf\\leaf_model_installer\\models\\Gemma4-Coder\\gemma4-coding-Q3_K_M.gguf",
+      "model": "C:\\R\\LeafOS0.2.3\\ProjectLeaf\\leaf_model_installer\\models\\Gemma4-Coder\\gemma4-coding-Q3_K_M.gguf",
       "prompt_tokens": 512, "generated_tokens": 256, "repetitions": 5, "threads": 24,
       "gpu_layers": 0, "kv_key_type": "f16", "kv_value_type": "f16"
     },
     {
       "id": "qwen14-a3b-moe-gpu16", "phase": "placement-sweep",
-      "model": "C:\\R\\LeafOS0.2.1\\ProjectLeaf\\leaf_model_installer\\models\\Qwen3.5-Claude-Reasoning\\Qwen3.5-14B-A3B-Claude-Opus-Reasoning-Distilled-4.6-MXFP4_MOE.gguf",
+      "model": "C:\\R\\LeafOS0.2.3\\ProjectLeaf\\leaf_model_installer\\models\\Qwen3.5-Claude-Reasoning\\Qwen3.5-14B-A3B-Claude-Opus-Reasoning-Distilled-4.6-MXFP4_MOE.gguf",
       "prompt_tokens": 512, "generated_tokens": 256, "repetitions": 5, "threads": 24,
       "gpu_layers": 16, "kv_key_type": "f16", "kv_value_type": "f16"
     },
     {
       "id": "qwen14-a3b-moe-gpu-full", "phase": "placement-sweep",
-      "model": "C:\\R\\LeafOS0.2.1\\ProjectLeaf\\leaf_model_installer\\models\\Qwen3.5-Claude-Reasoning\\Qwen3.5-14B-A3B-Claude-Opus-Reasoning-Distilled-4.6-MXFP4_MOE.gguf",
+      "model": "C:\\R\\LeafOS0.2.3\\ProjectLeaf\\leaf_model_installer\\models\\Qwen3.5-Claude-Reasoning\\Qwen3.5-14B-A3B-Claude-Opus-Reasoning-Distilled-4.6-MXFP4_MOE.gguf",
       "prompt_tokens": 512, "generated_tokens": 256, "repetitions": 5, "threads": 24,
       "gpu_layers": 999, "kv_key_type": "f16", "kv_value_type": "f16"
     },
     {
       "id": "qwen14-a3b-moe-gpu-full-p128", "phase": "prompt-sensitivity",
-      "model": "C:\\R\\LeafOS0.2.1\\ProjectLeaf\\leaf_model_installer\\models\\Qwen3.5-Claude-Reasoning\\Qwen3.5-14B-A3B-Claude-Opus-Reasoning-Distilled-4.6-MXFP4_MOE.gguf",
+      "model": "C:\\R\\LeafOS0.2.3\\ProjectLeaf\\leaf_model_installer\\models\\Qwen3.5-Claude-Reasoning\\Qwen3.5-14B-A3B-Claude-Opus-Reasoning-Distilled-4.6-MXFP4_MOE.gguf",
       "prompt_tokens": 128, "generated_tokens": 256, "repetitions": 5, "threads": 24,
       "gpu_layers": 999, "kv_key_type": "f16", "kv_value_type": "f16"
     },
     {
       "id": "qwen14-a3b-moe-gpu-full-p2048", "phase": "prompt-sensitivity",
-      "model": "C:\\R\\LeafOS0.2.1\\ProjectLeaf\\leaf_model_installer\\models\\Qwen3.5-Claude-Reasoning\\Qwen3.5-14B-A3B-Claude-Opus-Reasoning-Distilled-4.6-MXFP4_MOE.gguf",
+      "model": "C:\\R\\LeafOS0.2.3\\ProjectLeaf\\leaf_model_installer\\models\\Qwen3.5-Claude-Reasoning\\Qwen3.5-14B-A3B-Claude-Opus-Reasoning-Distilled-4.6-MXFP4_MOE.gguf",
       "prompt_tokens": 2048, "generated_tokens": 256, "repetitions": 5, "threads": 24,
       "gpu_layers": 999, "kv_key_type": "f16", "kv_value_type": "f16"
     },
     {
       "id": "qwen14-a3b-moe-gpu-full-kvq8", "phase": "kv-cache-sensitivity",
-      "model": "C:\\R\\LeafOS0.2.1\\ProjectLeaf\\leaf_model_installer\\models\\Qwen3.5-Claude-Reasoning\\Qwen3.5-14B-A3B-Claude-Opus-Reasoning-Distilled-4.6-MXFP4_MOE.gguf",
+      "model": "C:\\R\\LeafOS0.2.3\\ProjectLeaf\\leaf_model_installer\\models\\Qwen3.5-Claude-Reasoning\\Qwen3.5-14B-A3B-Claude-Opus-Reasoning-Distilled-4.6-MXFP4_MOE.gguf",
       "prompt_tokens": 512, "generated_tokens": 256, "repetitions": 5, "threads": 24,
       "gpu_layers": 999, "kv_key_type": "q8_0", "kv_value_type": "q8_0"
     },
     {
       "id": "qwen14-a3b-moe-gpu-full-drift-repeat", "phase": "thermal-drift-check",
-      "model": "C:\\R\\LeafOS0.2.1\\ProjectLeaf\\leaf_model_installer\\models\\Qwen3.5-Claude-Reasoning\\Qwen3.5-14B-A3B-Claude-Opus-Reasoning-Distilled-4.6-MXFP4_MOE.gguf",
+      "model": "C:\\R\\LeafOS0.2.3\\ProjectLeaf\\leaf_model_installer\\models\\Qwen3.5-Claude-Reasoning\\Qwen3.5-14B-A3B-Claude-Opus-Reasoning-Distilled-4.6-MXFP4_MOE.gguf",
       "prompt_tokens": 512, "generated_tokens": 256, "repetitions": 5, "threads": 24,
       "gpu_layers": 999, "kv_key_type": "f16", "kv_value_type": "f16",
       "notes": "Compare with qwen14-a3b-moe-gpu-full to quantify within-run thermal or background-state drift."

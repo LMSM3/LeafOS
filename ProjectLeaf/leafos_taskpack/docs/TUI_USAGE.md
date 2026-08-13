@@ -62,7 +62,7 @@ A                 approve the selected typed task
 q                 close the TUI without stopping LeafOS
 ```
 
-The `n` route is shared by both renderers. It closes the renderer cleanly, runs a six-step terminal form, and reopens the window on the resulting run. New-project location is entered as a top-level directory plus folder name. README and skeleton input is multiline and paste-friendly; `.done`, `.back`, and `.cancel` are local wizard controls. The form also records the project-only sandbox and can queue KV-cache optimization work. The active command window accepts `:improve`, `:again`, `:project PATH`, `:new PATH catan2`, `:mode auto|quiet|full`, `:targets cpu 80 gpu 90`, `:budget 64m`, `:pause`, `:resume`, `:drain`, and `:<plain objective>`.
+The `n` route is shared by both renderers. It closes the renderer cleanly, runs a six-step terminal form, and reopens the window on the resulting run. New-project location is entered as a top-level directory plus folder name. README and skeleton input is multiline and paste-friendly; `.done`, `.back`, and `.cancel` are local wizard controls. The form also records the project-only sandbox and can queue KV-cache optimization work. The active command window accepts `:improve`, `:again`, `:project PATH`, `:new PATH generic`, `:mode auto|quiet|full`, `:targets cpu 80 gpu 90`, `:budget 64m`, `:pause`, `:resume`, `:drain`, and `:<plain objective>`.
 
 Task controls emit authenticated typed requests containing the selected task ID. Cancellation requires typing `CANCEL`. The TUI does not edit queue files or terminate processes directly.
 

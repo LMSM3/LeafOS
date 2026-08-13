@@ -8,7 +8,7 @@ In LeafOS documentation, **stack** means all downloaded and locally available mo
 
 ## Start A Project
 
-From the canonical `C:\R\LeafOS0.2.1` root in Windows PowerShell:
+From the canonical `C:\R\LeafOS0.2.3` root in Windows PowerShell:
 
 ```powershell
 .\leafos.ps1
@@ -30,7 +30,7 @@ verified Monday state, and `leafos help` for the complete command list.
 
 `core/monitor/flower.c` provides the FlowerOS 60 Hz terminal CPU, RAM, and disk
 display on Linux and WSL. The launcher binds `LEAFOS_ROOT` to the canonical
-`C:\R\LeafOS0.2.1` checkout (seen as `/mnt/c/R/LeafOS0.2.1` inside WSL), reads
+`C:\R\LeafOS0.2.3` checkout (seen as `/mnt/c/R/LeafOS0.2.3` inside WSL), reads
 the actual release from its root `VERSION`, and shows free space on the
 filesystem that contains the stack. The first run builds
 `build/flower-monitor` with `cc`, `gcc`, or `clang`; later runs rebuild only
@@ -86,7 +86,7 @@ Bash, MSYS2, WSL, Linux, or macOS:
 Inside the active TUI, press `n` to run the same new/existing project wizard and switch the window to the selected project. `--new` remains a noninteractive convenience that uses built-in seed text:
 
 ```powershell
-.\bin\leafctl.ps1 live C:\Games\catan2 --new --template catan2 --yes --budget 64
+.\bin\leafctl.ps1 live C:\R\MyNewProject --new --template generic --yes --budget 64
 ```
 
 `leafctl live` inspects or creates the project, starts or reattaches a durable version-2 run, starts the resident supervisor, and opens the active TUI. An objective and specialized commands are optional.
@@ -202,11 +202,11 @@ The TUI is a projection of these structured facts. It does not become a second s
 
 ```powershell
 .\bin\leafctl.ps1 test visual --plain
-.\bin\leafctl.ps1 catan2-resident --contract-only --iterations 3
-.\bin\leafctl.ps1 catan2-resident --profile 4m --provider required
+.\bin\leafctl.ps1 resident start --contract-only --iterations 3
+.\bin\leafctl.ps1 resident start --profile 4m --provider required
 ```
 
-The current discovery suite contains 203 tests. The latest verified real 4-minute resident Catan2 run completed all eight tasks, including one resident-generated improvement, with no blocked work. The 8-minute and 64-minute real-provider soaks remain explicit WO-038 acceptance work.
+The current discovery suite contains 199 tests. Generic resident projects are the recommended demonstration target.
 
 ## Optional And Historical Surfaces
 
@@ -217,7 +217,7 @@ The following remain supported or useful, but they are not the primary project w
 - `oneshot`: portable handoff-bundle generation; it does not start a live loop.
 - `node`, `nodes`, `task`, `serve`, and `download`: optional SSH/LAN distribution subsystem.
 - `dashboard`: legacy node/cluster status projection. `tui` is the active agent-run interface.
-- `catan2bench`: gameplay decision benchmark. `catan2-resident` is the resident code-improvement benchmark.
+- `realbench`: conversation and raw-inference benchmark. `resident start` is the resident project-improvement surface.
 
 Historical work orders and completion reports preserve the terminology and behavior of their implementation date. They are evidence, not current operator instructions.
 

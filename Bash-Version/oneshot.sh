@@ -1,6 +1,13 @@
 #!/usr/bin/env bash
 # Bash-native one-shot handoff bundle creator.
 
+# shellcheck source=../ProjectLeaf/leafos_taskpack/core/brand/palette.sh
+_BRAND_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)/ProjectLeaf/leafos_taskpack/core/brand"
+if [[ -f "$_BRAND_DIR/palette.sh" ]]; then source "$_BRAND_DIR/palette.sh"; fi
+unset _BRAND_DIR
+
+
+
 set -euo pipefail
 
 usage() {
@@ -17,20 +24,20 @@ HELP
 }
 
 banner() {
-  printf '\n\033[36m╔══════════════════════════════════════════════════════════════════════╗\033[0m\n'
-  printf '\033[32m║                     LeafOS Bash OneShot Bundle                      ║\033[0m\n'
-  printf '\033[36m╚══════════════════════════════════════════════════════════════════════╝\033[0m\n\n'
+  printf '\n%s╔══════════════════════════════════════════════════════════════════════╗%s\n' "$C_SKY" "$C_RESET"
+  printf '%s║                     LeafOS Bash OneShot Bundle                      ║%s\n' "$C_LEAF" "$C_RESET"
+  printf '%s╚══════════════════════════════════════════════════════════════════════╝%s\n\n' "$C_SKY" "$C_RESET"
 }
 
 write_file() {
   local path="$1"
   local force="$2"
   if [[ -f "$path" && "$force" != "1" ]]; then
-    printf '\033[33m  ! kept existing %s\033[0m\n' "$(basename "$path")"
+    printf '%s  ! kept existing %s%s\n' "$C_BUTTER" "$(basename "$path")" "$C_RESET"
     return
   fi
   cat > "$path"
-  printf '\033[32m  ✓ wrote %s\033[0m\n' "$(basename "$path")"
+  printf '%s  ✓ wrote %s%s\n' "$C_LEAF" "$(basename "$path")" "$C_RESET"
 }
 
 ONESHOT=0
@@ -48,7 +55,7 @@ while [[ $# -gt 0 ]]; do
     --source) SOURCE="$2"; shift 2 ;;
     --target) TARGET="$2"; shift 2 ;;
     --help|-h) usage; exit 0 ;;
-    --*) printf ' \033[33m[?] unknown flag: %s%s\033[0m\n' "$1" >&2; exit 2 ;;
+    --*) printf ' %s[?] unknown flag: %s%s\n' "$C_BUTTER" "$1" "$C_RESET" >&2; exit 2 ;;
     *) POSITIONAL+=("$1"); shift ;;
   esac
 done
@@ -271,7 +278,7 @@ with zipfile.ZipFile(path, "w", zipfile.ZIP_DEFLATED) as z:
     z.writestr("xl/_rels/workbook.xml.rels", '''<?xml version="1.0" encoding="UTF-8"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet1.xml"/></Relationships>''')
     z.writestr("xl/worksheets/sheet1.xml", f'''<?xml version="1.0" encoding="UTF-8"?><worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><sheetData>{"".join(sheet_rows)}</sheetData></worksheet>''')
 PY
-  printf '\033[32m  ✓ wrote infodata.xlsx\033[0m\n'
+  printf '%s  ✓ wrote infodata.xlsx%s\n' "$C_LEAF" "$C_RESET"
 fi
 
 if [[ "$NOZIP" != "1" ]]; then
@@ -286,7 +293,7 @@ with zipfile.ZipFile(out, "w", zipfile.ZIP_DEFLATED) as z:
         if os.path.isfile(path) and name != "leafos-oneshot.zip":
             z.write(path, name)
 PY
-  printf '\033[32m  ✓ wrote leafos-oneshot.zip\033[0m\n'
+  printf '%s  ✓ wrote leafos-oneshot.zip%s\n' "$C_LEAF" "$C_RESET"
 fi
 
 printf '\nOneShot complete: %s\n' "$TARGET"

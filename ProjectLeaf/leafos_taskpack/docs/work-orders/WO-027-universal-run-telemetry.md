@@ -83,8 +83,8 @@ config/universal_run_log.columns.json
    `leafctl telemetry universal-summary RUN_DIR_OR_LOG`.
 3. [done] Wire `leaf_agent_loop.py` to append:
    `run_start`, `task_start`, `sample`, `validation`, `checkpoint`, and `run_end`.
-4. [done] Wire `catan2bench.py`, `fullstackbench.py`, and `continual_live.py` to emit
-   universal samples into their run directories.
+4. [done] Wire `fullstackbench.py` and `continual_live.py` to emit
+    universal samples into their run directories.
 5. [done] Add hardware collectors:
    CPU percent, process CPU percent, RAM, GPU percent, VRAM, temperature, power,
    NVMe read/write throughput, and counter availability.
@@ -94,7 +94,7 @@ config/universal_run_log.columns.json
 ## Acceptance Criteria
 
 - [x] Every new `agent-loop` run creates `universal-run-log.jsonl`.
-- [x] Every Catan2 benchmark appends at least one universal run sample.
+- [x] Every realbench and fullstackbench run appends at least one universal run sample.
 - [x] Every successful continual-live request appends throughput and provider
       status samples; startup/request failures append `run_error` evidence.
 - [x] A run with no GPU counters still writes a valid event with
@@ -111,7 +111,7 @@ config/universal_run_log.columns.json
 [D] Day 1: contract, collectors, producer wiring, and rollup complete
 [I] DONE
 [V] PASS: `python -B tests/test_telemetry.py` (7 tests),
-    `python -B tests/test_agent_loop.py` (10 tests), Catan2 and full-stack
+    `python -B tests/test_agent_loop.py` (8 tests), full-stack
     telemetry end-to-end runs, CLI sampling/summary, Python AST, Bash syntax,
     and PowerShell AST. Long continual-live real-provider duration not run.
 [P] LOCAL
@@ -136,7 +136,7 @@ explicit availability state.
 - 2026-07-19: ordered JSONL append and null-safe unavailable-counter test - PASS.
 - 2026-07-19: GPU-starved, CPU-bound, coder-idle, and brain-idle rollup tests - PASS.
 - 2026-07-19: agent-loop lifecycle telemetry and report warnings - PASS.
-- 2026-07-19: Catan2 and full-stack benchmark telemetry emission - PASS.
+- 2026-07-19: Full-stack benchmark telemetry emission - PASS.
 - 2026-07-19: Windows `leafctl.ps1 telemetry` sampling and summary route - PASS.
 
 ## Out Of Scope

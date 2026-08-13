@@ -7,7 +7,7 @@ from pathlib import Path
 repo = 'GnLOLot/MiniCPM5-1B-Claude-Opus-Fable5-Thinking-GGUF'
 filename = 'MiniCPM5-1B-Claude-Opus-Fable5-Thinking-Q4_K_M.gguf'
 revision = '5a4ed2c3605634e7b043e8b98fa01e504b0dfbed'
-local_dir = r'C:\R\LeafOS0.2.1\_hft-test'
+local_dir = r'C:\R\LeafOS0.2.3\_hft-test'
 
 token = os.environ.get('HF_TOKEN')
 print(f'[+] hf_transfer enabled: {os.environ.get("HF_HUB_ENABLE_HF_TRANSFER")}')

@@ -13,7 +13,7 @@
         'C:\flower-pack-1.2.0'
     )
 
-    $ModelRoot             = 'C:\R\LeafOS0.2.1\models'
+    $ModelRoot             = 'C:\R\LeafOS0.2.3\models'
     $FallbackExpectedGiB   = 250.1
     $ProgressSampleSeconds = 10
     $AnimationDelayMs      = 120

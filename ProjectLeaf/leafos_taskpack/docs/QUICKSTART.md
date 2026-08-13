@@ -5,7 +5,7 @@ This guide starts the current resident project stack. The SSH node subsystem is 
 ## 1. Check The Host
 
 ```powershell
-Set-Location C:\R\LeafOS0.2.1\ProjectLeaf\leafos_taskpack
+Set-Location C:\R\LeafOS0.2.3\ProjectLeaf\leafos_taskpack
 .\bin\leafctl.ps1 doctor
 .\bin\leafctl.ps1 provider-stack check
 ```
@@ -39,7 +39,7 @@ To inspect without starting work:
 To initialize a minimal project with built-in seed text instead of pasted intent:
 
 ```powershell
-.\bin\leafctl.ps1 live C:\Games\catan2 --new --template catan2 --yes --budget 64
+.\bin\leafctl.ps1 live C:\R\MyProject --new --template generic --yes --budget 64
 ```
 
 Existing project files are not overwritten by intake. Generated LeafOS control files live under `runs/agent-loop`, outside the target repository.
@@ -89,7 +89,7 @@ Pressing `q` closes the TUI without stopping work. `pause` stops new claims at a
 ```powershell
 .\bin\leafctl.ps1 test visual --plain
 .\bin\leafctl.ps1 test visual --match provider --live-stack --plain
-.\bin\leafctl.ps1 catan2-resident --contract-only --iterations 3
+.\bin\leafctl.ps1 resident start --contract-only --iterations 3
 ```
 
 The live-stack test makes one bounded call to the real local provider and fails if that explicitly requested demonstration cannot complete. Fixture-based tests never silently become evidence of real inference.
@@ -98,7 +98,7 @@ The live-stack test makes one bounded call to the real local provider and fails 
 
 - `DOCUMENTATION_MAP.md`: current versus historical documents.
 - `LIVE_PROJECT_TUI.md`: project intake and active-window syntax.
-- `RESIDENT_STACK_USAGE.md`: governor profiles, budgets, recovery, and Catan2 soaks.
+- `RESIDENT_STACK_USAGE.md`: governor profiles, budgets, recovery, and resident soak profiles.
 - `LOOP_INLET_USAGE.md`: run files, typed tasks, and lifecycle controls.
 - `TUI_USAGE.md`: pages, keys, and renderer security boundary.
 - `MODEL_INSTALLATION.md`: model acquisition and stack terminology.

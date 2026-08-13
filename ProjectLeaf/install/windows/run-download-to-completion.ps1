@@ -8,7 +8,7 @@ param(
 $ErrorActionPreference = 'Stop'
 Set-StrictMode -Version Latest
 
-$repoRoot    = 'C:\R\LeafOS0.2.1'
+$repoRoot    = 'C:\R\LeafOS0.2.3'
 $modelRoot   = Join-Path $repoRoot 'models'
 $storeRoot   = Join-Path $modelRoot 'store'
 $scriptDir   = Join-Path $repoRoot 'ProjectLeaf' 'install' 'windows'

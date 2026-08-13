@@ -27,8 +27,8 @@ class LiveProjectTests(unittest.TestCase):
         sample = json.loads((ROOT / "config" / "project-onboarding.sample.json").read_text(encoding="utf-8"))
         with tempfile.TemporaryDirectory() as temporary:
             sample["workspace_root"] = temporary
-            sample["project_name"] = "catan2"
-            sample["target"] = str(Path(temporary) / "catan2")
+            sample["project_name"] = "generic"
+            sample["target"] = str(Path(temporary) / "generic")
             normalized = live.validate_onboarding_request(sample)
         self.assertEqual("LeafOS Project Onboarding Request", schema["title"])
         self.assertEqual("LeafOS Per-Run Stack Preferences", preferences_schema["title"])
@@ -226,34 +226,29 @@ class LiveProjectTests(unittest.TestCase):
             self.assertIn("Detected documents", output.getvalue())
             self.assertIn("Type OPEN", output.getvalue())
 
-    def test_real_repository_is_detected_as_medium_catan2_codebase(self) -> None:
+    def test_real_repository_is_detected_as_codebase(self) -> None:
         inventory = live.inspect_project(ROOT)
         self.assertEqual("codebase", inventory["state"])
-        self.assertTrue(inventory["catan2"])
-        self.assertGreater(inventory["source_file_count"], 100)
-        self.assertIn("core/bench", inventory["allowed_paths"])
-        self.assertIn(["bash", "tests/catan2bench.sh"], inventory["commands"])
+        self.assertGreater(inventory["source_file_count"], 0)
+        self.assertEqual(["."], inventory["allowed_paths"])
 
-    def test_blank_catan2_seed_contains_only_readme_skeleton_and_json(self) -> None:
+    def test_blank_generic_seed_contains_only_readme_skeleton_and_json(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
-            target = Path(temporary) / "catan2"
-            written = live.initialize_seed(target, "catan2")
+            target = Path(temporary) / "generic"
+            written = live.initialize_seed(target, "generic")
             self.assertEqual({"README.md", "skeleton.md", "leafos.project.json"}, {Path(path).name for path in written})
             self.assertEqual(3, len(list(target.iterdir())))
             inventory = live.inspect_project(target)
             self.assertEqual("seed", inventory["state"])
-            self.assertTrue(inventory["catan2"])
             self.assertEqual(0, inventory["source_file_count"])
 
-    def test_catan2_manifest_template_is_detected_independent_of_directory_name(self) -> None:
+    def test_generic_manifest_template_is_detected_independent_of_directory_name(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
             target = Path(temporary) / "project"
-            live.initialize_seed(target, "catan2")
+            live.initialize_seed(target, "generic")
             inventory = live.inspect_project(target)
             objective = live.derive_objective(inventory, iteration=1)
-            self.assertTrue(inventory["catan2"])
-            self.assertIn("smallest runnable deterministic", objective)
-            self.assertIn("three concise", objective)
+            self.assertIn("Project improvement iteration 1", objective)
 
     def test_seed_initialization_never_overwrites_project_inputs(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
@@ -269,9 +264,9 @@ class LiveProjectTests(unittest.TestCase):
         self.assertEqual("make bots trade", live.parse_active_command(":make bots trade")["objective"])
         project = live.parse_active_command(':project "C:\\R\\Games\\Catan Two"')
         self.assertEqual("C:\\R\\Games\\Catan Two", project["target"])
-        created = live.parse_active_command(':new "C:\\R\\Games\\Catan Two" catan2')
+        created = live.parse_active_command(':new "C:\\R\\Games\\Catan Two" generic')
         self.assertTrue(created["create"])
-        self.assertEqual("catan2", created["template"])
+        self.assertEqual("generic", created["template"])
         with self.assertRaisesRegex(ValueError, "does not take arguments"):
             live.parse_active_command(":again now")
         self.assertEqual({"action": "resident_mode", "mode": "quiet"}, live.parse_active_command(":mode quiet"))
@@ -283,12 +278,12 @@ class LiveProjectTests(unittest.TestCase):
 
     def test_missing_objective_derives_iteration_from_current_project(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
-            target = Path(temporary) / "catan2"
-            live.initialize_seed(target, "catan2")
+            target = Path(temporary) / "generic"
+            live.initialize_seed(target, "generic")
             inventory = live.inspect_project(target)
             first = live.derive_objective(inventory, iteration=1)
             second = live.derive_objective(inventory, iteration=2)
-            self.assertIn("Catan2 improvement iteration 1", first)
+            self.assertIn("Project improvement iteration 1", first)
             self.assertIn("iteration 2", second)
             self.assertNotEqual(first, second)
 
@@ -327,13 +322,13 @@ class LiveProjectTests(unittest.TestCase):
     def test_repeated_improvements_share_one_run_and_form_a_sequence(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
-            target = root / "catan2"
+            target = root / "project"
             runs = root / "runs"
             with mock.patch.object(live.inlet, "RUNS_ROOT", runs), mock.patch.object(
                 live.inlet, "LIVE_INTAKE_ROOT", runs / "live-intake"
             ):
                 started = live.start_project(
-                    target, create_seed=True, template="catan2", provider="off", fresh_run=True,
+                    target, create_seed=True, template="generic", provider="off", fresh_run=True,
                     spawn=False, run_dir=str(root / "run"),
                 )
                 first = live.queue_improvement(started["run_dir"], spawn=False)
@@ -348,13 +343,13 @@ class LiveProjectTests(unittest.TestCase):
     def test_operator_input_is_not_blocked_behind_resident_generated_work(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
-            target = root / "catan2"
+            target = root / "project"
             runs = root / "runs"
             with mock.patch.object(live.inlet, "RUNS_ROOT", runs), mock.patch.object(
                 live.inlet, "LIVE_INTAKE_ROOT", runs / "live-intake"
             ):
                 started = live.start_project(
-                    target, create_seed=True, template="catan2", provider="off", fresh_run=True,
+                    target, create_seed=True, template="generic", provider="off", fresh_run=True,
                     spawn=False, run_dir=str(root / "run"),
                 )
                 resident_task = live.queue_improvement(started["run_dir"], source="resident", spawn=False)

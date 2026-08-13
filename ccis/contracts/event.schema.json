@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://leafos.local/ccis/contracts/event.v1.schema.json",
+  "title": "CCIS Authoritative Append-Only Event",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["ccis_object", "schema_version", "event_id", "sequence", "recorded_at", "task_id", "event_type", "previous_event_hash", "payload_hash", "event_hash", "payload", "evidence_refs"],
+  "properties": {
+    "ccis_object": {"const": "ccis.event"},
+    "schema_version": {"const": 1},
+    "event_id": {"type": "string", "pattern": "^evt_[A-Za-z0-9._-]+$"},
+    "sequence": {"type": "integer", "minimum": 1},
+    "recorded_at": {"type": "string", "format": "date-time"},
+    "task_id": {"type": "string", "pattern": "^[A-Za-z][A-Za-z0-9._-]{2,127}$"},
+    "event_type": {"type": "string", "pattern": "^ccis\\.[a-z][a-z0-9_]*(\\.[a-z][a-z0-9_]*)+$"},
+    "transition_id": {"type": ["string", "null"]},
+    "previous_event_hash": {"oneOf": [{"$ref": "#/$defs/hash"}, {"type": "null"}]},
+    "payload_hash": {"$ref": "#/$defs/hash"},
+    "event_hash": {"$ref": "#/$defs/hash"},
+    "payload": {"type": "object"},
+    "evidence_refs": {"type": "array", "uniqueItems": true, "items": {"type": "string", "pattern": "^evidence://"}}
+  },
+  "$defs": {
+    "hash": {"type": "string", "pattern": "^sha256:[a-f0-9]{64}$"}
+  }
+}

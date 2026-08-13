@@ -19,23 +19,10 @@ QUIET="${QUIET:-0}"
 NO_EMOJI="${NO_EMOJI:-0}"
 NO_COLOR="${NO_COLOR:-0}"
 
-# ---------------------------------------------------------------------------
-# Color palette — all output flows through these; NO_COLOR=1 disables them.
-# ---------------------------------------------------------------------------
-_brand_color_init() {
-    if [[ "${NO_COLOR:-0}" == "1" || ! -t 1 ]]; then
-        C_RESET=''; C_BOLD=''; C_DIM=''
-        C_GREEN=''; C_CYAN=''; C_YELLOW=''; C_RED=''; C_MAGENTA=''; C_BLUE=''
-        C_GREEN_B=''; C_CYAN_B=''; C_YELLOW_B=''; C_RED_B=''
-    else
-        C_RESET=$'\033[0m';   C_BOLD=$'\033[1m';    C_DIM=$'\033[2m'
-        C_GREEN=$'\033[32m';  C_CYAN=$'\033[36m';   C_YELLOW=$'\033[33m'
-        C_RED=$'\033[31m';    C_MAGENTA=$'\033[35m'; C_BLUE=$'\033[34m'
-        C_GREEN_B=$'\033[1;32m';  C_CYAN_B=$'\033[1;36m'
-        C_YELLOW_B=$'\033[1;33m'; C_RED_B=$'\033[1;31m'
-    fi
-}
-_brand_color_init
+# Keep one shell palette authority so installers, glyphs, and legacy brand
+# helpers cannot silently diverge.
+# shellcheck source=palette.sh
+source "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/palette.sh"
 
 __brand_msg_count=0
 

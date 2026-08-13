@@ -1,4 +1,4 @@
-# LeafOS 0.9.3
+# LeafOS 0.2.3
 
 > **State outranks conversation.**
 
@@ -22,9 +22,10 @@ instead of pretending one monolithic model can do everything. It records every
 claim, requires native evidence before a claim becomes fact, and never lets the
 KV cache, the terminal, or a crashing process become the source of truth.
 
-The current release is **0.9.4**. The folder name `LeafOS0.2.1` is a legacy
-workspace label; `VERSION` and `leafos.root.json` are the authoritative version
-sources.
+The current release is **0.2.3**. Earlier high-number labels remain historical
+development-stage evidence; `VERSION`, the taskpack `VERSION`, and
+`leafos.root.json` are the authoritative active version sources. See
+[CONSOLIDATION-0.2.3.md](CONSOLIDATION-0.2.3.md) for source and WO continuity.
 
 ## What makes LeafOS different
 
@@ -78,7 +79,7 @@ models.
 ### PowerShell
 
 ```powershell
-cd C:\R\LeafOS0.2.1\PowerShell-Version
+cd C:\path\to\LeafOS\PowerShell-Version
 pwsh -File .\install.ps1
 ..\leafos.ps1 q   # quick command card
 ..\leafos.ps1 s   # status

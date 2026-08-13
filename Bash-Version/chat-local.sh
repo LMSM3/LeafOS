@@ -1,6 +1,13 @@
 #!/usr/bin/env bash
 # Start a simple local llama.cpp chat against the real LeafOS model cache.
 
+# shellcheck source=../ProjectLeaf/leafos_taskpack/core/brand/palette.sh
+_BRAND_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)/ProjectLeaf/leafos_taskpack/core/brand"
+if [[ -f "$_BRAND_DIR/palette.sh" ]]; then source "$_BRAND_DIR/palette.sh"; fi
+unset _BRAND_DIR
+
+
+
 set -euo pipefail
 
 HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -174,7 +181,7 @@ fi
 
 export LD_LIBRARY_PATH="$LLAMA_DIR${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
 
-printf '\033[36mLeafOS local chat\033[0m\n'
+printf '%sLeafOS local chat%s\n' "$C_SKY" "$C_RESET"
 printf 'model: %s\n' "$MODEL_PATH"
 if [[ -z "$PROMPT" ]]; then
   printf 'mode:  interactive conversation. Press Ctrl+C to leave.\n\n'

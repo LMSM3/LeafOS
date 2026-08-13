@@ -1,7 +1,7 @@
 #Requires -Version 7.0
 $ErrorActionPreference = 'Stop'
-$Vault = 'C:\R\LeafOS0.2.1\ProjectLeaf\install\windows\flower-token-vault.ps1'
-$Downloader = 'C:\R\LeafOS0.2.1\ProjectLeaf\install\windows\download-pack-hftransfer.py'
+$Vault = 'C:\R\LeafOS0.2.3\ProjectLeaf\install\windows\flower-token-vault.ps1'
+$Downloader = 'C:\R\LeafOS0.2.3\ProjectLeaf\install\windows\download-pack-hftransfer.py'
 
 Write-Host '[+] Unlocking vault...'
 $tok = pwsh -NoProfile -ExecutionPolicy Bypass -File $Vault get read | Select-Object -Last 1

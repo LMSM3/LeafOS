@@ -6,7 +6,7 @@ by default because the pack is already present at C:\flower-pack-1.2.0.
 """
 import json, pathlib
 
-base = pathlib.Path(r"C:\R\LeafOS0.2.1\ProjectLeaf\leafos_taskpack\config\experts\blue")
+base = pathlib.Path(r"C:\R\LeafOS0.2.3\ProjectLeaf\leafos_taskpack\config\experts\blue")
 base.mkdir(parents=True, exist_ok=True)
 
 REPO_QWEN = "DavidAU/Qwen3.6-27B-Fable-Fusion-711-Uncensored-Heretic-NM-DAU-NEO-MAX-MTP-GGUF"
@@ -51,7 +51,7 @@ def base_name(repo, quant):
 
 for (eid, role, variant, repo, model_ref, quant, mem_gib, segment, caps, fallback, *opts) in BLUE_MODELS:
     # flower-pack installs into <MODEL_ROOT>/packs/pack-1/<entry_id>/
-    local_dir = f"C:\\R\\LeafOS0.2.1\\models\\packs\\pack-1\\{eid}"
+    local_dir = f"C:\\R\\LeafOS0.2.3\\models\\packs\\pack-1\\{eid}"
     bn = base_name(repo, quant)
     overrides = opts[0] if opts else {}
     parameters_b = overrides.get("parameters_b", 27 if repo == REPO_QWEN else 1)

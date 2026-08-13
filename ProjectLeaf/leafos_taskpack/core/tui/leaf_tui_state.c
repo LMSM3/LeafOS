@@ -218,7 +218,6 @@ int leaf_tui_state_load(const char *snapshot_path, LeafTuiState *state, char *er
     copy_member(&doc, project, "target", state->project_target, sizeof(state->project_target));
     copy_member(&doc, project, "state", state->project_state, sizeof(state->project_state));
     state->project_iteration = integer_member(&doc, project, "iteration", 0);
-    state->project_catan2 = leaf_json_boolean(&doc, member(&doc, project, "catan2"), 0);
     resident = member(&doc, root, "resident");
     copy_member(&doc, resident, "status", state->resident_status, sizeof(state->resident_status));
     copy_member(&doc, resident, "mode", state->resident_mode, sizeof(state->resident_mode));

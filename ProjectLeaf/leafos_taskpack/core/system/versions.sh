@@ -57,25 +57,52 @@ leaf_detect_cc() {
 }
 
 leaf_detect_pwsh() {
-    if   command -v pwsh        &>/dev/null; then LEAF_PWSH_CMD=pwsh
-    elif command -v powershell  &>/dev/null; then LEAF_PWSH_CMD=powershell
-    elif command -v pwsh.exe    &>/dev/null; then LEAF_PWSH_CMD=pwsh.exe
-    elif command -v powershell.exe &>/dev/null; then LEAF_PWSH_CMD=powershell.exe
-    else
-        # Windows: pwsh7 lives in WindowsApps stub dir, not on the default msys2 PATH
-        local _wa_pwsh="/c/Users/${USERNAME:-$USER}/AppData/Local/Microsoft/WindowsApps/pwsh"
-        local _sys_pwsh="/c/Program Files/PowerShell/7/pwsh"
-        if   [[ -x "$_wa_pwsh"  ]]; then LEAF_PWSH_CMD="$_wa_pwsh"
-        elif [[ -x "$_sys_pwsh" ]]; then LEAF_PWSH_CMD="$_sys_pwsh"
-        else LEAF_PWSH_CMD=""
+    local candidate version major fallback_cmd="" fallback_ver="" item
+    local -a candidates=()
+    for item in pwsh pwsh.exe powershell powershell.exe; do
+        candidate="$(command -v "$item" 2>/dev/null || true)"
+        [[ -n "$candidate" ]] && candidates+=("$candidate")
+    done
+    candidates+=(
+        "/c/Users/${USERNAME:-${USER:-}}/AppData/Local/Microsoft/WindowsApps/pwsh.exe"
+        "/c/Program Files/PowerShell/7/pwsh.exe"
+        "/mnt/c/Users/${USERNAME:-${USER:-}}/AppData/Local/Microsoft/WindowsApps/pwsh.exe"
+        "/mnt/c/Program Files/PowerShell/7/pwsh.exe"
+        "/mnt/c/WINDOWS/System32/WindowsPowerShell/v1.0/powershell.exe"
+    )
+    LEAF_PWSH_CMD=""; LEAF_VER_PWSH=0.0; LEAF_PWSH_KIND=missing
+    for candidate in "${candidates[@]}"; do
+        [[ -n "$candidate" && -x "$candidate" ]] || continue
+        version="$("$candidate" -NoLogo -NoProfile -NonInteractive -Command '$PSVersionTable.PSVersion.ToString()' 2>/dev/null | tr -d '\r' || true)"
+        [[ "$version" =~ ^[0-9]+([.][0-9]+)+$ ]] || continue
+        major="${version%%.*}"
+        if [[ "$major" -ge 7 ]]; then
+            LEAF_PWSH_CMD="$candidate"; LEAF_VER_PWSH="$version"
+            break
         fi
+        if [[ -z "$fallback_cmd" && "$major" -ge 5 ]]; then
+            fallback_cmd="$candidate"; fallback_ver="$version"
+        fi
+    done
+    if [[ -z "$LEAF_PWSH_CMD" && -n "$fallback_cmd" ]]; then
+        LEAF_PWSH_CMD="$fallback_cmd"; LEAF_VER_PWSH="$fallback_ver"
     fi
     if [[ -n "$LEAF_PWSH_CMD" ]]; then
-        LEAF_VER_PWSH="$($LEAF_PWSH_CMD -NoProfile -Command '$PSVersionTable.PSVersion.ToString()' 2>/dev/null | tr -d '\r' || echo 0.0)"
-    else
-        LEAF_VER_PWSH=0.0
+        case "$LEAF_PWSH_CMD" in
+            *.exe|/mnt/[a-zA-Z]/*|/c/*) LEAF_PWSH_KIND=windows-interop ;;
+            *) LEAF_PWSH_KIND=native ;;
+        esac
     fi
-    export LEAF_PWSH_CMD LEAF_VER_PWSH
+    export LEAF_PWSH_CMD LEAF_VER_PWSH LEAF_PWSH_KIND
+}
+
+# Evaluate the detected host against a caller-specific language floor. Detection
+# intentionally knows about every supported fallback; the caller owns whether a
+# particular capability needs PowerShell 5, 7, or a later version.
+leaf_pwsh_meets() {
+    local required="${1:-7.0}"
+    [[ -n "${LEAF_PWSH_CMD:-}" ]] || return 1
+    leaf_version_gte "${LEAF_VER_PWSH:-0.0}" "$required"
 }
 
 leaf_detect_all_versions() {

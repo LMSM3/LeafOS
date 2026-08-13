@@ -3,8 +3,14 @@
 
 from __future__ import annotations
 
+import os
+import sys
 from dataclasses import dataclass
 
+BRAND_DIR = os.path.dirname(__file__).replace("/ui/tui", "/brand").replace("\\ui\\tui", "\\brand")
+if BRAND_DIR not in sys.path:
+    sys.path.insert(0, BRAND_DIR)
+from flower_palette import color_enabled, paint  # noqa: E402
 
 PAGE_COUNT = 7
 
@@ -128,9 +134,24 @@ def route_key(state: RouterState, key: str) -> str | None:
     return None
 
 
+def _fmt_message(msg: str) -> str:
+    """Soft pastel hints for TUI bottom-bar messages; safe with cursor math."""
+    if not msg or not color_enabled():
+        return msg
+    if msg.startswith("View updates frozen"):
+        return paint(msg, "butter")
+    if "Following" in msg:
+        return paint(msg, "mint")
+    if "request sent" in msg:
+        return paint(msg, "leaf")
+    if "confirm" in msg.lower():
+        return paint(msg, "peach")
+    return msg
+
+
 def prompt(state: RouterState) -> str:
     if state.confirmation:
-        return f"Type {state.confirmation} to confirm: {state.command_buffer}"
+        return paint(f"Type {state.confirmation} to confirm: ", "peach") + state.command_buffer
     if state.command_mode:
-        return state.command_buffer
-    return state.message
+        return paint(":", "mint") + state.command_buffer
+    return _fmt_message(state.message)

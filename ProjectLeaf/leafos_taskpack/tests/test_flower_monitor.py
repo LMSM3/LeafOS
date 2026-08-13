@@ -113,13 +113,23 @@ class FlowerMonitorIntegrationTests(unittest.TestCase):
             check=False,
         )
         self.assertEqual(0, result.returncode, result.stderr)
-        self.assertEqual("/mnt/c/R/LeafOS0.2.1", result.stdout.strip())
+        expected = subprocess.run(
+            ["wsl", "--exec", "wslpath", "-a", "-u", str(LEAFOS_ROOT)],
+            capture_output=True,
+            text=True,
+            encoding="utf-8",
+            errors="replace",
+            timeout=20,
+            check=False,
+        )
+        self.assertEqual(0, expected.returncode, expected.stderr)
+        self.assertEqual(expected.stdout.strip(), result.stdout.strip())
 
-    def test_authoritative_version_is_newer_than_0_9_1(self) -> None:
+    def test_authoritative_version_meets_normalized_baseline(self) -> None:
         version = (TASKPACK / "VERSION").read_text(encoding="utf-8").strip()
         match = re.fullmatch(r"(\d+)\.(\d+)\.(\d+)", version)
         self.assertIsNotNone(match)
-        self.assertGreater(tuple(map(int, match.groups())), (0, 9, 1))
+        self.assertGreaterEqual(tuple(map(int, match.groups())), (0, 2, 2))
         self.assertEqual(version, (LEAFOS_ROOT / "VERSION").read_text(encoding="utf-8").strip())
 
     def test_both_root_validators_require_primary_reference_outputs(self) -> None:
@@ -128,6 +138,9 @@ class FlowerMonitorIntegrationTests(unittest.TestCase):
         for key in ("primary_reference", "primary_reference_tex"):
             self.assertIn(key, powershell)
             self.assertIn(key, bash)
+        for contract_check in ("VERSION", "sha256", "immutable", "brand-asset:start"):
+            self.assertIn(contract_check, powershell)
+            self.assertIn(contract_check, bash)
 
     def test_root_contract_integrates_change_loop_without_implementing_future_tasks(self) -> None:
         metadata = json.loads((LEAFOS_ROOT / "leafos.root.json").read_text(encoding="utf-8"))

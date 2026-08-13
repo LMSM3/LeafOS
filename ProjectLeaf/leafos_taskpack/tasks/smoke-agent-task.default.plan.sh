@@ -2,7 +2,7 @@
 # LEAFOS_AGENT_PLAN=1
 # LEAFOS_AGENT_PLAN_VERSION=0.2.0
 # Created: 2026-07-25T06:52:56Z
-# Task: /c/R/LeafOS0.2.1/ProjectLeaf/leafos_taskpack/tasks/smoke-agent-task.md
+# Task: /c/R/LeafOS0.2.3/ProjectLeaf/leafos_taskpack/tasks/smoke-agent-task.md
 # Task-Slug: smoke-agent-task
 # Plan-Name: default
 # Provider: template

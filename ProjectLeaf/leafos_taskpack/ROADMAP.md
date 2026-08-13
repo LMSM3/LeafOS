@@ -19,7 +19,7 @@ Every version must satisfy its own completion gate before the next begins.
 
 ## Current Operating Baseline
 
-The repository version remains `0.5.0`, but implementation has advanced beyond
+The repository and taskpack versions are `0.2.3`, and implementation has advanced beyond
 the original graph-only wording below. The current project path is a resident
 version-2 loop with typed work orders, priority/dependency queueing, a
 proposal-only llama.cpp Vulkan provider, CPU-authoritative execution and
@@ -31,6 +31,41 @@ leafctl live PROJECT
   -> intake -> plan -> approve -> execute -> validate -> checkpoint/report
   -> bounded repair or resident next improvement
 ```
+
+## Current work-order map through WO-060
+
+The letters below are planning overlays, not new work-order identities or new
+runtime authorities:
+
+| Lane | Responsibility | Work-order span |
+|---|---|---|
+| L | Local trust and advanced execution | WO-050 repairs, WO-051–WO-056 |
+| M | Coherent loop contracts | WO-LOOP1–WO-LOOP6 |
+| N | Native product proof | WO-057–WO-060 |
+| X | Cross-cutting UX projection | shell TUI graphics over verified L/M/N state |
+
+```text
+reconcile canonical source
+  -> L: 050/R1/R2 -> 051 -> 052 -> 053 -> 054 -> 055 -> 056
+  -> M: LOOP1 -> LOOP2 -> LOOP3 -> LOOP4 -> LOOP5 -> LOOP6
+  -> N: 057 -> 058 -> 059 -> 060
+
+X: evidence-backed shell TUI projection across L, M, and N
+```
+
+Current evidence boundary as of 2026-08-11:
+
+- WO-050/R1/R2, WO-051, and WO-052 have local completion evidence.
+- WO-053-B has locally verified implementation evidence, but the opt-in
+  digest-bound real-host preflight has not run; master WO-053 remains open.
+- WO-054–WO-060 and WO-LOOP1–WO-LOOP6 remain planned work.
+- Imported repair records do not prove that their implementation files have
+  been reconciled into the canonical source tree.
+
+The X lane owns presentation quality—colour, motion, pack glyphs, progress,
+errors, accessibility, and legal-next-action display. Its graphics surface is
+the shell TUI. X projects typed evidence and state; it does not create a
+private scheduler, provider, event stream, or acceptance path.
 
 The 0.2-0.4 sections below preserve release evolution and compatibility
 surfaces. They are not the recommended starting workflow. Selected 0.6 ideas,

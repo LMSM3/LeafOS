@@ -1,0 +1,45 @@
+{
+  "ccis_object": "ccis.task_envelope",
+  "schema_version": 1,
+  "task_id": "task_ccis_contracts",
+  "instruction": "Add CCIS contract schemas without modifying runtime authority.",
+  "target": "C:/R/LeafOS0.2.3",
+  "mode": "once",
+  "created_at": "2026-08-03T08:00:00Z",
+  "objective": {
+    "summary": "Add CCIS contract schemas without modifying runtime authority.",
+    "invariants": ["Existing LeafOS files outside the declared scope remain unchanged."],
+    "tolerances": [{"name": "schema_parse_failures", "operator": "eq", "threshold": 0, "unit": "failures"}],
+    "stopping_conditions": ["All registered schemas parse and the example set validates."]
+  },
+  "scope": {
+    "repository": "C:/R/LeafOS0.2.3",
+    "base_revision": "adbc26665246",
+    "allowed_paths": ["ccis/**", "loop/**", ".leafos/**"],
+    "denied_paths": [".git/**"]
+  },
+  "budget": {
+    "wall_seconds": 3600,
+    "wall_time_seconds": 3600,
+    "candidate_limit": 4,
+    "revision_limit": 2,
+    "max_iterations": 4,
+    "max_changed_files": 24,
+    "compute_units": null,
+    "notes": "Day 0 contract-only implementation."
+  },
+  "validators": [
+    {"validator_id": "schema_structure", "kind": "json_schema", "required": true, "schema_ref": "ccis/contracts/task-envelope.schema.json", "timeout_seconds": 30},
+    {"validator_id": "contract_tests", "kind": "command", "required": true, "command": ["python", "-m", "unittest", "ccis.tests.test_contracts"], "timeout_seconds": 120}
+  ],
+  "authority": {
+    "requester": "liamm",
+    "decision_actor": "leafos.ccis.transition_gate",
+    "acceptance_mode": "explicit_operator",
+    "automatic_working_tree_merge": false,
+    "may_modify": true,
+    "may_install": false,
+    "may_merge": false,
+    "capabilities": ["inspect", "propose", "evaluate", "revise", "stage", "accept", "rollback", "escalate"]
+  }
+}

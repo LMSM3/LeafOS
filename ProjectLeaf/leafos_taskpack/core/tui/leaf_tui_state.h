@@ -86,7 +86,6 @@ typedef struct {
     long active_process_pid;
     int accepting_tasks;
     int project_iteration;
-    int project_catan2;
     int resident_enabled;
     int resident_supervisor_alive;
     int resident_claim_allowed;

@@ -66,11 +66,11 @@ Inspect without starting work:
 .\bin\leafctl.ps1 live C:\R\MyProject --inspect --json
 \end{lstlisting}
 
-Create a minimal Catan2 project:
+Create a minimal generic project:
 
 \begin{lstlisting}
-.\bin\leafctl.ps1 live C:\Games\catan2 \
-  --new --template catan2 --yes --budget 64
+.\bin\leafctl.ps1 live C:\R\MyNewProject \
+  --new --template generic --yes --budget 64
 \end{lstlisting}
 
 Intake does not add LeafOS control files to an existing target. Run state stays
@@ -133,11 +133,11 @@ telemetry, and report required to reconnect without conversation memory.
 .\bin\leafctl.ps1 test visual --plain
 .\bin\leafctl.ps1 test visual \
   --match provider --live-stack --plain
-.\bin\leafctl.ps1 catan2-resident \
+.\bin\leafctl.ps1 resident start \
   --contract-only --iterations 3
 \end{lstlisting}
 
-The current discovery suite contains 203 tests. The live-stack demonstration
+The current discovery suite contains 199 tests.
 is explicitly real-provider evidence. Contract and fixture tests remain
 clearly labeled and do not make that claim.
 
@@ -166,10 +166,10 @@ Document & Purpose \\
 
 \section*{Current Acceptance State}
 
-The resident implementation, contract profile, 203-test observatory, native
-TUI, bounded live-provider demonstration, and real four-minute Catan2 profile
-pass. The real eight-minute and 64-minute soaks remain open evidence. A profile
-is not complete merely because its command exists.
+The resident implementation, contract profile, 199-test observatory, native
+TUI, bounded live-provider demonstration, and real four-minute generic resident
+profile pass. The real eight-minute and 64-minute soaks remain open evidence. A
+profile is not complete merely because its command exists.
 
 \section*{Optional Surfaces}
 
