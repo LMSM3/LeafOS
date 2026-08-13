@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 from __future__ import annotations
 
+import json
 import re
 import shutil
 import subprocess
@@ -127,6 +128,25 @@ class FlowerMonitorIntegrationTests(unittest.TestCase):
         for key in ("primary_reference", "primary_reference_tex"):
             self.assertIn(key, powershell)
             self.assertIn(key, bash)
+
+    def test_root_contract_integrates_change_loop_without_implementing_future_tasks(self) -> None:
+        metadata = json.loads((LEAFOS_ROOT / "leafos.root.json").read_text(encoding="utf-8"))
+        change_loop = metadata["change_loop"]
+        for key in ("ccis_cli", "scientific_loop", "typed_task_registry", "series_index", "next_work_order"):
+            self.assertTrue((LEAFOS_ROOT / change_loop[key]).is_file(), key)
+
+        registry = json.loads(
+            (LEAFOS_ROOT / change_loop["typed_task_registry"]).read_text(encoding="utf-8")
+        )
+        entries = {item["task_type"]: item for item in registry["entries"]}
+        self.assertEqual("implemented", entries["probe.llamacpp.capability"]["status"])
+        self.assertEqual(
+            "ccis.probe.llamacpp.capability",
+            entries["probe.llamacpp.capability"]["native_handler"],
+        )
+        for task_type in ("eval.llamacpp.grammar", "eval.llamacpp.stream"):
+            self.assertEqual("reserved", entries[task_type]["status"])
+            self.assertIsNone(entries[task_type]["native_handler"])
 
 
 if __name__ == "__main__":
