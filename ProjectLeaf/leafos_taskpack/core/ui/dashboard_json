@@ -1,0 +1,120 @@
+#!/usr/bin/env bash
+# Read-only dashboard JSON projection.
+# Leaves interactive box-drawing TUI in Python for now.
+set -euo pipefail
+
+ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
+LEAF_HOME="${LEAF_HOME:-$HOME/.leaf}"
+export LEAF_HOME
+
+die() { printf '%s\n' "$*" >&2; exit 1; }
+
+command -v jq >/dev/null || die "jq is required for dashboard_json"
+
+hostname=$(hostname 2>/dev/null || echo "localhost")
+version_file="$ROOT_DIR/../../VERSION"
+if [[ -f "$version_file" ]]; then
+	version=$(cat "$version_file" | tr -d '[:space:]')
+else
+	version="0.5.0"
+fi
+
+state_dirs=(inbox queued running done failed)
+
+build_state() {
+	local ts
+	ts=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+	local counts="{"
+	for d in "${state_dirs[@]}"; do
+		local n=0
+		if [[ -d "$LEAF_HOME/$d" ]]; then
+			n=$(find "$LEAF_HOME/$d" -maxdepth 1 -type f 2>/dev/null | wc -l | tr -d ' ')
+		fi
+		counts="$counts\"$d\": $n, "
+	done
+	counts="${counts%, }"
+	counts="$counts}"
+
+	local cpu ram gpus
+	cpu=$(nproc 2>/dev/null || echo "?")
+	ram=$(free -g 2>/dev/null | awk '/^Mem:/{print $2" GB"}' || true)
+	[[ -n "${ram:-}" ]] || ram="?"
+	gpus=0
+	if command -v nvidia-smi >/dev/null 2>&1; then
+		gpus=$(nvidia-smi -L 2>/dev/null | wc -l | tr -d ' ')
+	elif command -v wmic >/dev/null 2>&1; then
+		gpus=$(wmic path win32_VideoController get Name 2>/dev/null | grep -c "^Name" || true)
+		gpus=$((gpus - 1))
+	fi
+
+	local arp="[]"
+	if [[ -r /proc/net/arp ]]; then
+		arp=$(awk 'NR>1 && $1~/^[0-9]/{printf "{\"ip\": \"%s\", \"hw\": \"%s\"},", $1, $4}' /proc/net/arp | sed 's/,$//' | awk '{print "["$0"]"}')
+	elif command -v arp >/dev/null 2>&1; then
+		arp=$(arp -a 2>/dev/null | awk '/[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+/{for(i=1;i<=NF;i++) if($i ~ /^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$/) {printf "{\"ip\": \"%s\", \"hw\": \"-\"},", $i}}' | sed 's/,$//' | awk '{print "["$0"]"}')
+	fi
+	[[ -n "${arp:-}" ]] || arp='[]'
+
+	jq -n \
+		--arg leafos_object "leafos.dashboard_state.v1" \
+		--arg generated_at "$ts" \
+		--arg hostname "$hostname" \
+		--arg version "$version" \
+		--argjson counts "$counts" \
+		--argjson hardware "{\"cpu_cores\": \"$cpu\", \"ram\": \"$ram\", \"gpus\": $gpus}" \
+		--argjson arp "${arp:-[]}" \
+		'{
+			leafos_object: $leafos_object,
+			generated_at: $generated_at,
+			node: $hostname,
+			role: "worker",
+			state: "ready",
+			leafos_version: $version,
+			task_queue: $counts,
+			hardware: $hardware,
+			paths: {
+				home: env.LEAF_HOME
+			},
+			lan_arp: $arp
+		}'
+}
+
+print_ascii() {
+	local state
+	state="$1"
+	printf '┌──────────────────────────────────────────────────────────────────────────────┐\n'
+	printf '│  LeafOS  v%-10s NODE: %-24s ROLE: %-7s STATE: %-5s │\n' \
+		"$(echo "$state" | jq -r '.leafos_version')" \
+		"$(echo "$state" | jq -r '.node')" \
+		"$(echo "$state" | jq -r '.role')" \
+		"$(echo "$state" | jq -r '.state')"
+	printf '└──────────────────────────────────────────────────────────────────────────────┘\n'
+	printf '  TASK QUEUE\n'
+	echo "$state" | jq -r '.task_queue | to_entries[] | "  \(.key)  \(.value)"'
+	printf '\n  HARDWARE\n'
+	echo "$state" | jq -r '.hardware | "  cpu  \(.cpu_cores) cores\n  ram  \(.ram)\n  gpus \(.gpus)"'
+}
+
+watch_sec=0
+json=0
+while [[ $# -gt 0 ]]; do
+	case "$1" in
+		--json)     json=1; shift ;;
+		--watch)    watch_sec="${2:-2}"; shift 2 ;;
+		*)          die "unknown argument: $1" ;;
+	esac
+done
+
+if (( json )); then
+	if (( watch_sec > 0 )); then
+		while true; do
+			build_state
+			sleep "$watch_sec"
+		done
+	else
+		build_state
+	fi
+else
+	state=$(build_state)
+	print_ascii "$state"
+fi

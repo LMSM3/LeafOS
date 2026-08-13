@@ -1,0 +1,12 @@
+﻿{
+  "schema": "leafos.expert.v1",
+  "id": "deepseek-v3-qa-remote",
+  "model_ref": "deepseek-v3",
+  "parameters_b": 671,
+  "provider": "openai_compatible",
+  "placement": "remote",
+  "endpoint_ref": "remote-deepseek-bridge",
+  "context_tokens": 64000,
+  "capabilities": ["qa", "proposal.review"],
+  "enabled": true
+}

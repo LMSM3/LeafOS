@@ -1,0 +1,71 @@
+{
+  "schema": "leafos.moe.benchmark-matrix/0.1",
+  "schema_version": 1,
+  "matrix_id": "small-host-baseline-v2",
+  "description": "Conservative demonstration matrix with an explicitly device-isolated CPU control for the LeafOS i9-13900K and 12 GiB-class single-GPU host.",
+  "workloads": [
+    {
+      "id": "pp256-tg64",
+      "prompt_tokens": 256,
+      "generation_tokens": 64,
+      "repetitions": 3,
+      "batch_size": 512,
+      "ubatch_size": 256
+    }
+  ],
+  "placements": [
+    {
+      "id": "cpu-strict-16t",
+      "applies_to": "all",
+      "requires_gpu": false,
+      "args": {
+        "threads": 16,
+        "n_gpu_layers": 0,
+        "device": "none",
+        "no_op_offload": true,
+        "n_cpu_moe": 0,
+        "mmap": true,
+        "flash_attention": "auto"
+      }
+    },
+    {
+      "id": "gpu-fit-1024mib",
+      "applies_to": "all",
+      "requires_gpu": true,
+      "args": {
+        "threads": 8,
+        "n_gpu_layers": 999,
+        "n_cpu_moe": 0,
+        "fit_target_mib": 1024,
+        "mmap": true,
+        "flash_attention": "auto"
+      }
+    },
+    {
+      "id": "moe-cpu-half",
+      "applies_to": "moe",
+      "requires_gpu": true,
+      "args": {
+        "threads": 16,
+        "n_gpu_layers": 999,
+        "n_cpu_moe": "half",
+        "fit_target_mib": 1024,
+        "mmap": true,
+        "flash_attention": "auto"
+      }
+    },
+    {
+      "id": "moe-cpu-all",
+      "applies_to": "moe",
+      "requires_gpu": true,
+      "args": {
+        "threads": 16,
+        "n_gpu_layers": 999,
+        "n_cpu_moe": "all",
+        "fit_target_mib": 1024,
+        "mmap": true,
+        "flash_attention": "auto"
+      }
+    }
+  ]
+}

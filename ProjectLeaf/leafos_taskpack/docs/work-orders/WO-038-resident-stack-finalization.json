@@ -1,0 +1,59 @@
+{
+  "leafos_object": "leafos.work_order",
+  "version": 2,
+  "work_order_id": "WO-038",
+  "title": "Resident Stack Finalization: Continual Scheduler And Adaptive Resource Governor",
+  "objective": "Finalize LeafOS as a resident live agentic stack that continually executes durable queued work, accepts light operator input, targets productive CPU and GPU utilization, and preserves foreground workstation responsiveness.",
+  "allowed_paths": [
+    "bin",
+    "config",
+    "core/bench",
+    "core/python",
+    "core/providers",
+    "core/ui/tui",
+    "core/tui",
+    "docs",
+    "reports",
+    "schemas",
+    "tests"
+  ],
+  "constraints": [
+    "Reuse the existing inlet, version-2 queue, worker lease, journal, validation, and checkpoint authority.",
+    "Treat all downloaded and locally available models in this instance as the stack.",
+    "Use 80 percent CPU and 90 percent GPU as adaptive productive targets, not synthetic load requirements.",
+    "Reduce dispatch pressure for recent operator input, responsiveness loss, memory pressure, thermal pressure, or provider degradation.",
+    "Do not give TUI renderers shell, filesystem, queue-file, or policy-file authority.",
+    "Do not generate unbounded work without project boundaries and a renewable budget.",
+    "Do not display or persist private model chain-of-thought."
+  ],
+  "commands": {
+    "tests": [
+      [
+        "python",
+        "-m",
+        "unittest",
+        "tests.test_resource_governor",
+        "tests.test_resident_scheduler",
+
+        "tests.test_loop_inlet",
+        "tests.test_tui_hardware",
+        "tests.test_tui_native",
+        "tests.test_live_project"
+      ]
+    ]
+  },
+  "acceptance": [
+    "The resident stack accepts durable tasks while another task is executing.",
+    "Eligible tasks continue across TUI disconnects and supervisor restarts without duplicate claims.",
+    "Idle productive windows target approximately 80 percent CPU and 90 percent GPU while interactive and pressure profiles preserve foreground headroom.",
+    "Every resource decision has a stable reason code and visible current versus target values.",
+    "Automatic queue refill is derived from validated evidence and bounded by time, iteration, failure, and change budgets.",
+    "The provider remains warm, uses bounded restart backoff, and never silently substitutes mock output.",
+    "Both TUI renderers expose authenticated typed controls for profile, targets, budget, pause, resume, drain, and stop.",
+    "Generic projects pass 4-minute, 8-minute, and 64-minute resident-stack demonstrations with validated iterative improvements."
+  ],
+  "approval_mode": "required",
+  "allow_mutation": true,
+  "max_attempts": 2,
+  "timeout_seconds": 3600
+}

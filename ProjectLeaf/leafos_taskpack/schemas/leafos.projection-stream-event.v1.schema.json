@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://leafos.local/schemas/leafos.projection-stream-event.v1.schema.json",
+  "title": "LeafOS Projection Stream Notification",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["leafos_object", "version", "kind", "projection", "aggregate_id", "from_version", "to_version", "source_cursor"],
+  "properties": {
+    "leafos_object": {"const": "leafos.projection_stream_event"},
+    "version": {"const": 1},
+    "kind": {"enum": ["projection.patch", "projection.invalidate", "projection.resync"]},
+    "projection": {"type": "string"},
+    "aggregate_id": {"type": "string"},
+    "from_version": {"type": "integer", "minimum": 0},
+    "to_version": {"type": "integer", "minimum": 0},
+    "source_cursor": {"type": "string"},
+    "patch": {"type": "array", "maxItems": 128, "items": {"type": "object", "additionalProperties": false, "required": ["op", "path"], "properties": {"op": {"enum": ["add", "remove", "replace"]}, "path": {"type": "string", "pattern": "^/"}, "value": {}}}},
+    "reason": {"type": ["string", "null"]}
+  },
+  "allOf": [{"if": {"properties": {"kind": {"const": "projection.patch"}}}, "then": {"required": ["patch"]}}]
+}

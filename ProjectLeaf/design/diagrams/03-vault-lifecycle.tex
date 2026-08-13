@@ -1,0 +1,46 @@
+\documentclass[tikz,border=10pt]{standalone}
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric,arrows.meta,positioning,fit,backgrounds,calc}
+
+\begin{document}
+\begin{tikzpicture}[
+	font=\sffamily\small,
+	node distance=1.5cm and 2.5cm,
+	>=Stealth,
+	process/.style={rectangle, rounded corners, draw=blue!60, fill=blue!5, minimum width=3.4cm, minimum height=1cm, align=center, thick},
+	data/.style={rectangle, draw=green!60!black, fill=green!5, minimum width=3cm, minimum height=0.9cm, align=center, thick},
+	crypto/.style={rectangle, rounded corners, draw=purple!60, fill=purple!5, minimum width=3.2cm, minimum height=1cm, align=center, thick},
+	flow/.style={->, thick}
+]
+
+% --- SAVE flow ---
+\node[process] (prompt) {Prompt password\\(stderr), confirm match};
+\node[data, right=of prompt] (plain) {Plaintext blob\\\texttt{read=R[...]\\write=W[...]}};
+\node[crypto, right=of plain] (sha) {SHA-256(password)\\= entropy};
+\node[process, below=of sha] (crypt) {DPAPI\\\texttt{CryptProtectData}};
+\node[data, below=of crypt] (cipher) {Encrypted blob\\\texttt{flower\_token\_vault.dat}};
+
+\draw[flow] (prompt) -- (plain);
+\draw[flow] (plain) -- (sha);
+\draw[flow] (sha) -- (crypt);
+\draw[flow] (crypt) -- (cipher);
+
+% --- GET flow ---
+\node[process, below=2.2cm of prompt] (ask) {Prompt password\\(stderr)};
+\node[data, right=of ask] (readcipher) {Read encrypted blob\\from cache dir};
+\node[crypto, right=of readcipher] (ent2) {SHA-256(password)\\= entropy};
+\node[process, below=of ent2] (decrypt) {DPAPI\\\texttt{CryptUnprotectData}};
+\node[data, below=of decrypt] (out) {Extract token\\stdout only};
+
+\draw[flow] (ask) -- (readcipher);
+\draw[flow] (readcipher) -- (ent2);
+\draw[flow] (ent2) -- (decrypt);
+\draw[flow] (decrypt) -- (out);
+
+% --- channel labels ---
+\draw[ dashed, gray, ->] (cipher.east) -- ++(1.2,0) |- (readcipher.east) node[pos=0.25,right,gray]{\footnotesize persisted file};
+
+\node[below=0.3cm of out, align=center, font=\footnotesize\sffamily] {stdout capture-safe because\\prompts and errors go to stderr};
+
+\end{tikzpicture}
+\end{document}

@@ -1,0 +1,30 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://leafos.local/ccis/contracts/allocation/allocation-lease.v1.schema.json",
+  "title": "CCIS Allocation Lease",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["lease_id", "task_id", "worker_id", "acquired_tick", "expires_tick", "claims"],
+  "properties": {
+    "lease_id": {"type": "string", "pattern": "^lease-[0-9]{8}$"},
+    "task_id": {"type": "string", "minLength": 3},
+    "worker_id": {"type": "string", "minLength": 1},
+    "acquired_tick": {"type": "integer", "minimum": 0},
+    "expires_tick": {"type": "integer", "minimum": 1},
+    "claims": {
+      "type": "array",
+      "maxItems": 128,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["resource", "mode", "amount", "unit"],
+        "properties": {
+          "resource": {"type": "string", "minLength": 1, "maxLength": 256},
+          "mode": {"enum": ["shared", "exclusive"]},
+          "amount": {"type": "number", "minimum": 0},
+          "unit": {"type": "string", "minLength": 1}
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "schema": "leafos.memory.event.v1",
+  "event_id": "mem_00000001",
+  "run_id": "leaf-wo-009-contracts",
+  "project_id": "leafos-0.2.1",
+  "sequence": 1,
+  "timestamp_utc": "2026-07-17T05:20:00Z",
+  "kind": "validation",
+  "epistemic_class": "evidence",
+  "source": { "actor": "validator", "model": null, "tool": "leaf-test", "parent_event_ids": [] },
+  "scope": { "task_id": "Leaf-WO-009-A", "paths": ["tests/memory"], "symbols": [] },
+  "content": { "mime": "application/json", "text": "Contract fixture passed.", "data": { "passed": 1, "failed": 0 } },
+  "retrieval": { "importance": 0.86, "expires_at": null, "sensitivity": "project", "indexable": true },
+  "integrity": { "payload_sha256": "0000000000000000000000000000000000000000000000000000000000000000", "previous_event_sha256": null, "writer_version": "leaf-memory/0.1.0" }
+}

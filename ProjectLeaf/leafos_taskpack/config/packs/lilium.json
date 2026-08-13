@@ -1,0 +1,77 @@
+{
+  "description": "Layering pack bundling ~20 checkpoints for mixed reasoning, coding, judging, and vision workloads. Up to ~200 GB when fully materialized.",
+  "enabled": false,
+  "groups": [
+    "lilium.router",
+    "lilium.brain",
+    "lilium.coder",
+    "lilium.critic",
+    "lilium.judge",
+    "lilium.writer",
+    "lilium.vision"
+  ],
+  "id": "lilium",
+  "identity": {
+    "colour": "white",
+    "display_name": "white\u2740",
+    "flower": "violet",
+    "symbol": "\u2740",
+    "visual_family": "monochrome"
+  },
+  "layers": [
+    {
+      "default_group": "lilium.router",
+      "layer": "router",
+      "max_models": 2,
+      "purpose": "fast triage"
+    },
+    {
+      "default_group": "lilium.brain",
+      "layer": "brain",
+      "max_models": 4,
+      "purpose": "planning and synthesis"
+    },
+    {
+      "default_group": "lilium.coder",
+      "layer": "coder",
+      "max_models": 6,
+      "purpose": "implementation"
+    },
+    {
+      "default_group": "lilium.critic",
+      "layer": "critic",
+      "max_models": 3,
+      "purpose": "review"
+    },
+    {
+      "default_group": "lilium.judge",
+      "layer": "judge",
+      "max_models": 2,
+      "purpose": "final authority"
+    },
+    {
+      "default_group": "lilium.writer",
+      "layer": "writer",
+      "max_models": 2,
+      "purpose": "polished output"
+    },
+    {
+      "default_group": "lilium.vision",
+      "layer": "vision",
+      "max_models": 1,
+      "purpose": "multimodal perception"
+    }
+  ],
+  "name": "Multi-Workload Telluric Foundation Pack",
+  "notes": "Placeholder pack. No artifacts are downloaded yet. Members reference existing experts and declared future specializations. Formerly mwtf-pack.",
+  "policy": {
+    "allow_remote": true,
+    "max_concurrent_local_models": 1,
+    "max_pack_ram_gib": 64.0,
+    "max_pack_vram_gib": 32.0,
+    "parallel_load": false,
+    "require_grouped_activation": true
+  },
+  "schema": "leafos.model-pack/v1",
+  "version": "0.1.0"
+}

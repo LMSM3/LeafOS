@@ -1,0 +1,18 @@
+{
+  "schema": "leafos.model-group/v1",
+  "id": "yellow.router",
+  "slot": "router.primary",
+  "enabled": true,
+  "policy": {
+    "parallel_load": false,
+    "preferred_quantization": ["IQ2_M_MTP", "IQ3_M_MTP", "IQ4_XS"],
+    "max_vram_gib": 10.0,
+    "max_ram_gib": 12.0,
+    "allow_remote": false
+  },
+  "members": [
+    { "id": "yellow-router-fast", "weight": 90 },
+    { "id": "yellow-router-primary", "weight": 100 },
+    { "id": "yellow-router-conservative", "weight": 70 }
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "schema": "leafos.model-group.v1",
+  "group_id": "ficus-ecology.routing",
+  "name": "Fable Ecology Routing Layer",
+  "priority": 0,
+  "mode": "fast",
+  "profiles": [
+    "ficus-ecology.helper-q2",
+    "ficus-ecology.router-q2",
+    "ficus-ecology.classifier-q2"
+  ],
+  "default": false,
+  "comment": "Always-on or fast-on layer that classifies user intent and routes to the correct worker lane."
+}

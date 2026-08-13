@@ -1,0 +1,18 @@
+{
+  "schema": "leafos.model-profile.v1",
+  "profile_id": "viola-nocturne.reference-q8",
+  "base_catalog_key": "viola-fable-fusion-27b",
+  "title": "Viola Nocturne Reference (Q8_0)",
+  "role": "writer",
+  "lanes": ["slot.write.prose", "slot.write.docs", "slot.write.reference"],
+  "contracts": ["text_output"],
+  "runtime": ["llama.cpp"],
+  "recommended_quant": "Q8_0",
+  "quality_quant": "Q8_0",
+  "low_memory_quant": "Q4_K_M",
+  "emergency_quant": "Q2_K",
+  "activation": "on_demand",
+  "escalation_from": ["viola-nocturne.router-q2"],
+  "escalation_to": ["viola-nocturne.judge-q6"],
+  "notes": ["High-quality reference and prose worker from Fable Fusion 27B. Non-MTP Q8_0 variant."]
+}

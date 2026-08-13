@@ -1,0 +1,59 @@
+#!/usr/bin/env bash
+# Build and run the Linux/WSL FlowerOS high-frequency hardware monitor.
+set -euo pipefail
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+TASKPACK_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
+CANONICAL_LEAFOS_ROOT="$(cd "$TASKPACK_ROOT/../.." && pwd)"
+SOURCE="$TASKPACK_ROOT/core/monitor/flower.c"
+OUTPUT="$TASKPACK_ROOT/build/flower-monitor"
+
+# The launcher binds the native monitor to this checkout without baking a
+# Windows-only path into portable POSIX C. Callers may still override it.
+export LEAFOS_ROOT="${LEAFOS_ROOT:-$CANONICAL_LEAFOS_ROOT}"
+
+if [[ "${1:-}" == "--source" ]]; then
+    printf '%s\n' "$SOURCE"
+    exit 0
+fi
+
+if [[ "${1:-}" == "--root-path" ]]; then
+    printf '%s\n' "$LEAFOS_ROOT"
+    exit 0
+fi
+
+if [[ ! -f "$SOURCE" ]]; then
+    printf 'flower-monitor: source not found: %s\n' "$SOURCE" >&2
+    exit 1
+fi
+
+if [[ "$(uname -s 2>/dev/null || true)" != "Linux" ]]; then
+    printf 'flower-monitor: Linux or WSL is required (/proc, termios, and ioctl are used)\n' >&2
+    exit 1
+fi
+
+CC_BIN="${CC:-}"
+if [[ -z "$CC_BIN" ]]; then
+    for candidate in cc gcc clang; do
+        if command -v "$candidate" >/dev/null 2>&1; then
+            CC_BIN="$candidate"
+            break
+        fi
+    done
+fi
+if [[ -z "$CC_BIN" ]] || ! command -v "$CC_BIN" >/dev/null 2>&1; then
+    printf 'flower-monitor: no C compiler found; install gcc or clang in Linux/WSL\n' >&2
+    exit 1
+fi
+
+if [[ ! -x "$OUTPUT" || "$SOURCE" -nt "$OUTPUT" || "${1:-}" == "--build" ]]; then
+    mkdir -p "$(dirname "$OUTPUT")"
+    "$CC_BIN" -std=c11 -O2 -Wall -Wextra -Wpedantic "$SOURCE" -o "$OUTPUT" -lm
+fi
+
+if [[ "${1:-}" == "--build" ]]; then
+    printf 'built %s\n' "$OUTPUT"
+    exit 0
+fi
+
+exec "$OUTPUT" "$@"

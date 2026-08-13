@@ -1,0 +1,18 @@
+{
+  "leafos_object": "manifest",
+  "version": "0.5.0",
+  "built_at": "2026-06-22T15:42:29-07:00",
+  "host_ip": "192.168.4.44",
+  "bundles": [
+    {
+      "name": "leafos-0.5.0.tar.gz",
+      "size": 156842,
+      "sha256": "3ec0f3e30b033e8b58366523314226159299d5c754fafef431b33f82b004122c"
+    },
+    {
+      "name": "leafos-0.5.0.zip",
+      "size": 207194,
+      "sha256": "e89d1f03c1cb255bcb0b652df3f18c1a82853189b4b64363beafc5c78dc2121d"
+    }
+  ]
+}

@@ -1,0 +1,85 @@
+{
+  "leafos_object": "leafos.work_order",
+  "version": 2,
+  "work_order_id": "WO-040",
+  "title": "Version Hopping",
+  "status": "deferred",
+  "priority": "deprioritized",
+  "deferred_on": "2026-07-22",
+  "deferred_reason": "Operator instruction: skip and deprioritize version hopping while the late-stage release work remains active.",
+  "target": "C:\\R\\LeafOS0.2.2",
+  "objective": "Create a safe dry-run-first version-hopping lane that lets the operator inspect, plan, check, and explicitly apply compatible version-profile switches across LeafOS and FlowerOS release planes without rewriting historical evidence or confusing operator-surface identity with engine contracts.",
+  "allowed_paths": [
+    "VERSION",
+    "leafos.root.json",
+    "leafos.ps1",
+    "leafos.sh",
+    "PowerShell-Version",
+    "Bash-Version",
+    "ProjectLeaf/leafos_taskpack/bin",
+    "ProjectLeaf/leafos_taskpack/config",
+    "ProjectLeaf/leafos_taskpack/core/python",
+    "ProjectLeaf/leafos_taskpack/core/runtime",
+    "ProjectLeaf/leafos_taskpack/docs",
+    "ProjectLeaf/leafos_taskpack/reports",
+    "ProjectLeaf/leafos_taskpack/schemas",
+    "ProjectLeaf/leafos_taskpack/tests"
+  ],
+  "denied_paths": [
+    ".git",
+    ".env",
+    "secrets",
+    "credentials",
+    "id_rsa",
+    "id_ed25519"
+  ],
+  "constraints": [
+    "FlowerOS remains the operator-facing surface and LeafOS remains the execution and evidence engine.",
+    "A version hop must name the affected plane: root package, taskpack, work-order schema, runtime, or evidence compatibility.",
+    "Every hop is dry-run first and requires explicit approval before mutation.",
+    "A hop must not rewrite historical work orders, reports, benchmarks, run directories, or durable evidence objects.",
+    "Durable leafos.* object names, version-2 work-order runs, queue state, journals, checkpoints, and reports remain readable.",
+    "Runtime and provider-role changes must preserve the coding-only coder boundary and main/scheduler pool boundary.",
+    "Do not display or persist private model chain-of-thought."
+  ],
+  "commands": {
+    "tests": [
+      [
+        "python",
+        "ProjectLeaf/leafos_taskpack/tests/test_leafctl_dispatch.py"
+      ],
+      [
+        "python",
+        "ProjectLeaf/leafos_taskpack/tests/test_work_order_loop.py"
+      ],
+      [
+        "python",
+        "ProjectLeaf/leafos_taskpack/tests/test_live_project.py"
+      ],
+      [
+        "python",
+        "ProjectLeaf/leafos_taskpack/tests/test_model_profiles.py"
+      ]
+    ]
+  },
+  "acceptance": [
+    "The version-hop registry reports the current root package, taskpack, work-order schema, runtime, and evidence planes.",
+    "The list, show, plan, check, and apply command shape is available from both Bash and PowerShell leafctl surfaces.",
+    "Planning a hop emits JSON without mutating files.",
+    "Checking a hop rejects incompatible schema, runtime, provider-role, and path-policy changes.",
+    "Applying a hop requires explicit approval and writes only declared version-hop state or config changes.",
+    "Existing versions, live project, TUI, and FlowerOS home commands remain intact.",
+    "Version-2 work-order runs remain resumable after a hop.",
+    "Historical work orders, reports, benchmarks, and run directories are not rewritten.",
+    "Focused dispatch, work-order, live-project, and model-profile tests pass."
+  ],
+  "verification": {
+    "status": "not_run_deferred",
+    "date": "2026-07-22",
+    "reason": "Operator instructed that version hopping be skipped and deprioritized; no implementation or test run is claimed."
+  },
+  "approval_mode": "required",
+  "allow_mutation": true,
+  "max_attempts": 2,
+  "timeout_seconds": 1800
+}

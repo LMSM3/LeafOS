@@ -1,0 +1,9 @@
+{
+  "kind": "llama",
+  "priority": 5,
+  "payload": {
+    "model": "models/llama-placeholder.gguf",
+    "prompt": "Explain the Leaf node system in one sentence.",
+    "note": "llama runner is a placeholder in 0.5.0; this task will land in failed/ with status not_implemented until the runner is wired in a later milestone"
+  }
+}

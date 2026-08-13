@@ -1,0 +1,18 @@
+{
+  "schema": "leafos.model-profile.v1",
+  "profile_id": "viola-nocturne.deep-reasoner-q4",
+  "base_catalog_key": "viola-fable5-distill-35b-a3b",
+  "title": "Viola Nocturne Deep Reasoner (Q4_K_M)",
+  "role": "heavy_reasoner",
+  "lanes": ["slot.heavy.proof", "slot.heavy.research", "slot.heavy.chain"],
+  "contracts": ["deep_reasoning_output"],
+  "runtime": ["llama.cpp"],
+  "recommended_quant": "Q4_K_M",
+  "quality_quant": "Q6_K",
+  "low_memory_quant": "Q3_K_M",
+  "emergency_quant": "Q2_K",
+  "activation": "on_demand",
+  "escalation_from": ["viola-nocturne.reasoner-q4", "viola-nocturne.critic-q4"],
+  "escalation_to": ["viola-nocturne.judge-q6"],
+  "notes": ["Deeper reasoning lane from Fable 5 Distill 35B-A3B. Same quant as reasoner but invoked only for complex tasks."]
+}

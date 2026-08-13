@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+pwsh.exe -NoLogo -NoProfile -File 'C:\R\LeafOS0.2.2\ProjectLeaf\leafos_taskpack\bin\leafctl.ps1' \
+  agent-loop-start \
+  --target 'C:\Users\liamm\OneDrive\Documents\LeafOS\dir\hereExample' \
+  --work-order 'C:\Users\liamm\OneDrive\Documents\LeafOS\dir\hereExample\work-order.txt' \
+  --profile local-coding \
+  --yes

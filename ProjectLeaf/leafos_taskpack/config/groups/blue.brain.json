@@ -1,0 +1,17 @@
+{
+  "schema": "leafos.model-group/v1",
+  "id": "blue.brain",
+  "slot": "brain.primary",
+  "enabled": true,
+  "policy": {
+    "parallel_load": false,
+    "preferred_quantization": ["Q6_K_MTP", "IQ4_XS"],
+    "max_vram_gib": 28.0,
+    "max_ram_gib": 40.0,
+    "allow_remote": false
+  },
+  "members": [
+    { "id": "blue-brain-primary", "weight": 100 },
+    { "id": "blue-brain-feeder", "weight": 70 }
+  ]
+}

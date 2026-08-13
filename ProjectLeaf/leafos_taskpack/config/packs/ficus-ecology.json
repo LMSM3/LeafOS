@@ -1,0 +1,91 @@
+{
+  "schema": "leafos.model-pack.v1",
+  "id": "ficus-ecology",
+  "name": "Fable Ecology",
+  "version": "0.1.0",
+  "description": "A layered multi-model pack with quant-swappable roles, escalation lanes, and gated dormant heavy models.",
+  "compatible_catalog_min": "0.9.0",
+  "default": false,
+  "identity": {
+    "flower": "ficus",
+    "colour": "green",
+    "symbol": "❁"
+  },
+  "layers": [
+    {
+      "name": "routing",
+      "group": "ficus-ecology.routing",
+      "responsibility": "intent classification and scheduling"
+    },
+    {
+      "name": "memory",
+      "group": "ficus-ecology.memory",
+      "responsibility": "context retrieval, summarization, reflection"
+    },
+    {
+      "name": "reasoning",
+      "group": "ficus-ecology.reasoning",
+      "responsibility": "analysis, chain-of-thought, heavy proof"
+    },
+    {
+      "name": "code",
+      "group": "ficus-ecology.code",
+      "responsibility": "generation, repair, and review of code"
+    },
+    {
+      "name": "creative",
+      "group": "ficus-ecology.creative",
+      "responsibility": "drafting, prose, and creative expansion"
+    },
+    {
+      "name": "safety",
+      "group": "ficus-ecology.safety",
+      "responsibility": "policy, critique, ranking, and judgement"
+    },
+    {
+      "name": "synthesis",
+      "group": "ficus-ecology.synthesis",
+      "responsibility": "final composition and optional deep expert audit"
+    }
+  ],
+  "groups": [
+    "ficus-ecology.routing",
+    "ficus-ecology.memory",
+    "ficus-ecology.reasoning",
+    "ficus-ecology.code",
+    "ficus-ecology.creative",
+    "ficus-ecology.safety",
+    "ficus-ecology.synthesis"
+  ],
+  "escalation_policy": {
+    "auto_escalate": true,
+    "max_depth": 3,
+    "manual_only_profiles": [
+      "ficus-ecology.mor-q6",
+      "ficus-ecology.sleeping-giant-q8"
+    ],
+    "experimental_profiles": [
+      "ficus-ecology.sleeping-giant-q8"
+    ]
+  },
+  "role_policy": {
+    "coder_neutral": true,
+    "main_model_candidates": [
+      "ficus-ecology.composer-q4",
+      "ficus-ecology.reasoner-q4",
+      "ficus-ecology.judge-q4"
+    ],
+    "scheduler_model_candidates": [
+      "ficus-ecology.router-q2"
+    ]
+  },
+  "memory_budget": {
+    "minimum_gb": 8,
+    "recommended_gb": 32,
+    "heavy_threshold_gb": 48
+  },
+  "notes": [
+    "All quant labels are recommendations; the installer backend supports pattern swapping (e.g. Q8_0 to Q4_K_M).",
+    "The Sleeping Giant profile maps to the experimental gpt-oss-120b catalog key and is never auto-loaded."
+  ]
+}

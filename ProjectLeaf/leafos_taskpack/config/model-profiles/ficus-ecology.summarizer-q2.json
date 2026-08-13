@@ -1,0 +1,18 @@
+{
+  "schema": "leafos.model-profile.v1",
+  "profile_id": "ficus-ecology.summarizer-q2",
+  "base_catalog_key": "gemma4-opus-assistant",
+  "title": "Fable Ecology Summarizer (Q2_K)",
+  "role": "summarizer",
+  "lanes": ["slot.sum.context", "slot.sum.memory", "slot.sum.turn"],
+  "contracts": ["summary_output"],
+  "runtime": ["llama.cpp"],
+  "recommended_quant": "Q2_K",
+  "quality_quant": "Q3_K_M",
+  "low_memory_quant": "Q2_K",
+  "emergency_quant": "Q2_K",
+  "activation": "on_demand",
+  "escalation_from": ["ficus-ecology.router-q2"],
+  "escalation_to": ["ficus-ecology.reasoner-q4"],
+  "notes": ["Shrinks long context windows and chat histories for the active worker models."]
+}

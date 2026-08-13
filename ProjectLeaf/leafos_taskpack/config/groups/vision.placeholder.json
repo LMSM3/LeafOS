@@ -1,0 +1,16 @@
+{
+  "schema": "leafos.model-group/v1",
+  "id": "vision.placeholder",
+  "slot": "writer.primary",
+  "enabled": false,
+  "policy": {
+    "parallel_load": false,
+    "preferred_quantization": ["Q4_K_M"],
+    "max_vram_gib": 16.0,
+    "max_ram_gib": 24.0,
+    "allow_remote": false
+  },
+  "members": [
+  ],
+  "notes": "Placeholder for multimodal / vision model group. Members must be added when a vision artifact is downloaded."
+}

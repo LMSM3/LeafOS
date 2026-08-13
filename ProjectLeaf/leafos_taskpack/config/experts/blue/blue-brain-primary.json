@@ -1,0 +1,44 @@
+{
+  "schema": "leafos.expert.v1",
+  "source_repo": "DavidAU/Qwen3.6-27B-Fable-Fusion-711-Uncensored-Heretic-NM-DAU-NEO-MAX-MTP-GGUF",
+  "revision": "main",
+  "parameters_b": 27,
+  "provider": "llama.cpp",
+  "placement": "local",
+  "stack_segment": "local_gpu",
+  "endpoint_ref": "local-brain",
+  "quantization": "Q6_K_MTP",
+  "estimated_memory_gib": 24.0,
+  "context_tokens": 32768,
+  "capabilities": [
+    "proposal.review",
+    "route.plan"
+  ],
+  "fallback_chain": [
+    "blue-brain-feeder"
+  ],
+  "enabled": true,
+  "purpose": "brain primary Banyan Council expert",
+  "notes": "Installed member of the Blue (Banyan Council) stack from flower-pack-1.2.0.",
+  "install_state": {
+    "status": "installed",
+    "local_path": "C:\\R\\LeafOS0.2.2\\models\\packs\\pack-1\\blue-brain-primary\\qwen36-fable-fusion-711-davidau-Q6_K_MTP.gguf",
+    "blob_sha256": null,
+    "verified": true,
+    "download_attempts": 1
+  },
+  "runtime_params": {
+    "flash_attention": true,
+    "mmap": true,
+    "mlock": false,
+    "n_gpu_layers": -1,
+    "seed": 42
+  },
+  "validation": {
+    "launch_test_passed": false,
+    "checksum_ok": false,
+    "benchmark_tag": null
+  },
+  "id": "blue-brain-primary",
+  "model_ref": "qwen3.6-27b-fable"
+}

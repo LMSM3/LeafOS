@@ -1,0 +1,15 @@
+{
+  "schema": "leafos.model-group.v1",
+  "group_id": "viola-nocturne.experimental",
+  "name": "Viola Nocturne Experimental Layer",
+  "priority": 4,
+  "mode": "dormant",
+  "profiles": [
+    "viola-nocturne.experimental-fable-vision",
+    "viola-nocturne.experimental-moe-router",
+    "viola-nocturne.experimental-long-context",
+    "viola-nocturne.experimental-reasoning-control"
+  ],
+  "default": false,
+  "comment": "Dormant experimental lanes and non-Fable controls. Never auto-activated."
+}

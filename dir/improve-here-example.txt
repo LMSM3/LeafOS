@@ -1,0 +1,40 @@
+# Improve hereExample deterministic closure
+
+## Identity
+
+WO-HERE-EXAMPLE-001
+
+## Objective
+
+Implement the smallest clear, deterministic improvement that makes the closure classifier distinguish confirmed, contradicted, and inconclusive action responses.
+
+## Scope
+
+- Inspect the existing README, implementation, and tests.
+- Change only the bounded example project.
+- Keep classification side-effect free and deterministic.
+
+## Constraints
+
+- Do not add dependencies.
+- Do not modify files outside the target directory.
+- Do not weaken or remove acceptance tests.
+- Preserve evidence of the validation result.
+
+## Allowed paths
+
+- .
+
+## Required steps
+
+- Inspect the current behavior.
+- Implement the smallest coherent fix.
+- Run the declared acceptance command.
+- Report the resulting evidence.
+
+## Acceptance criteria
+
+- Matching known values return confirmed.
+- Different known values return contradicted.
+- Missing expected or observed values return inconclusive.
+- The unittest suite passes.

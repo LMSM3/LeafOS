@@ -1,0 +1,38 @@
+{
+  "ccis_object": "ccis.principle_manifest",
+  "schema_version": 1,
+  "canonical_source": {
+    "path": "CCIS-Inside-LeafOS_v2.md",
+    "source_sha256": "sha256:65338b78c27e802f197a93f1b63c74b69bc1cd6f2965d69eb4e84100767e70cb",
+    "projection_sha256": "sha256:7267a89cf8a32134f0f935e5f1acb6047a805cfbed42be625e69ab08af42e449",
+    "normalization": "UTF-8 with LF line endings and final newline",
+    "imported_on": "2026-08-03",
+    "source_name": "CCIS-Inside-LeafOS_v2.md"
+  },
+  "questions": [
+    {
+      "question_id": "constitutional.q1",
+      "question_ref": "principles://ccis/bounded-change",
+      "text": "Is the proposed transition bounded?",
+      "principle": "bounded_change.md"
+    },
+    {
+      "question_id": "constitutional.q2",
+      "question_ref": "principles://ccis/evidence-before-acceptance",
+      "text": "Is there sufficient evidence?",
+      "principle": "evidence_before_acceptance.md"
+    },
+    {
+      "question_id": "constitutional.q3",
+      "question_ref": "principles://ccis/continual-improvement",
+      "text": "Is the new state better, or at least defensibly safer?",
+      "principle": "continual_improvement.md"
+    },
+    {
+      "question_id": "constitutional.q4",
+      "question_ref": "principles://ccis/legal-next-action",
+      "text": "What is the only legal next action?",
+      "principle": "rollback_and_recovery.md"
+    }
+  ]
+}

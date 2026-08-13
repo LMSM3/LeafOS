@@ -1,0 +1,39 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://leafos.local/schemas/moe/benchmark-run-0.1.json",
+  "title": "LeafOS MOE-001 benchmark run evidence",
+  "type": "object",
+  "required": [
+    "schema",
+    "schema_version",
+    "run_id",
+    "plan_id",
+    "completed_at",
+    "success",
+    "results"
+  ],
+  "properties": {
+    "schema": {"const": "leafos.moe.benchmark-run/0.1"},
+    "schema_version": {"const": 1},
+    "run_id": {"type": "string"},
+    "plan_id": {"type": "string"},
+    "completed_at": {"type": "string", "format": "date-time"},
+    "success": {"type": "boolean"},
+    "experimental_identity_override": {"type": "boolean"},
+    "results": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["entry_id", "status", "promotion"],
+        "properties": {
+          "status": {"enum": ["blocked", "succeeded", "failed", "timed_out"]},
+          "promotion": {
+            "type": "object",
+            "required": ["eligible", "blockers"]
+          }
+        }
+      }
+    }
+  }
+}
+

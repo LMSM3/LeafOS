@@ -1,0 +1,54 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://leafos.local/ccis/contracts/evidence-bundle.v1.schema.json",
+  "title": "CCIS Transition Evidence Bundle",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["ccis_object", "schema_version", "bundle_id", "task_id", "transition_id", "created_at", "artifacts", "bundle_hash"],
+  "properties": {
+    "ccis_object": {"const": "ccis.evidence_bundle"},
+    "schema_version": {"const": 1},
+    "bundle_id": {"type": "string", "pattern": "^[A-Za-z][A-Za-z0-9._-]{2,127}$"},
+    "task_id": {"type": "string", "pattern": "^[A-Za-z][A-Za-z0-9._-]{2,127}$"},
+    "transition_id": {"type": "string", "pattern": "^[A-Za-z][A-Za-z0-9._-]{2,127}$"},
+    "created_at": {"type": "string", "format": "date-time"},
+    "artifacts": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["task", "objective", "candidates", "roundtable_record", "plan", "workspace_manifest", "before_hash", "after_hash", "candidate_diff", "commands", "stdout", "stderr", "test_results", "lint_results", "evaluation", "review", "decision", "result"],
+      "properties": {
+        "task": {"$ref": "#/$defs/artifact"},
+        "objective": {"$ref": "#/$defs/artifact"},
+        "candidates": {"$ref": "#/$defs/artifact"},
+        "roundtable_record": {"$ref": "#/$defs/artifact"},
+        "plan": {"$ref": "#/$defs/artifact"},
+        "workspace_manifest": {"$ref": "#/$defs/artifact"},
+        "before_hash": {"$ref": "#/$defs/artifact"},
+        "after_hash": {"$ref": "#/$defs/artifact"},
+        "candidate_diff": {"$ref": "#/$defs/artifact"},
+        "commands": {"$ref": "#/$defs/artifact"},
+        "stdout": {"$ref": "#/$defs/artifact"},
+        "stderr": {"$ref": "#/$defs/artifact"},
+        "test_results": {"$ref": "#/$defs/artifact"},
+        "lint_results": {"$ref": "#/$defs/artifact"},
+        "evaluation": {"$ref": "#/$defs/artifact"},
+        "review": {"$ref": "#/$defs/artifact"},
+        "decision": {"$ref": "#/$defs/artifact"},
+        "result": {"$ref": "#/$defs/artifact"}
+      }
+    },
+    "bundle_hash": {"$ref": "#/$defs/hash"}
+  },
+  "$defs": {
+    "hash": {"type": "string", "pattern": "^sha256:[a-f0-9]{64}$"},
+    "artifact": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "sha256"],
+      "properties": {
+        "path": {"type": "string", "minLength": 1},
+        "sha256": {"$ref": "#/$defs/hash"}
+      }
+    }
+  }
+}

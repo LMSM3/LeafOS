@@ -1,0 +1,9 @@
+{
+  "models": [
+    "gemma4-coder",
+    "gemma4-opus-assistant",
+    "qwen35-opus-reasoning",
+    "qwopus35-coder-mtp"
+  ],
+  "schema": "leafos.pack-draft/v1"
+}

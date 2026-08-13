@@ -1,0 +1,34 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://leafos.local/schemas/leafos.continual-bloom-event.v1.schema.json",
+  "title": "LeafOS continual bloom transcript event v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "seq",
+    "timestamp",
+    "kind",
+    "actor",
+    "read_head",
+    "parent_hash",
+    "payload",
+    "event_hash"
+  ],
+  "properties": {
+    "schema": {"const": "leafos.continual-bloom-event.v1"},
+    "seq": {"type": "integer", "minimum": 1},
+    "timestamp": {"type": "string", "format": "date-time"},
+    "kind": {"type": "string", "minLength": 1},
+    "actor": {"type": "string", "minLength": 1},
+    "read_head": {"type": "integer", "minimum": 0},
+    "parent_hash": {
+      "anyOf": [
+        {"const": "GENESIS"},
+        {"type": "string", "pattern": "^sha256:[a-f0-9]{64}$"}
+      ]
+    },
+    "payload": {"type": "object"},
+    "event_hash": {"type": "string", "pattern": "^sha256:[a-f0-9]{64}$"}
+  }
+}

@@ -1,0 +1,107 @@
+{
+  "color": {
+    "ansi_256": 157,
+    "hex": "#B9FBC0",
+    "name": "Pastel Green",
+    "traits": [
+      "brain",
+      "helper"
+    ]
+  },
+  "display_name": "Penstemon Crown",
+  "dominant_role": "brain",
+  "fingerprint": "4e96d9bf5f62ac90d48a00ad63c21ea7cc5ae59aece715ec520dbb3ce06f1af9",
+  "flower": {
+    "common_name": "Beardtongue",
+    "genus": "Penstemon",
+    "traits": [
+      "structured",
+      "technical",
+      "precise"
+    ]
+  },
+  "generated_at": "2026-07-31T09:07:49.838485Z",
+  "mark": "\u2740",
+  "models": [
+    {
+      "catalog_status": "resolved",
+      "family": "gemma",
+      "id": "gemma4-coder",
+      "modalities": [
+        "text",
+        "code"
+      ],
+      "parameters_b": 12.0,
+      "role": "code",
+      "slot": "coder.primary",
+      "traits": [
+        "structured",
+        "technical",
+        "precise"
+      ]
+    },
+    {
+      "catalog_status": "resolved",
+      "family": "gemma",
+      "id": "gemma4-opus-assistant",
+      "modalities": [
+        "text"
+      ],
+      "parameters_b": 12.0,
+      "role": "brain",
+      "slot": "main.primary",
+      "traits": [
+        "balanced",
+        "reasoning",
+        "synthesis"
+      ]
+    },
+    {
+      "catalog_status": "resolved",
+      "family": "qwen",
+      "id": "qwen35-opus-reasoning",
+      "modalities": [
+        "text"
+      ],
+      "parameters_b": 14.0,
+      "role": "brain",
+      "slot": "scheduler.fallback",
+      "traits": [
+        "deep",
+        "reasoning",
+        "planning"
+      ]
+    },
+    {
+      "catalog_status": "resolved",
+      "family": "qwen",
+      "id": "qwopus35-coder-mtp",
+      "modalities": [
+        "text",
+        "code"
+      ],
+      "parameters_b": 9.0,
+      "role": "code",
+      "slot": "coder.secondary",
+      "traits": [
+        "fast",
+        "technical",
+        "parallel"
+      ]
+    }
+  ],
+  "pack_id": "penstemon-crown-4e96d9",
+  "role_ranking": [
+    [
+      "brain",
+      26.0
+    ],
+    [
+      "code",
+      21.0
+    ]
+  ],
+  "schema": "leafos.generated-pack/v1",
+  "sealed": true,
+  "sealed_at": "2026-07-31T09:07:49.838962Z"
+}

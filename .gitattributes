@@ -1,0 +1,7 @@
+# Shell entrypoints must remain executable by Bash after Windows checkout.
+*.sh text eol=lf
+*.bashrc text eol=lf
+*.conf text eol=lf
+*.tpl text eol=lf
+ProjectLeaf/leafos_taskpack/bin/* text eol=lf
+ProjectLeaf/leafos_taskpack/core/ui/* text eol=lf

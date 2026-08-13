@@ -1,0 +1,89 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://leafos.local/schemas/moe/inventory-0.1.json",
+  "title": "LeafOS MOE-001 GGUF inventory",
+  "type": "object",
+  "required": [
+    "schema",
+    "schema_version",
+    "inventory_id",
+    "generated_at",
+    "model_root",
+    "catalog",
+    "hash_mode",
+    "artifacts"
+  ],
+  "properties": {
+    "schema": {"const": "leafos.moe.inventory/0.1"},
+    "schema_version": {"const": 1},
+    "inventory_id": {"type": "string", "pattern": "^inventory:[0-9a-f]{64}$"},
+    "generated_at": {"type": "string", "format": "date-time"},
+    "model_root": {"type": "string"},
+    "hash_mode": {"enum": ["none", "sha256"]},
+    "artifact_count": {"type": "integer", "minimum": 0},
+    "valid_gguf_count": {"type": "integer", "minimum": 0},
+    "benchmark_admissible_count": {"type": "integer", "minimum": 0},
+    "catalog": {
+      "type": "object",
+      "required": ["path", "sha256"],
+      "properties": {
+        "path": {"type": "string"},
+        "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+      }
+    },
+    "artifacts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "artifact_id",
+          "relative_path",
+          "absolute_path",
+          "bytes",
+          "content_sha256",
+          "metadata_sha256",
+          "gguf",
+          "model",
+          "catalog_matches",
+          "identity_findings",
+          "benchmark_admission"
+        ],
+        "properties": {
+          "artifact_id": {"type": "string"},
+          "relative_path": {"type": "string"},
+          "absolute_path": {"type": "string"},
+          "bytes": {"type": "integer", "minimum": 0},
+          "content_sha256": {
+            "oneOf": [
+              {"type": "null"},
+              {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+            ]
+          },
+          "metadata_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+          "gguf": {
+            "type": "object",
+            "required": ["valid", "version", "tensor_count", "metadata_count"],
+            "properties": {
+              "parameter_count": {"type": ["integer", "null"], "minimum": 0},
+              "metadata_bytes_read": {"type": ["integer", "null"], "minimum": 0},
+              "tensor_info_bytes_read": {"type": ["integer", "null"], "minimum": 0}
+            }
+          },
+          "model": {
+            "type": "object",
+            "required": ["architecture", "artifact_kind"],
+            "properties": {
+              "parameter_count": {"type": ["integer", "null"], "minimum": 0}
+            }
+          },
+          "catalog_matches": {"type": "array"},
+          "identity_findings": {"type": "array"},
+          "benchmark_admission": {
+            "type": "object",
+            "required": ["eligible", "blockers"]
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "schema": "leafos.model-profile.v1",
+  "profile_id": "viola-nocturne.coder-builder-q4",
+  "base_catalog_key": "viola-fable-fusion-27b",
+  "title": "Viola Nocturne Coder Builder (Q4_K_M)",
+  "role": "coder",
+  "lanes": ["slot.code.generate", "slot.code.implement", "slot.code.test"],
+  "contracts": ["code_output"],
+  "runtime": ["llama.cpp"],
+  "recommended_quant": "Q4_K_M",
+  "quality_quant": "Q6_K",
+  "low_memory_quant": "Q3_K_M",
+  "emergency_quant": "Q2_K",
+  "activation": "on_demand",
+  "escalation_from": ["viola-nocturne.router-q2", "viola-nocturne.coder-scout-q3"],
+  "escalation_to": ["viola-nocturne.coder-reviewer-q6", "viola-nocturne.judge-q6"],
+  "notes": ["Primary coding worker from DavidAU's Fable Fusion 27B. Non-MTP Q4_K_M variant."]
+}

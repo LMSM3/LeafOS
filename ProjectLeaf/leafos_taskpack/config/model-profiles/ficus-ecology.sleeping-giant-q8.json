@@ -1,0 +1,21 @@
+{
+  "schema": "leafos.model-profile.v1",
+  "profile_id": "ficus-ecology.sleeping-giant-q8",
+  "base_catalog_key": "gpt-oss-120b",
+  "title": "Fable Ecology Sleeping Giant (Q8_0)",
+  "role": "dormant_expert",
+  "lanes": ["slot.giant.synthesize", "slot.giant.audit", "slot.giant.teach"],
+  "contracts": ["expert_output"],
+  "runtime": ["llama.cpp"],
+  "recommended_quant": "Q8_0",
+  "quality_quant": "Q8_0",
+  "low_memory_quant": "Q4_K_M",
+  "emergency_quant": "Q2_K",
+  "activation": "manual",
+  "escalation_from": ["ficus-ecology.judge-q4", "ficus-ecology.mor-q6"],
+  "escalation_to": [],
+  "notes": [
+    "Experimental dormant model. Requires --include-experimental and --confirm-heavy gpt-oss-120b in the installer.",
+    "Never activated automatically. Used only when the user explicitly asks for the deepest audit or synthesis."
+  ]
+}

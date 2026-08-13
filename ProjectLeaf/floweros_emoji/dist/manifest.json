@@ -1,0 +1,10 @@
+{
+  "name": "floweros-emoji",
+  "version": "0.1.0",
+  "archive": "C:\\Users\\liamm\\OneDrive\\Documents\\LeafOS\\ProjectLeaf\\floweros_emoji\\dist\\floweros-emoji-0.1.0.zip",
+  "sha256": "3B0EBC1B53126E46D5E21EFB2129AFD70B02151AB8D63FBCF28BB8508A29884D",
+  "unicode_source": "https://www.unicode.org/Public/emoji/latest/emoji-test.txt",
+  "unicode_version": "17.0",
+  "record_count": 5225,
+  "built_at": "2026-07-21T15:02:05"
+}

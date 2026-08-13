@@ -1,0 +1,43 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://leafos.local/schemas/moe/benchmark-matrix-0.1.json",
+  "title": "LeafOS MOE-001 benchmark matrix",
+  "type": "object",
+  "required": ["schema", "schema_version", "matrix_id", "workloads", "placements"],
+  "properties": {
+    "schema": {"const": "leafos.moe.benchmark-matrix/0.1"},
+    "schema_version": {"const": 1},
+    "matrix_id": {"type": "string", "minLength": 1},
+    "workloads": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["id", "prompt_tokens", "generation_tokens"],
+        "properties": {
+          "id": {"type": "string"},
+          "prompt_tokens": {"type": "integer", "minimum": 1},
+          "generation_tokens": {"type": "integer", "minimum": 1},
+          "repetitions": {"type": "integer", "minimum": 1},
+          "batch_size": {"type": "integer", "minimum": 1},
+          "ubatch_size": {"type": "integer", "minimum": 1}
+        }
+      }
+    },
+    "placements": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["id", "applies_to", "requires_gpu", "args"],
+        "properties": {
+          "id": {"type": "string"},
+          "applies_to": {"enum": ["all", "dense", "moe"]},
+          "requires_gpu": {"type": "boolean"},
+          "args": {"type": "object"}
+        }
+      }
+    }
+  }
+}
+

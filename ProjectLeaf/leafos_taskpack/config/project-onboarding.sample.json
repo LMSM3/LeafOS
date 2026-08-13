@@ -1,0 +1,22 @@
+{
+  "leafos_object": "leafos.project_onboarding_request",
+  "version": 1,
+  "mode": "new",
+  "target": "C:\\Games\\generic",
+  "workspace_root": "C:\\Games",
+  "project_name": "generic",
+  "template": "generic",
+  "readme": "# Generic\n\nBuild a small, deterministic, well-tested project through bounded iterations.\n",
+  "skeleton": "# Skeleton\n\n- src: project source\n- tests: deterministic coverage\n- reports: iteration evidence\n",
+  "objective": "Create the smallest runnable baseline with deterministic validation.",
+  "provider": "required",
+  "approved": false,
+  "resident": true,
+  "resident_mode": "auto",
+  "budget_minutes": 64,
+  "spawn": true,
+  "sandbox_profile": "project-only",
+  "model_optimizations": {
+    "kv_cache": "investigate"
+  }
+}

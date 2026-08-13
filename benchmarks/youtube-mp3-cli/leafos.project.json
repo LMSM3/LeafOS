@@ -1,0 +1,46 @@
+{
+  "leafos_object": "leafos.live_project",
+  "version": 1,
+  "project": "youtube-mp3-cli",
+  "template": "generic",
+  "objective": "Turn this seed into a useful, tested project through repeated bounded improvements.",
+  "improvement_goals": [
+    "working baseline",
+    "deterministic validation",
+    "incremental complexity",
+    "clear operator evidence"
+  ],
+  "allowed_paths": [
+    "."
+  ],
+  "denied_paths": [
+    ".git",
+    ".env",
+    "secrets",
+    "credentials"
+  ],
+  "constraints": [
+    "Work only inside the project directory.",
+    "Use the local stack for proposals and CPU policy for execution and validation.",
+    "Implement one coherent increment per queued improvement."
+  ],
+  "acceptance": [
+    "The project remains runnable or gains a runnable baseline.",
+    "Deterministic tests cover the new behavior.",
+    "The iteration records evidence and identifies a next improvement."
+  ],
+  "validation": {
+    "commands": [
+      [
+        "C:\\msys64\\ucrt64\\bin\\python3.exe",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "tests",
+        "-p",
+        "test_*.py"
+      ]
+    ]
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "ccis_object": "ccis.decision",
+  "schema_version": 1,
+  "decision_id": "decision_contracts_r0",
+  "task_id": "task_ccis_contracts",
+  "candidate_id": "candidate_contracts_r0",
+  "evaluation_id": "evaluation_contracts_r0",
+  "decided_at": "2026-08-03T08:12:00Z",
+  "decided_by": "leafos.ccis.transition_gate",
+  "outcome": "ACCEPTED",
+  "reasons": ["All configured questions and required validators passed."],
+  "staging_required": true,
+  "working_tree_merged": false,
+  "authority_ref": "authority://task_ccis_contracts/explicit-operator",
+  "evidence_bundle_ref": "evidence://task_ccis_contracts/transition_contracts_gated_accepted",
+  "next_action": "Wait for leafos task accept."
+}

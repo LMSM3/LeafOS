@@ -1,0 +1,73 @@
+{
+  "schema_version": 1,
+  "run_id": "dual-harness",
+  "workspace_allowlist": [
+    "sandbox/overnight-01/work"
+  ],
+  "worker_lifecycle": {
+    "policy": "persistent_warm_until_cancelled",
+    "idle_shutdown": false,
+    "reload_between_tasks": false,
+    "pause_keeps_workers_warm": true,
+    "operator_controls": [
+      "pause",
+      "resume",
+      "cancel"
+    ]
+  },
+  "lanes": {
+    "experimental_brain": {
+      "model": "unselected-medium-moe-candidate",
+      "candidate_status": "blocked_until_qualified",
+      "model_policy": "config/medium_moe_policy.json",
+      "role": "medium_moe_qualification_lane",
+      "max_concurrent": 1,
+      "provider": "llamacpp",
+      "context_tokens": 16384,
+      "compaction_threshold_tokens": 14746
+    },
+    "daily_candidate": {
+      "model": "current-vulkan-provider-route",
+      "model_route": "config/vulkan-provider-stack.json",
+      "role": "incumbent_fallback_until_medium_moe_qualifies",
+      "max_concurrent": 1
+    }
+  },
+  "brain_runtime": {
+    "switch_on_failure": true,
+    "switch_on_conversation_clear": true,
+    "evidence_status": "configuration_only_until_candidate_benchmark",
+    "methods": [
+      {
+        "name": "f16",
+        "cache_type_k": "f16",
+        "cache_type_v": "f16",
+        "gpu_allocation_fraction": 0.5
+      },
+      {
+        "name": "q8_0",
+        "cache_type_k": "q8_0",
+        "cache_type_v": "q8_0",
+        "gpu_allocation_fraction": 0.5
+      }
+    ]
+  },
+  "limits": {
+    "task_timeout_seconds": 10920,
+    "max_attempts": 3,
+    "retry_backoff_seconds": 60,
+    "heartbeat_seconds": 30,
+    "report_interval_seconds": 1800
+  },
+  "safety": {
+    "allow_network": false,
+    "allow_install": false,
+    "allow_delete": false,
+    "allow_unattended_apply": false
+  },
+  "chat_bridge": {
+    "inbox": "chat-inbox.jsonl",
+    "outbox": "chat-outbox.jsonl",
+    "compaction_directory": "context-checkpoints"
+  }
+}

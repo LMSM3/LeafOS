@@ -1,0 +1,18 @@
+{
+  "schema": "leafos.model-profile.v1",
+  "profile_id": "ficus-ecology.router-q2",
+  "base_catalog_key": "gemma4-opus-assistant",
+  "title": "Fable Ecology Router (Q2_K)",
+  "role": "router",
+  "lanes": ["slot.router.classify", "slot.router.route", "slot.router.compress"],
+  "contracts": ["route_decision"],
+  "runtime": ["llama.cpp"],
+  "recommended_quant": "Q2_K",
+  "quality_quant": "Q3_K_M",
+  "low_memory_quant": "Q2_K",
+  "emergency_quant": "Q2_K",
+  "activation": "always",
+  "escalation_from": [],
+  "escalation_to": ["ficus-ecology.reasoner-q4"],
+  "notes": ["Always loads first. Classifies intent, selects lane, and compresses context for downstream workers."]
+}

@@ -1,0 +1,31 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://leafos.local/schemas/moe/provider-probe-0.1.json",
+  "title": "LeafOS MOE-001 llama-bench provider probe",
+  "type": "object",
+  "required": [
+    "schema",
+    "schema_version",
+    "executable",
+    "executable_sha256",
+    "loaded_backends",
+    "devices",
+    "gpu_available",
+    "capabilities",
+    "usable"
+  ],
+  "properties": {
+    "schema": {"const": "leafos.moe.provider-probe/0.1"},
+    "schema_version": {"const": 1},
+    "executable": {"type": "string"},
+    "executable_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "loaded_backends": {"type": "array", "items": {"type": "string"}},
+    "devices": {"type": "array", "items": {"type": "string"}},
+    "cpu_available": {"type": "boolean"},
+    "gpu_available": {"type": "boolean"},
+    "capabilities": {"type": "object"},
+    "usable": {"type": "boolean"},
+    "missing_required_capabilities": {"type": "array", "items": {"type": "string"}}
+  }
+}
+

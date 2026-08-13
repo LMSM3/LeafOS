@@ -1,0 +1,14 @@
+{
+  "schema": "leafos.memory.event.v1",
+  "event_id": "mem_00000002",
+  "run_id": "leaf-wo-009-contracts",
+  "project_id": "leafos-0.2.1",
+  "sequence": 2,
+  "timestamp_utc": "2026-07-17T05:20:01Z",
+  "kind": "observation",
+  "epistemic_class": "record",
+  "source": { "actor": "test", "model": null, "tool": null, "parent_event_ids": [] },
+  "scope": { "task_id": "Leaf-WO-009-A", "paths": [], "symbols": [] },
+  "content": { "mime": "text/plain", "text": "This fixture is invalid.", "data": null },
+  "retrieval": { "importance": 0.1, "expires_at": null, "sensitivity": "project", "indexable": true }
+}

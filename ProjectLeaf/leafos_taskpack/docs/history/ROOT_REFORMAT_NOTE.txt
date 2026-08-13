@@ -1,0 +1,8 @@
+LeafOS root has been reformatted into two user-facing surfaces:
+
+  PowerShell-Version/
+  Bash-Version/
+
+This ProjectLeaf folder is preserved as the source tree.
+
+Start at the workspace root README.md or INSTALLATION.md.

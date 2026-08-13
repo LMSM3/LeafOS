@@ -1,0 +1,47 @@
+{
+  "schema": "leafos.runtime-profiles.v1",
+  "doctrine": "Context is capacity, not reasoning. C = I + P + R + O + S. Setting a large context_size does not by itself create a reasoning budget; reasoning_budget_requested and max_output_tokens are the fields that actually consume that capacity.",
+  "resolution_precedence": [
+    "command_line_override",
+    "selected_runtime_profile",
+    "provider_supported_limit",
+    "model_metadata",
+    "safe_compatibility_default"
+  ],
+  "profiles": {
+    "interactive": {
+      "context_size": 32768,
+      "max_output_tokens": 4096,
+      "reasoning_budget_requested": "auto",
+      "memory_pack_tokens": 6144,
+      "use": "ordinary chat and bounded edits"
+    },
+    "continual": {
+      "context_size": 65536,
+      "max_output_tokens": 8192,
+      "reasoning_budget_requested": 16384,
+      "memory_pack_tokens": 12288,
+      "use": "long local development loop"
+    },
+    "overnight": {
+      "context_size": 131072,
+      "max_output_tokens": 16384,
+      "reasoning_budget_requested": 32768,
+      "memory_pack_tokens": 24576,
+      "use": "slow planner / major refactor"
+    },
+    "compat-4k": {
+      "context_size": 4096,
+      "max_output_tokens": 512,
+      "reasoning_budget_requested": 0,
+      "memory_pack_tokens": 512,
+      "use": "explicit legacy fallback only; reasoning disabled"
+    }
+  },
+  "safety_reserve_tokens": 512,
+  "fallback_policy": {
+    "on_unsupported_model": "compat-4k",
+    "on_impossible_allocation": "reject_with_budget_equation",
+    "never_silently_truncate": true
+  }
+}

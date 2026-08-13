@@ -1,0 +1,42 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://leafos.local/schemas/moe/benchmark-plan-0.1.json",
+  "title": "LeafOS MOE-001 deterministic benchmark plan",
+  "type": "object",
+  "required": [
+    "schema",
+    "schema_version",
+    "plan_id",
+    "inventory_id",
+    "provider",
+    "matrix_id",
+    "entries"
+  ],
+  "properties": {
+    "schema": {"const": "leafos.moe.benchmark-plan/0.1"},
+    "schema_version": {"const": 1},
+    "plan_id": {"type": "string", "pattern": "^plan:[0-9a-f]{64}$"},
+    "inventory_id": {"type": "string"},
+    "matrix_id": {"type": "string"},
+    "entry_count": {"type": "integer", "minimum": 0},
+    "ready_count": {"type": "integer", "minimum": 0},
+    "provider": {"type": "object"},
+    "entries": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "entry_id",
+          "artifact_id",
+          "placement_id",
+          "workload_id",
+          "command",
+          "ready",
+          "execution_blockers",
+          "benchmark_admission_blockers",
+          "promotion_blockers"
+        ]
+      }
+    }
+  }
+}

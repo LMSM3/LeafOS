@@ -1,0 +1,21 @@
+{
+  "ccis_object": "ccis.evaluation",
+  "schema_version": 1,
+  "evaluation_id": "evaluation_contracts_r0",
+  "task_id": "task_ccis_contracts",
+  "candidate_id": "candidate_contracts_r0",
+  "evaluated_at": "2026-08-03T08:10:00Z",
+  "evaluator": "leafos.ccis.evidence_gate",
+  "gate_state": "GATED",
+  "constitutional_questions": [
+    {"question_id": "constitutional.q1", "question_ref": "principles://ccis/bounded-change", "question": "Is the proposed transition bounded?", "result": "PASS", "rationale": "Scope and budgets are explicit.", "evidence_refs": ["evidence://task_ccis_contracts/q1.json"]},
+    {"question_id": "constitutional.q2", "question_ref": "principles://ccis/evidence-before-acceptance", "question": "Is there sufficient evidence?", "result": "PASS", "rationale": "Required evidence is present.", "evidence_refs": ["evidence://task_ccis_contracts/q2.json"]},
+    {"question_id": "constitutional.q3", "question_ref": "principles://ccis/continual-improvement", "question": "Is the new state better, or at least defensibly safer?", "result": "PASS", "rationale": "The candidate meets the declared objective.", "evidence_refs": ["evidence://task_ccis_contracts/q3.json"]},
+    {"question_id": "constitutional.q4", "question_ref": "principles://ccis/legal-next-action", "question": "What is the only legal next action?", "result": "PASS", "rationale": "Explicit operator staging is the sole next action.", "evidence_refs": ["evidence://task_ccis_contracts/q4.json"]}
+  ],
+  "validator_results": [
+    {"validator_id": "contract_tests", "status": "PASSED", "required": true, "exit_code": 0, "summary": "Contract fixture tests passed.", "evidence_refs": ["evidence://task_ccis_contracts/test-contracts.txt"]}
+  ],
+  "recommendation": "ACCEPTED",
+  "evidence_refs": ["evidence://task_ccis_contracts/evaluation.json"]
+}

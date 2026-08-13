@@ -17,6 +17,7 @@ ProjectLeaf/leaf_model_installer/models/
 **/.vscode/
 **/__pycache__/
 **/.pytest_cache/
+**/*.egg-info/
 **/node_modules/
 **/build/
 **/*.py[cod]
@@ -41,6 +42,12 @@ ProjectLeaf/leaf_model_installer/models/
 **/*.synctex*
 **/*.pid
 **/*.lock
+**/*.tmp.*
+**/*.sqlite3
+**/memories/
+**/tmp-*/
+**/tmp_test_*
+**/.leafos-*/
 
 # Downloaded archives and temporary working trees
 tmp/
@@ -52,6 +59,7 @@ tmp/
 **/*.incomplete
 
 # Historical duplicate imports and unrelated local workspaces
+/archive/
 IMPORTS/
 IMPORTS2/
 Imports3/
@@ -74,6 +82,27 @@ VSEPR-Day98-LeafOS-Z-GR8/
 /viola-profile-plan.json
 /test-all.sh
 /.pr-body.md
+/ascii_main.png
+
+# Generated publication and typesetting output
+/$out/
+/output/
+
+# Generated installer plans and local self-test state
+ProjectLeaf/leaf_model_installer/viola-*.json
+ProjectLeaf/leaf_model_installer/tests/perm_probe.txt
+ProjectLeaf/leaf_model_installer/shell_helpers/tempnew.txt
+ProjectLeaf/leafos_taskpack/.notetoself
+ProjectLeaf/leafos_taskpack/share/state/
+ProjectLeaf/leafos_taskpack/system/node/inbox/
+ProjectLeaf/leafos_taskpack/tasks/*.generated.plan.sh
+ProjectLeaf/install/windows/_speedtest_clean_1b.ps1
+ProjectLeaf/install/windows/bench-hf-1b.ps1
+ProjectLeaf/install/windows/test-hf-token-speed.ps1
+
+# Unreferenced hash-named local scratch scripts
+ProjectLeaf/leafos_taskpack/19a9yd712ge8bd7281018xg2381we1j823y812nxc713t21b7ynt3d1ohdi21h.ps1
+ProjectLeaf/leafos_taskpack/3b8a4f61c3905cd19a6d0ef0938b814db7e890c0615436f01487ea71ddf4b8c9.ps1
 
 # OS metadata and editor leftovers
 .DS_Store

@@ -1,0 +1,122 @@
+#!/usr/bin/env bash
+# Read-only chat/model JSON wrappers close to the metal.
+# Leaves interactive TUI in Python for now.
+set -euo pipefail
+
+ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
+LEAF_HOME="${LEAF_HOME:-$HOME/.leaf}"
+CHAT_DIR="$LEAF_HOME/chats"
+MODEL_DIR="$LEAF_HOME/models"
+
+die() { printf '%s\n' "$*" >&2; exit 1; }
+
+ensure_dirs() {
+	[[ -d "$CHAT_DIR" ]] || mkdir -p "$CHAT_DIR"
+	[[ -d "$MODEL_DIR" ]] || mkdir -p "$MODEL_DIR"
+}
+
+list_sessions() {
+	ensure_dirs
+	local found=0
+	for f in "$CHAT_DIR"/*.jsonl; do
+		[[ -f "$f" ]] || continue
+		found=1
+		local name
+		name="$(basename "$f" .jsonl)"
+		local lines
+		lines=$(wc -l < "$f" | tr -d ' ')
+		printf '  %-28s %4s messages\n' "$name" "$lines"
+	done
+	if (( found == 0 )); then
+		printf '  no sessions yet\n'
+	fi
+}
+
+export_session() {
+	local session="${1:-}"
+	[[ -n "$session" ]] || die "usage: chat --export SESSION"
+	local path="$CHAT_DIR/$session.jsonl"
+	[[ -f "$path" ]] || die "session not found: $session"
+	printf '# LeafOS chat export: %s\n\n' "$session"
+	# Each line is JSON为本准; emit role/content as Markdown.
+	while IFS= read -r line; do
+		[[ -n "$line" ]] || continue
+		local role content
+		role=$(printf '%s' "$line" | jq -r '.role // "unknown"')
+		content=$(printf '%s' "$line" | jq -r '.content // ""')
+		printf '## %s\n\n%s\n\n' "$role" "$content"
+	done < "$path"
+}
+
+list_models() {
+	ensure_dirs
+	local found=0
+	for f in "$MODEL_DIR"/*.gguf "$MODEL_DIR"/*.bin "$MODEL_DIR"/*.safetensors; do
+		[[ -f "$f" ]] || continue
+		found=1
+		local name size ext
+		name="$(basename "$f")"
+		size=$(du -h "$f" 2>/dev/null | cut -f1)
+		ext="${name##*.}"
+		printf '  %-44s %-10s %s\n' "$name" "$size" "$ext"
+	done
+	if (( found == 0 )); then
+		printf '  no models in %s\n' "$MODEL_DIR"
+		printf '  use: leaf model pull NODE FILENAME\n'
+	fi
+}
+
+info_model() {
+	local fname="${1:-}"
+	[[ -n "$fname" ]] || die "usage: leaf model info FILE"
+	local path="$MODEL_DIR/$fname"
+	[[ -f "$path" ]] || die "file not found: $path"
+	local size sha mtime ext
+	size=$(du -h "$path" 2>/dev/null | cut -f1)
+	sha=$(sha256sum "$path" 2>/dev/null | cut -d' ' -f1 | cut -c1-48)
+	mtime=$(date -r "$path" '+%Y-%m-%d %H:%M' 2>/dev/null || stat -c '%y' "$path" 2>/dev/null | cut -d' ' -f1,2 | cut -d'.' -f1)
+	ext="${fname##*.}"
+	printf '\n'
+	printf '  %-10s %s\n' file "$fname"
+	printf '  %-10s %s\n' size "$size"
+	printf '  %-10s %s\n' format "$ext"
+	printf '  %-10s %s...\n' sha256 "$sha"
+	printf '  %-10s %s\n' added "$mtime"
+	printf '\n'
+}
+
+# Router.
+if [[ $# -eq 0 ]]; then
+	# Interactive: fall back to Python chat TUI.
+	exec "$ROOT_DIR/core/ui/chat.py"
+fi
+
+cmd=""
+while [[ $# -gt 0 ]]; do
+	case "$1" in
+		--home)      LEAF_HOME="$2"; shift 2 ;;
+		--no-color)  shift ;;
+		--list)      cmd="list_sessions"; shift ;;
+		--export)    cmd="export_session:$2"; shift 2 ;;
+		model)       cmd="model_list"; shift ;;
+		*)           break ;;
+	esac
+done
+
+# Handle `chat model list`, `chat model info FILE` etc.
+if [[ "$cmd" == "model_list" ]]; then
+	sub="${1:-list}"
+	case "$sub" in
+		list)   list_models ;;
+		info)   info_model "$2" ;;
+		*)      die "unknown model subcommand: $sub (try list/info)" ;;
+	esac
+	exit 0
+fi
+
+case "$cmd" in
+	list_sessions)    list_sessions ;;
+	export_session:*) export_session "${cmd#export_session:}" ;;
+	"")               exec "$ROOT_DIR/core/ui/chat.py" "$@" ;;
+	*)                die "unknown command: $cmd" ;;
+esac

@@ -1,0 +1,143 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://leafos.local/ccis/contracts/allocation/typed-task.v1.schema.json",
+  "title": "CCIS Typed Allocation Task",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["ccis_object", "schema_version", "task_id", "task_type", "task_version", "native_handler", "task_digest", "objective", "target", "inputs", "authority", "budget", "dependencies", "resource_claims", "retry_policy", "validators", "output_contract", "provenance", "priority", "not_before_tick", "deadline_tick"],
+  "properties": {
+    "ccis_object": {"const": "ccis.typed_task"},
+    "schema_version": {"const": 1},
+    "task_id": {"$ref": "#/$defs/id"},
+    "task_type": {"type": "string", "pattern": "^[a-z][a-z0-9_.-]{2,127}$"},
+    "task_version": {"type": "integer", "minimum": 1},
+    "native_handler": {"type": "string", "pattern": "^[a-z][a-z0-9_.-]{2,127}$"},
+    "task_digest": {"$ref": "#/$defs/digest"},
+    "objective": {"$ref": "#/$defs/objective"},
+    "target": {"$ref": "#/$defs/target"},
+    "inputs": {"type": "array", "maxItems": 128, "items": {"$ref": "#/$defs/input"}},
+    "authority": {"$ref": "#/$defs/authority"},
+    "budget": {"$ref": "#/$defs/budget"},
+    "dependencies": {"type": "array", "maxItems": 128, "items": {"$ref": "#/$defs/dependency"}},
+    "resource_claims": {"type": "array", "maxItems": 128, "items": {"$ref": "#/$defs/resource_claim"}},
+    "retry_policy": {"$ref": "#/$defs/retry_policy"},
+    "validators": {"type": "array", "maxItems": 64, "items": {"$ref": "#/$defs/validator"}},
+    "output_contract": {"$ref": "#/$defs/output_contract"},
+    "provenance": {"$ref": "#/$defs/provenance"},
+    "priority": {"type": "integer", "minimum": -100000, "maximum": 100000},
+    "not_before_tick": {"type": "integer", "minimum": 0},
+    "deadline_tick": {"type": ["integer", "null"], "minimum": 0}
+  },
+  "$defs": {
+    "id": {"type": "string", "minLength": 3, "maxLength": 160, "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"},
+    "digest": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"},
+    "objective": {
+      "type": "object", "additionalProperties": false,
+      "required": ["summary", "invariants", "tolerances", "stopping_conditions"],
+      "properties": {
+        "summary": {"type": "string", "minLength": 1, "maxLength": 4000},
+        "invariants": {"type": "array", "minItems": 1, "maxItems": 64, "items": {"type": "string", "minLength": 1}},
+        "tolerances": {"type": "array", "maxItems": 64, "items": {"type": "string", "minLength": 1}},
+        "stopping_conditions": {"type": "array", "minItems": 1, "maxItems": 64, "items": {"type": "string", "minLength": 1}}
+      }
+    },
+    "target": {
+      "type": "object", "additionalProperties": false,
+      "required": ["kind", "id", "ref", "digest"],
+      "properties": {
+        "kind": {"type": "string", "minLength": 1},
+        "id": {"$ref": "#/$defs/id"},
+        "ref": {"type": "string", "minLength": 1},
+        "digest": {"type": ["string", "null"], "pattern": "^sha256:[0-9a-f]{64}$"}
+      }
+    },
+    "input": {
+      "type": "object", "additionalProperties": false,
+      "required": ["name", "kind", "ref", "digest"],
+      "properties": {
+        "name": {"$ref": "#/$defs/id"},
+        "kind": {"type": "string", "minLength": 1},
+        "ref": {"type": "string", "minLength": 1},
+        "digest": {"type": ["string", "null"], "pattern": "^sha256:[0-9a-f]{64}$"}
+      }
+    },
+    "authority": {
+      "type": "object", "additionalProperties": false,
+      "required": ["requester", "capabilities", "canonical_write", "automatic_acceptance"],
+      "properties": {
+        "requester": {"type": "string", "minLength": 1},
+        "capabilities": {"type": "array", "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
+        "canonical_write": {"type": "boolean"},
+        "automatic_acceptance": {"type": "boolean"}
+      }
+    },
+    "budget": {
+      "type": "object", "additionalProperties": false,
+      "required": ["wall_time_seconds", "max_attempts", "max_processes", "max_tokens", "context_tokens", "max_memory_mb", "evidence_bytes"],
+      "properties": {
+        "wall_time_seconds": {"type": "integer", "minimum": 1},
+        "max_attempts": {"type": "integer", "minimum": 1},
+        "max_processes": {"type": "integer", "minimum": 1},
+        "max_tokens": {"type": ["integer", "null"], "minimum": 1},
+        "context_tokens": {"type": ["integer", "null"], "minimum": 1},
+        "max_memory_mb": {"type": ["integer", "null"], "minimum": 1},
+        "evidence_bytes": {"type": ["integer", "null"], "minimum": 1}
+      }
+    },
+    "dependency": {
+      "type": "object", "additionalProperties": false,
+      "required": ["task_id", "required_disposition"],
+      "properties": {
+        "task_id": {"$ref": "#/$defs/id"},
+        "required_disposition": {"enum": ["SUCCEEDED"]}
+      }
+    },
+    "resource_claim": {
+      "type": "object", "additionalProperties": false,
+      "required": ["resource", "mode", "amount", "unit"],
+      "properties": {
+        "resource": {"type": "string", "minLength": 1, "maxLength": 256},
+        "mode": {"enum": ["shared", "exclusive"]},
+        "amount": {"type": "number", "minimum": 0},
+        "unit": {"type": "string", "minLength": 1}
+      }
+    },
+    "retry_policy": {
+      "type": "object", "additionalProperties": false,
+      "required": ["max_attempts", "backoff_ticks", "retryable_reasons"],
+      "properties": {
+        "max_attempts": {"type": "integer", "minimum": 1},
+        "backoff_ticks": {"type": "integer", "minimum": 0},
+        "retryable_reasons": {"type": "array", "uniqueItems": true, "items": {"type": "string", "minLength": 1}}
+      }
+    },
+    "validator": {
+      "type": "object", "additionalProperties": false,
+      "required": ["validator_id", "kind", "required", "timeout_seconds"],
+      "properties": {
+        "validator_id": {"$ref": "#/$defs/id"},
+        "kind": {"type": "string", "minLength": 1},
+        "required": {"type": "boolean"},
+        "timeout_seconds": {"type": "integer", "minimum": 1}
+      }
+    },
+    "output_contract": {
+      "type": "object", "additionalProperties": false,
+      "required": ["result_type", "result_version"],
+      "properties": {
+        "result_type": {"type": "string", "minLength": 1},
+        "result_version": {"type": "integer", "minimum": 1}
+      }
+    },
+    "provenance": {
+      "type": "object", "additionalProperties": false,
+      "required": ["source_wo", "instruction_digest", "registry_digest", "source_event"],
+      "properties": {
+        "source_wo": {"type": "string", "minLength": 1},
+        "instruction_digest": {"$ref": "#/$defs/digest"},
+        "registry_digest": {"$ref": "#/$defs/digest"},
+        "source_event": {"type": ["string", "null"]}
+      }
+    }
+  }
+}

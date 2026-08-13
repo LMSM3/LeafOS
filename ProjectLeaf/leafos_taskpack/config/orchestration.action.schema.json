@@ -1,0 +1,54 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "LeafOS 0.3 Orchestration Plan",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["protocol", "goal", "actions", "completion"],
+  "properties": {
+    "protocol": {"const": "leafos.orchestration.v0.3"},
+    "goal": {"type": "string", "minLength": 1, "maxLength": 500},
+    "actions": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 16,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "skill", "input", "depends_on"],
+        "properties": {
+          "id": {"type": "string", "pattern": "^[a-z][a-z0-9_-]{0,48}$"},
+          "skill": {
+            "enum": ["context.inspect", "file.read", "file.hash", "check.run", "report.write"]
+          },
+          "input": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "ref": {"enum": ["readme", "skeleton", "wildcard"]},
+              "check": {"enum": ["leafctl-doctor", "graph-tests", "shell-syntax"]},
+              "message": {"type": "string", "maxLength": 2000}
+            }
+          },
+          "depends_on": {
+            "type": "array",
+            "maxItems": 16,
+            "items": {"type": "string", "pattern": "^[a-z][a-z0-9_-]{0,48}$"}
+          }
+        }
+      }
+    },
+    "completion": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["required_actions"],
+      "properties": {
+        "required_actions": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 16,
+          "items": {"type": "string", "pattern": "^[a-z][a-z0-9_-]{0,48}$"}
+        }
+      }
+    }
+  }
+}

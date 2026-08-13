@@ -1,0 +1,99 @@
+{
+  "leafos_object": "completion_map",
+  "version": "0.4.0-C",
+  "work_order": "WO-004-C",
+  "status": "verified",
+  "generated_at": "2026-06-21T13:53:12-07:00",
+  "required_files": [
+    {
+      "path": "wakeup.py",
+      "exists": true,
+      "size_bytes": 13553,
+      "included_in_export": true,
+      "status": "verified",
+      "python_compile": "pass"
+    },
+    {
+      "path": "wakeup.sh",
+      "exists": true,
+      "size_bytes": 706,
+      "included_in_export": true,
+      "status": "verified",
+      "bash_syntax": "pass"
+    },
+    {
+      "path": "tickers.txt",
+      "exists": true,
+      "size_bytes": 279,
+      "included_in_export": true,
+      "status": "verified"
+    },
+    {
+      "path": "README.md",
+      "exists": true,
+      "size_bytes": 3111,
+      "included_in_export": true,
+      "status": "verified",
+      "required_sections": "pass"
+    },
+    {
+      "path": "tests/test_wakeup_shell.sh",
+      "exists": true,
+      "size_bytes": 1865,
+      "included_in_export": true,
+      "status": "verified",
+      "bash_syntax": "pass"
+    },
+    {
+      "path": "tests/test_wakeup_json.py",
+      "exists": true,
+      "size_bytes": 2955,
+      "included_in_export": true,
+      "status": "verified",
+      "python_compile": "pass"
+    },
+    {
+      "path": "docs/wakeup_node.md",
+      "exists": true,
+      "size_bytes": 3826,
+      "included_in_export": true,
+      "status": "verified"
+    }
+  ],
+  "required_tests": [
+    "tests/test_wakeup_shell.sh",
+    "tests/test_wakeup_json.py"
+  ],
+  "logs": [
+    {
+      "path": "runs/latest/wakeup_result.json",
+      "exists": true,
+      "size_bytes": 1105
+    },
+    {
+      "path": "runs/wakeup_log.csv",
+      "exists": true,
+      "size_bytes": 1211
+    }
+  ],
+  "export": {
+    "files": [
+      "README.md",
+      "completion_map.json",
+      "completion_tree.txt",
+      "docs/wakeup_node.md",
+      "runs/latest/wakeup_result.json",
+      "runs/wakeup_log.csv",
+      "tests/test_wakeup_json.py",
+      "tests/test_wakeup_shell.sh",
+      "tickers.txt",
+      "wakeup.py",
+      "wakeup.sh"
+    ],
+    "exclude": [
+      "__pycache__/",
+      ".pytest_cache/",
+      ".env"
+    ]
+  }
+}
