@@ -43,6 +43,7 @@ unless promoted by a separate release decision.
 | A4 | Hard-coded 0.2.2 paths would work from the new location | EXPIRED | Active scripts and configuration contained old absolute roots | Commands would address the preserved tree | Relocate active code/config paths to 0.2.3; preserve historical records |
 | A5 | Machine-generated home state belongs in release source | CONTRADICTED | The file records live provider, model, run, and filesystem paths | Publishing it would leak stale machine state into source | Ignore generated `share/state/*.json` records |
 | A6 | The existing FlowerOS login file is sufficient web-model authentication | CONTRADICTED | `C:\FlowerOS\lib\install-core.sh` stores a reusable plaintext token, accepts offline-unverified login, and records no expiry, audience, or endpoint scope | Direct reuse would turn an unverified legacy value into a network credential | Never read the legacy file; require a Flower-owned broker to attest a verified session and issue a short-lived scoped credential |
+| A7 | The repository's existing OpenAI endpoint/model pair is currently usable | UNVERIFIED | `providers.conf` declares `gpt-4o` and `providers.sh` declares `https://api.openai.com/v1/chat/completions`, but no account, model-availability, login, or provider call was made | The route can be an exact disabled configuration, but must not be described as live-ready | Keep both broker and Leaf web lane disabled until an operator supplies a verified Flower issuer and separately approves a live acceptance test |
 
 ## 0.2.3 web-model boundary
 
@@ -74,6 +75,9 @@ unless promoted by a separate release decision.
 - High-confidence local secret-pattern scan: PASS, zero matching files.
 - Opt-in real-host llama.cpp probe: NOT RUN.
 - Live Flower login, credential exchange, and web-provider call: NOT RUN.
+- Flower-owned broker implementation: PASS, 6/6 offline security tests; both
+  PowerShell and Bash doctor paths report disabled with no network, credential,
+  or legacy-auth access.
 
 ## Status
 

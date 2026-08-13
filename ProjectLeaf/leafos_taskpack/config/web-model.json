@@ -2,10 +2,10 @@
   "schema": "leafos.web-model.config.v1",
   "enabled": false,
   "provider": "flower-web",
-  "endpoint": "",
-  "allowed_hosts": [],
-  "model": "",
-  "allowed_models": [],
+  "endpoint": "https://api.openai.com/v1/chat/completions",
+  "allowed_hosts": ["api.openai.com"],
+  "model": "gpt-4o",
+  "allowed_models": ["gpt-4o"],
   "limits": {
     "timeout_seconds": 30,
     "max_request_bytes": 262144,
@@ -14,7 +14,12 @@
     "max_output_tokens": 8192
   },
   "auth": {
-    "broker_command": [],
+    "broker_command": [
+      "C:/Windows/System32/WindowsPowerShell/v1.0/powershell.exe",
+      "-NoProfile",
+      "-File",
+      "C:/FlowerOS/bin/flower-credential-broker.ps1"
+    ],
     "audience": "leafos.web-model",
     "timeout_seconds": 5,
     "max_credential_ttl_seconds": 300,

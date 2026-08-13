@@ -67,10 +67,19 @@ class WebModelPipeTests(unittest.TestCase):
         return path
 
     def test_default_config_is_disabled_without_probing_or_requesting_credentials(self) -> None:
-        report = pipe.doctor(ROOT / "config" / "web-model.json")
+        config_path = ROOT / "config" / "web-model.json"
+        report = pipe.doctor(config_path)
         self.assertEqual("disabled", report["status"])
         self.assertFalse(report["network_probe_performed"])
         self.assertFalse(report["credential_requested"])
+        configured = json.loads(config_path.read_text(encoding="utf-8"))
+        self.assertEqual("https://api.openai.com/v1/chat/completions", configured["endpoint"])
+        self.assertEqual(["api.openai.com"], configured["allowed_hosts"])
+        self.assertEqual("gpt-4o", configured["model"])
+        self.assertEqual(
+            "C:/FlowerOS/bin/flower-credential-broker.ps1",
+            configured["auth"]["broker_command"][-1],
+        )
 
     def test_config_rejects_non_https_and_ip_literal_endpoints(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
