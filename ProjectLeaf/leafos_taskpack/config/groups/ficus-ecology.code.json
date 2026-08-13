@@ -1,0 +1,13 @@
+{
+  "schema": "leafos.model-group.v1",
+  "group_id": "ficus-ecology.code",
+  "name": "Fable Ecology Code Layer",
+  "priority": 3,
+  "mode": "on_demand",
+  "profiles": [
+    "ficus-ecology.coder-builder-q4",
+    "ficus-ecology.repair-q3"
+  ],
+  "default": false,
+  "comment": "Coding-only group. Models here are marked coder role and must never be main_model or scheduler."
+}

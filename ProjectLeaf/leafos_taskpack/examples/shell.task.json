@@ -1,0 +1,7 @@
+{
+  "kind": "shell",
+  "priority": 5,
+  "payload": {
+    "command": "echo hello from node && uname -a"
+  }
+}

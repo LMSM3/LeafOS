@@ -1,0 +1,18 @@
+{
+  "schema": "leafos.model-profile.v1",
+  "profile_id": "ficus-ecology.mor-q6",
+  "base_catalog_key": "gemma4-opus-assistant",
+  "title": "Fable Ecology Myth of Reasoning (Q6_K)",
+  "role": "heavy_reasoner",
+  "lanes": ["slot.heavy.proof", "slot.heavy.research", "slot.heavy.archive"],
+  "contracts": ["deep_reasoning_output"],
+  "runtime": ["llama.cpp"],
+  "recommended_quant": "Q6_K",
+  "quality_quant": "Q8_0",
+  "low_memory_quant": "Q4_K_M",
+  "emergency_quant": "Q2_K",
+  "activation": "manual",
+  "escalation_from": ["ficus-ecology.reasoner-q4", "ficus-ecology.judge-q4"],
+  "escalation_to": [],
+  "notes": ["High-quality slow reasoner for the hardest problems. Manual trigger only; no always-on service."]
+}

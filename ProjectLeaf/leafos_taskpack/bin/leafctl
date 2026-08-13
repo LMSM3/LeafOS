@@ -1,0 +1,1264 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+if [[ "${BASH_VERSINFO[0]:-0}" -lt 4 ]]; then
+    echo "leafctl: bash 4.0+ required (found ${BASH_VERSION:-unknown})" >&2
+    exit 1
+fi
+
+ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+source "$ROOT_DIR/core/brand/brand.sh"
+source "$ROOT_DIR/core/log/log.sh"
+source "$ROOT_DIR/core/loaders/loaders.sh"
+source "$ROOT_DIR/core/glyphs/glyphs.sh"
+source "$ROOT_DIR/core/runtime/runtime.sh"
+source "$ROOT_DIR/core/agent/agent.sh"
+source "$ROOT_DIR/core/system/platform.sh"
+source "$ROOT_DIR/core/system/versions.sh"
+# providers.sh is sourced transitively via agent.sh
+source "$ROOT_DIR/core/graph/graph.sh"
+source "$ROOT_DIR/core/agent/wait.sh"
+source "$ROOT_DIR/core/agent/actions.sh"
+source "$ROOT_DIR/core/agent/repair.sh"
+source "$ROOT_DIR/core/agent/loop.sh"
+source "$ROOT_DIR/core/model/brain.sh"
+source "$ROOT_DIR/core/model/coder.sh"
+source "$ROOT_DIR/core/verify/gate.sh"
+source "$ROOT_DIR/core/remote/remote.sh"
+source "$ROOT_DIR/core/net/net.sh"
+source "$ROOT_DIR/core/providers/test.sh"
+source "$ROOT_DIR/core/graph/graph_validate.sh"
+source "$ROOT_DIR/core/patch/validate.sh"
+source "$ROOT_DIR/core/patch/apply.sh"
+source "$ROOT_DIR/core/agent/manifest.sh"
+source "$ROOT_DIR/core/agent/dry_run.sh"
+source "$ROOT_DIR/core/orchestration/orchestrate.sh"
+
+leaf_require_capability() {
+    local capability="$1"
+    local actor="${2:-leafctl}"
+    local reason="${3:-CLI mutation pre-flight}"
+    local py="${LEAFCTL_PYTHON}"
+    [[ -n "$py" ]] || brand_die "python3 not found (capability enforcement requires Python)"
+    if ! "$py" "$ROOT_DIR/core/python/leaf_authority.py" require \
+            "$capability" --actor "$actor" --reason "$reason" --json >/dev/null 2>&1; then
+        brand_die "capability denied: $capability (actor=$actor). See 'leafctl bloom capability --actor <actor> ${capability}' to record an explicit request."
+    fi
+}
+
+leafctl_ensure_python() {
+    # Prefer caller-provided Python, then PATH, then a small set of known
+    # native Windows/MSYS locations.  This avoids silent set -e termination
+    # when PATH does not expose a `python` binary.
+    if [[ -n "${LEAFCTL_PYTHON:-}" && -x "${LEAFCTL_PYTHON}" ]]; then
+        echo "$LEAFCTL_PYTHON"
+        return 0
+    fi
+    local candidate
+    for candidate in "$(command -v python3 2>/dev/null || true)" \
+                     "$(command -v python 2>/dev/null || true)" \
+                     /c/msys64/ucrt64/bin/python.exe \
+                     /c/Python313/python.exe \
+                     /c/Python312/python.exe \
+                     /c/Python311/python.exe \
+                     "${USERPROFILE:-}/AppData/Local/Programs/Python/Python313/python.exe" \
+                     "${USERPROFILE:-}/AppData/Local/Programs/Python/Python312/python.exe" \
+                     "${USERPROFILE:-}/AppData/Local/Programs/Python/Python311/python.exe"; do
+        if [[ -n "$candidate" && -x "$candidate" ]]; then
+            echo "$candidate"
+            return 0
+        fi
+    done
+    brand_die "python3 not found; set LEAFCTL_PYTHON to a Python 3.10+ executable"
+}
+
+LEAFCTL_PYTHON="$(leafctl_ensure_python)"
+export LEAFCTL_PYTHON
+
+cmd="${1:-home}"
+shift || true
+
+case "$cmd" in
+    q)   cmd="quick" ;;
+    h)   cmd="home" ;;
+    s)   cmd="status" ;;
+    d)   cmd="doctor" ;;
+    r)   cmd="runtime"; set -- select "$@" ;;
+    p)   cmd="provider-stack"; set -- check "$@" ;;
+    t)   cmd="trace"; set -- latest "$@" ;;
+    ref) cmd="reference" ;;
+    b)   cmd="bloom"; set -- status "$@" ;;
+    m)   cmd="flower-monitor" ;;
+    c)   cmd="chat" ;;
+    go)  cmd="live" ;;
+    vtop) cmd="vtop" ;;
+    identity) cmd="pack-identity"; set -- generate "$@" ;;
+esac
+
+leaf_powershell_forward() {
+    leaf_detect_pwsh
+    local requested_command="${1:-command}"
+    if ! leaf_pwsh_meets 7.0; then
+        if [[ -n "${LEAF_PWSH_CMD:-}" ]]; then
+            brand_die "PowerShell 7+ is required for '$requested_command'; found ${LEAF_VER_PWSH:-unknown} at ${LEAF_PWSH_CMD}. The PowerShell 5/5.1 fallback is limited to compatible features such as 'indicator'."
+        fi
+        brand_die "PowerShell 7+ is required for '$requested_command'; install PowerShell 7 or repair PATH, then retry."
+    fi
+
+    local ps_script="$ROOT_DIR/bin/leafctl.ps1"
+    local -a ps_args=("$@")
+    local caller_shell="bash"
+    if leaf_is_wsl; then
+        caller_shell="wsl"
+    fi
+    if [[ "$LEAF_PWSH_CMD" == *.exe ]] && command -v wslpath &>/dev/null; then
+        ps_script="$(wslpath -w "$ps_script")"
+        local i
+        for i in "${!ps_args[@]}"; do
+            if [[ "${ps_args[$i]}" == /mnt/* ]]; then
+                ps_args[$i]="$(wslpath -w "${ps_args[$i]}")"
+            fi
+        done
+    fi
+
+    if [[ "$caller_shell" == "wsl" && "$LEAF_PWSH_CMD" == *.exe ]]; then
+        local interop_env="${WSLENV:-}"
+        if [[ ":$interop_env:" != *":LEAF_CALLER_SHELL:"* ]]; then
+            interop_env="${interop_env:+$interop_env:}LEAF_CALLER_SHELL"
+        fi
+        WSLENV="$interop_env" LEAF_CALLER_SHELL="$caller_shell" \
+            "$LEAF_PWSH_CMD" -NoProfile -File "$ps_script" "${ps_args[@]}"
+    else
+        LEAF_CALLER_SHELL="$caller_shell" \
+            "$LEAF_PWSH_CMD" -NoProfile -File "$ps_script" "${ps_args[@]}"
+    fi
+}
+
+leaf_is_wsl() {
+    [[ -n "${WSL_DISTRO_NAME:-}" ]] || [[ "$(uname -r 2>/dev/null || true)" == *[Mm]icrosoft* ]]
+}
+
+case "$cmd" in
+    help|-h|--help)
+        brand_banner
+        cat <<HELP
+
+usage:
+  $PROJECT_CLI quick [--json]             # concise, accessible command card
+  $PROJECT_CLI reference [--json|--markdown|--tex]
+  $PROJECT_CLI bloom init|status|input|claim|validate|checkpoint|verify|recover|capability
+  $PROJECT_CLI help
+  $PROJECT_CLI status
+  $PROJECT_CLI flower-monitor              # 60 Hz Linux/WSL CPU + RAM + disk display
+  $PROJECT_CLI monitor                     # short alias for flower-monitor
+  $PROJECT_CLI motd
+  $PROJECT_CLI loader [name] [label]
+  $PROJECT_CLI loaders
+  $PROJECT_CLI glyph ALIAS [--ascii] [--json]
+  $PROJECT_CLI glyphs [CATEGORY] [--ascii] [--json]
+  $PROJECT_CLI alert SEVERITY MESSAGE
+  $PROJECT_CLI spin [label] [cycles]
+  $PROJECT_CLI verify-run CMD [ARGS...]   # run check; emits leaf.verify only on pass
+  $PROJECT_CLI checkpoint LABEL           # requires verify-run to pass first (same script)
+  $PROJECT_CLI memory append --journal PATH --event EVENT.json
+  $PROJECT_CLI memory verify --journal PATH
+  $PROJECT_CLI memory recover --journal PATH
+  $PROJECT_CLI home [--json] [--watch SECONDS]
+  $PROJECT_CLI tui [--run RUN] [--native] # seven-page post-inlet operator screen
+  $PROJECT_CLI live [DIR] [--wizard|--new --template generic] [--objective TEXT] [--mode auto|quiet|full] [--budget MINUTES]
+  $PROJECT_CLI resident start|status|mode|targets|budget|pause|resume|drain|stop [RUN]
+  $PROJECT_CLI next [--json]
+  $PROJECT_CLI trace [latest|RUN_ID] [--json]
+  $PROJECT_CLI accelerator status|test|fallback cpu [--json]
+  $PROJECT_CLI provider-stack check|start|status|stop [--json]
+  $PROJECT_CLI hf bootstrap|auth|whoami|get|verify ...
+  $PROJECT_CLI stack inspect|validate|install|activate STACK [--dry-run]
+  $PROJECT_CLI oneshot --oneshot SOURCE TARGET [--force|--dry-run|--no-zip]
+  $PROJECT_CLI wakeup [--force heads|tails] [--ticker SYMBOL] [--no-log]
+  $PROJECT_CLI wakeup-export [WORK_ORDER]
+  $PROJECT_CLI doctor
+  $PROJECT_CLI new-module NAME
+  $PROJECT_CLI session-start
+  $PROJECT_CLI session-close
+  $PROJECT_CLI agents
+  $PROJECT_CLI agent-task TITLE
+  $PROJECT_CLI agent-route TASK_FILE [PLAN_NAME] [--provider MODE]
+  $PROJECT_CLI agent-dry-run PLAN_FILE [--plain|--json|--format FORMAT]
+  $PROJECT_CLI agent-dry-run TASK_DESCRIPTION
+  $PROJECT_CLI agent-dry-run-file PLAN_FILE [--plain|--json|--format FORMAT]
+  $PROJECT_CLI agent-run PLAN_FILE --yes
+  $PROJECT_CLI agent-report [LABEL]
+  $PROJECT_CLI agent-plan TASK_FILE [PLAN_NAME]
+  $PROJECT_CLI agent-validate PLAN_FILE
+  $PROJECT_CLI provider-status
+  $PROJECT_CLI provider test [PROVIDER] [--json]    # smoke-test: 6 checks, exit non-zero on fail
+  $PROJECT_CLI provider prompt PROMPT [--json]      # single live call
+  $PROJECT_CLI test visual [--live-stack] [--match TEXT] [--plain]
+  $PROJECT_CLI runtime validate
+  $PROJECT_CLI runtime select [--main KEY] [--coder KEY] [--language LANG] [--coding-model KEY] [--coding-tier TIER] [--persona KEY] [--mode MODE] [--json]
+  $PROJECT_CLI runtime personas [--json]
+  $PROJECT_CLI runtime models [--json]
+  $PROJECT_CLI runtime workers CONFIDENCE [REASON...] [--json]
+  $PROJECT_CLI runtime event TYPE CONFIDENCE CONTENT
+  $PROJECT_CLI model-profile list|validate [--json]
+  $PROJECT_CLI model-profile show PROFILE_ID [--json]
+  $PROJECT_CLI model-profile route LANE [--json]
+  $PROJECT_CLI web-state [--json] [--refresh-metadata] [--write]
+  $PROJECT_CLI fullstackbench [--json] [--write] [--generated-tokens N]
+  $PROJECT_CLI realbench conversation [--duration 60]
+  $PROJECT_CLI realbench raw [--target 66]
+  $PROJECT_CLI realbench matrix --manifest FILE [--resume] [--dry-run]
+  $PROJECT_CLI realbench summary --report FILE [--output-usd-per-million N]
+  $PROJECT_CLI telemetry universal-sample RUN_DIR [--run-kind KIND] [--json]
+  $PROJECT_CLI telemetry universal-summary RUN_DIR_OR_LOG
+  $PROJECT_CLI agent-loop-start --target DIR --work-order FILE --profile local-coding --yes
+  $PROJECT_CLI agent-loop-start --target DIR --projects generic-python-sim --profile repository --yes  # legacy templates
+  $PROJECT_CLI agent-loop-status RUN_DIR_OR_TARGET [--json]
+  $PROJECT_CLI agent-loop-tick RUN_DIR_OR_TARGET
+  $PROJECT_CLI agent-loop-resume RUN_DIR_OR_TARGET
+  $PROJECT_CLI agent-loop-stop RUN_DIR_OR_TARGET [--after-current-step]
+  $PROJECT_CLI agent-loop-report RUN_DIR_OR_TARGET [--json]
+  $PROJECT_CLI loop start DIR --work-order FILE [--profile local-coding] [--yes]
+  $PROJECT_CLI loop start DIR [--provider required|auto|off] [--foreground|--create-only] --check COMMAND [ARGS...]
+  $PROJECT_CLI loop attach [RUN|active] [--after SEQ] [--json]
+  $PROJECT_CLI loop monitor [RUN|active] [--interactive|--noninteractive] [--json|--jsonl] [--once]
+  $PROJECT_CLI loop pause|resume|stop|drain|status|report [RUN|active] [--json]
+  $PROJECT_CLI loop task submit RUN REQUEST.json
+  $PROJECT_CLI loop task prioritize|retry|cancel|approve RUN TASK_ID [PRIORITY]
+  $PROJECT_CLI transport usb init ROOT [--identity ID] [--json]
+  $PROJECT_CLI transport usb status ROOT [--json]
+  $PROJECT_CLI transport usb pump ROOT [--once] [--interval SECONDS] [--json]
+  $PROJECT_CLI transport usb publish ROOT --payload FILE --type TYPE --target-run RUN [--json]
+  $PROJECT_CLI passive-report [-RunRoot RUN] [-Open] [-Json]
+  $PROJECT_CLI passive-report -StartProject -Project DIR [-BudgetMinutes N] [-Provider off|auto|required]
+  $PROJECT_CLI sandbox-create --target DIR --projects chess3D,generic-python-sim --yes
+  $PROJECT_CLI sandbox-run RUN_DIR_OR_TARGET
+  $PROJECT_CLI continual-live start [--config PATH]
+  $PROJECT_CLI continual-live status [--run-dir PATH]
+  $PROJECT_CLI patch check   PATCH_FILE             # validate only, exit = verdict
+  $PROJECT_CLI patch preview PATCH_FILE             # render diff, no mutation
+  $PROJECT_CLI patch apply   PATCH_FILE --yes       # gate + apply
+  $PROJECT_CLI coder patch   TASK_FILE [RUN_DIR]    # coder pipeline V0
+  $PROJECT_CLI graph validate GRAPH_FILE            # structural/safety validation
+  $PROJECT_CLI platform
+  $PROJECT_CLI versions
+
+  0.3.0 — graph + brain + loop:
+  $PROJECT_CLI agent-brain  TASK_FILE [GRAPH_FILE]
+  $PROJECT_CLI agent-graph  GRAPH_FILE
+  $PROJECT_CLI agent-loop   GRAPH_FILE [--yes] [--soft-wait] [--apply]
+  $PROJECT_CLI agent-gate   GRAPH_FILE [WORKDIR]
+  $PROJECT_CLI agent-node   GRAPH_FILE NODE_ID
+  $PROJECT_CLI agent-action ACTION NODE_ID [INPUT_JSON]
+  $PROJECT_CLI agent-wait   TARGET [INTERVAL [MAX_ATTEMPTS]]
+  $PROJECT_CLI agent-orchestrate README SKELETON WILDCARD [--provider llamacpp] [--yes]
+  $PROJECT_CLI agent-export MODULE_DIR [WORK_ORDER]   # run a module's export gate
+
+  ssh node system (receiver / worker):
+  $PROJECT_CLI node init [--node-id ID] [--role ROLE]
+  $PROJECT_CLI node status [--json]
+  $PROJECT_CLI node hardware [--json]
+  $PROJECT_CLI task start TASK_ID         # run a task already in this node's inbox
+  $PROJECT_CLI task list [--state STATE] [--json]
+  $PROJECT_CLI task logs TASK_ID [--follow]
+  $PROJECT_CLI task result TASK_ID [--json]
+
+  ssh node system (distributor / master):
+  $PROJECT_CLI nodes add NAME USER@HOST [--transport ssh|local] [--path DIR]
+  $PROJECT_CLI nodes list [--json]
+  $PROJECT_CLI nodes ping NAME
+  $PROJECT_CLI nodes scan SUBNET [--user U] [--timeout N] [--concurrency N]
+  $PROJECT_CLI nodes scan SUBNET [--ping-first] [--arp] [--register] [--dry-run] [--json]
+  $PROJECT_CLI nodes arp                          # show ARP-table hosts
+  $PROJECT_CLI nodes ping-sweep SUBNET [--json]   # ICMP sweep only
+  $PROJECT_CLI task submit NAME TASK_FILE
+  $PROJECT_CLI task watch NAME TASK_ID
+  $PROJECT_CLI task pull NAME TASK_ID [DEST]
+  $PROJECT_CLI task cancel NAME TASK_ID
+
+  status dashboard:
+  $PROJECT_CLI dashboard [--watch SECONDS] [--json] [--no-color]
+
+  chat environment:
+  $PROJECT_CLI chat [--model NAME] [--session NAME] [--theme NAME] [--remote NODE]
+  $PROJECT_CLI chat --list
+  $PROJECT_CLI chat --export SESSION
+
+  model management:
+  $PROJECT_CLI model list   [--remote NODE]
+  $PROJECT_CLI model info   FILE
+  $PROJECT_CLI model pull   NODE FILE [--dest DIR]
+  $PROJECT_CLI model serve  [--port N] [--model NAME]
+  $PROJECT_CLI pack create                         # guided flower-pack constructor
+  $PROJECT_CLI pack catalog                        # models, sizes, quants, presets
+  $PROJECT_CLI pack validate PACK.json
+  $PROJECT_CLI indicator status|preview|set|clear|doctor  # PowerShell pack glyph and host diagnosis
+  $PROJECT_CLI models-install catalog
+  $PROJECT_CLI models-install plan --profile runtime-default
+  $PROJECT_CLI models-install resolve PLAN
+  $PROJECT_CLI models-install apply RESOLVED_PLAN --yes
+
+  LAN distribution (no browser required):
+  $PROJECT_CLI serve    [--port N] [--host IP] [--once] [--no-rebuild]
+  $PROJECT_CLI download HOST[:PORT] [FILE] [--dest DIR]
+  $PROJECT_CLI dist-build [--out DIR]     # build bundles only
+  $PROJECT_CLI dist-info  HOST[:PORT]     # show remote manifest
+
+HELP
+        ;;
+
+    quick)
+        exec "$ROOT_DIR/core/ui/quick_syntax" "$@"
+        ;;
+
+    reference)
+        if leaf_is_wsl; then
+            leaf_powershell_forward reference "$@"
+            exit $?
+        fi
+        exec "$ROOT_DIR/core/ui/reference" "$@"
+        ;;
+
+    bloom)
+        [[ -n "${LEAFCTL_PYTHON}" ]] || brand_die "python3 not found (continual bloom requires Python 3.10+)"
+        sub="${1:-status}"
+        shift || true
+        case "$sub" in
+            init)
+                # Bootstrap: the durable instance does not yet exist, so we cannot
+                # record the capability request in its transcript.  Perform a
+                # read-only registry check instead; the bridge will create the
+                # instance and the capability audit can be replayed later.
+                if ! "$LEAFCTL_PYTHON" "$ROOT_DIR/core/python/leaf_authority.py" check instance.initialize --json >/dev/null 2>&1; then
+                    brand_die "capability denied: instance.initialize (actor=cli.bloom-init). See 'leafctl bloom capability --actor <actor> instance.initialize' to record an explicit request."
+                fi
+                exec "$LEAFCTL_PYTHON" "$ROOT_DIR/core/python/leaf_durable_bridge.py" init "$@"
+                ;;
+            input)
+                leaf_require_capability "input.append" "cli.bloom-input" "operator requested bloom input"
+                exec "$LEAFCTL_PYTHON" "$ROOT_DIR/core/python/leaf_durable_bridge.py" input "$@"
+                ;;
+            claim)
+                leaf_require_capability "persona.claim" "cli.bloom-claim" "operator requested bloom claim"
+                exec "$LEAFCTL_PYTHON" "$ROOT_DIR/core/python/leaf_durable_bridge.py" claim "$@"
+                ;;
+            validate)
+                leaf_require_capability "claim.validate" "cli.bloom-validate" "operator requested bloom validate"
+                exec "$LEAFCTL_PYTHON" "$ROOT_DIR/core/python/leaf_durable_bridge.py" validate "$@"
+                ;;
+            checkpoint)
+                leaf_require_capability "checkpoint.commit" "cli.bloom-checkpoint" "operator requested bloom checkpoint"
+                exec "$LEAFCTL_PYTHON" "$ROOT_DIR/core/python/leaf_durable_bridge.py" checkpoint "$@"
+                ;;
+            recover)
+                leaf_require_capability "runtime.recover" "cli.bloom-recover" "operator requested bloom recover"
+                exec "$LEAFCTL_PYTHON" "$ROOT_DIR/core/python/leaf_durable_bridge.py" recover "$@"
+                ;;
+            verify)
+                leaf_require_capability "runtime.verify" "cli.bloom-verify" "operator requested bloom verify"
+                exec "$LEAFCTL_PYTHON" "$ROOT_DIR/core/python/leaf_durable_bridge.py" verify "$@"
+                ;;
+            capability)
+                exec "$LEAFCTL_PYTHON" "$ROOT_DIR/core/python/leaf_durable_bridge.py" capability "$@"
+                ;;
+            status)
+                exec "$LEAFCTL_PYTHON" "$ROOT_DIR/core/python/leaf_durable_bridge.py" status "$@"
+                ;;
+            *)
+                brand_die "unknown bloom subcommand: $sub. Try: init|status|input|claim|validate|checkpoint|verify|recover|capability"
+                ;;
+        esac
+        ;;
+
+    status)
+        brand_say "system online"
+        brand_say "root: $ROOT_DIR"
+        brand_say "branding: $PROJECT_NAME"
+        brand_say "emoji rate: every $FLOWER_EMOJI_RATE branded messages"
+        if command -v jq &>/dev/null; then
+            runtime_json="$(leaf_runtime_select --json 2>/dev/null || true)"
+            if [[ -n "$runtime_json" ]]; then
+                brand_say "runtime: $(jq -r '.selection.main_model.key + " + " + .selection.coder_model.key + " + " + .selection.persona.key' <<< "$runtime_json")"
+            fi
+        fi
+        leaf_log INFO "status checked"
+        ;;
+
+    flower-monitor|monitor)
+        exec "$ROOT_DIR/bin/flower-monitor" "$@"
+        ;;
+
+    motd)
+        brand_banner
+        cat "$ROOT_DIR/share/motd/default.motd"
+        leaf_event motd "printed motd"
+        ;;
+
+    loader)
+        name="${1:-$DEFAULT_LOADER}"
+        label="${2:-loading}"
+        leaf_loader_run "$name" "$label"
+        leaf_event loader "ran loader $name"
+        ;;
+
+    loaders)
+        leaf_loader_list
+        ;;
+
+    glyph)
+        alias="${1:-}"
+        [[ -n "$alias" ]] || brand_die "glyph requires ALIAS"
+        shift || true
+        glyph_json=0
+        glyph_mode="auto"
+        while [[ $# -gt 0 ]]; do
+            case "$1" in
+                --ascii) glyph_mode="ascii" ;;
+                --json) glyph_json=1 ;;
+                *) brand_die "unknown glyph option: $1" ;;
+            esac
+            shift
+        done
+        leaf_glyph_exists "$alias" || brand_die "unknown glyph alias: $alias"
+        if [[ "$glyph_json" == "1" ]]; then
+            leaf_glyph_object "$alias" "$glyph_mode"
+        elif [[ "$glyph_mode" == "ascii" ]]; then
+            printf '%s\t%s\n' "$(leaf_glyph_ascii "$alias")" "$(leaf_glyph_meaning "$alias")"
+        else
+            printf '%s\t%s\n' "$(leaf_glyph "$alias")" "$(leaf_glyph_meaning "$alias")"
+        fi
+        leaf_event glyph "rendered $alias"
+        ;;
+
+    glyphs)
+        glyph_category=""
+        glyph_json=0
+        glyph_mode="auto"
+        while [[ $# -gt 0 ]]; do
+            case "$1" in
+                --ascii) glyph_mode="ascii" ;;
+                --json) glyph_json=1 ;;
+                --*) brand_die "unknown glyphs option: $1" ;;
+                *)
+                    [[ -z "$glyph_category" ]] || brand_die "glyphs accepts at most one CATEGORY"
+                    glyph_category="$1"
+                    ;;
+            esac
+            shift
+        done
+        if [[ "$glyph_json" == "1" ]]; then
+            leaf_glyph_registry_object "$glyph_category" "$glyph_mode"
+        elif [[ "$glyph_mode" == "ascii" ]]; then
+            NO_EMOJI=1 leaf_glyph_list "$glyph_category"
+        else
+            leaf_glyph_list "$glyph_category"
+        fi
+        ;;
+
+    alert)
+        sev="${1:-warn}"
+        shift || true
+        [[ -n "$*" ]] || brand_die "alert requires SEVERITY MESSAGE"
+        leaf_alert "$sev" "$*"
+        leaf_event alert "$sev: $*"
+        ;;
+
+    spin)
+        label="${1:-loading}"
+        cycles="${2:-12}"
+        leaf_glyph_spinner "$label" "$cycles"
+        leaf_event spin "ran glyph spinner"
+        ;;
+
+    verify-run)
+        [[ $# -gt 0 ]] || brand_die "verify-run requires CMD"
+        leaf_verify_run "$@"
+        leaf_event verify "ran: $*"
+        ;;
+
+    checkpoint)
+        label="${1:-checkpoint}"
+        leaf_require_capability "checkpoint.commit" "cli.checkpoint" "operator requested checkpoint: $label"
+        leaf_checkpoint_create "$label"
+        leaf_event checkpoint "created: $label"
+        ;;
+
+    home)
+        if leaf_is_wsl; then
+            leaf_powershell_forward home "$@"
+            exit $?
+        fi
+        py="$(command -v python3 || command -v python)"
+        [[ -n "$py" ]] || brand_die "python3 not found"
+        exec "$py" "$ROOT_DIR/core/ui/home.py" "$@"
+        ;;
+
+    tui)
+        if leaf_is_wsl; then
+            leaf_powershell_forward tui "$@"
+            exit $?
+        fi
+        py="$(command -v python3 || command -v python)"
+        [[ -n "$py" ]] || brand_die "python3 not found"
+        exec "$py" "$ROOT_DIR/core/ui/tui/main.py" "$@"
+        ;;
+
+    live)
+        if leaf_is_wsl; then
+            leaf_powershell_forward live "$@"
+            exit $?
+        fi
+        py="$(command -v python3 || command -v python)"
+        [[ -n "$py" ]] || brand_die "python3 not found"
+        exec "$py" "$ROOT_DIR/core/python/leaf_live_project.py" "$@"
+        ;;
+
+    resident)
+        if leaf_is_wsl; then
+            leaf_powershell_forward resident "$@"
+            exit $?
+        fi
+        py="$(command -v python3 || command -v python)"
+        [[ -n "$py" ]] || brand_die "python3 not found"
+        exec "$py" "$ROOT_DIR/core/python/leaf_resident_supervisor.py" "$@"
+        ;;
+
+    next)
+        if leaf_is_wsl; then
+            leaf_powershell_forward next "$@"
+            exit $?
+        fi
+        py="$(command -v python3 || command -v python)"
+        [[ -n "$py" ]] || brand_die "python3 not found"
+        exec "$py" "$ROOT_DIR/core/ui/home.py" --next "$@"
+        ;;
+
+    trace)
+        if leaf_is_wsl; then
+            leaf_powershell_forward trace "$@"
+            exit $?
+        fi
+        py="$(command -v python3 || command -v python)"
+        [[ -n "$py" ]] || brand_die "python3 not found"
+        exec "$py" "$ROOT_DIR/core/ui/trace.py" "$@"
+        ;;
+
+    accelerator)
+        if leaf_is_wsl; then
+            leaf_powershell_forward accelerator "$@"
+            exit $?
+        fi
+        py="$(command -v python3 || command -v python)"
+        [[ -n "$py" ]] || brand_die "python3 not found"
+        exec "$py" "$ROOT_DIR/core/ui/accelerator_state.py" "$@"
+        ;;
+
+    provider-stack|oneshot)
+        leaf_powershell_forward "$cmd" "$@"
+        ;;
+
+    loop)
+        if leaf_is_wsl; then
+            leaf_powershell_forward loop "$@"
+            exit $?
+        fi
+        py="$(command -v python3 || command -v python)"
+        [[ -n "$py" ]] || brand_die "python3 not found (loop inlet requires Python 3.10+)"
+        exec "$py" "$ROOT_DIR/core/python/leaf_loop_inlet.py" "$@"
+        ;;
+
+    transport)
+        if leaf_is_wsl; then
+            leaf_powershell_forward transport "$@"
+            exit $?
+        fi
+        [[ "${1:-}" == "usb" ]] || brand_die "transport requires the usb subcommand"
+        shift
+        py="$(command -v python3 || command -v python)"
+        [[ -n "$py" ]] || brand_die "python3 not found (USB interceptor requires Python 3.10+)"
+        exec "$py" "$ROOT_DIR/core/python/leaf_usb_interceptor.py" "$@"
+        ;;
+
+    passive-report)
+        # MSYS can consume backslashes in drive-qualified arguments before
+        # PowerShell sees them; normalize only this route's filesystem paths.
+        passive_report_args=("$@")
+        passive_report_arg=''
+        for passive_report_arg in "${!passive_report_args[@]}"; do
+            if [[ "${passive_report_args[$passive_report_arg]}" =~ ^[A-Za-z]:\\ ]]; then
+                passive_report_args[$passive_report_arg]="${passive_report_args[$passive_report_arg]//\\//}"
+            fi
+        done
+        leaf_powershell_forward passive-report "${passive_report_args[@]}"
+        exit $?
+        ;;
+
+    wakeup)
+        exec bash "$ROOT_DIR/examples/WO-004-C/wakeup.sh" "$@"
+        ;;
+
+    wakeup-export)
+        py="$(command -v python3 || command -v python)"
+        [[ -n "$py" ]] || brand_die "python3 not found"
+        exec "$py" "$ROOT_DIR/examples/WO-004-C/export.py" "$@"
+        ;;
+
+    memory)
+        case "${1:-}" in
+            append)
+                shift
+                leaf_require_capability "memory.journal.append" "cli.memory" "operator requested memory append"
+                exec "$ROOT_DIR/bin/leaf-memory.sh" append "$@"
+                ;;
+            verify|recover)
+                exec "$ROOT_DIR/bin/leaf-memory.sh" "$@"
+                ;;
+            *)
+                exec "$ROOT_DIR/bin/leaf-memory.sh" "$@"
+                ;;
+        esac
+        ;;
+
+    hf)
+        "$ROOT_DIR/bin/leaf-hf" "$@"
+        ;;
+
+    stack)
+        py="$(command -v python3 || command -v python)"
+        if [[ -z "$py" ]]; then
+            win_user="${USER:-${USERNAME:-}}"
+            [[ -n "$win_user" ]] || win_user="$(cmd.exe /c 'echo %USERNAME%' 2>/dev/null | tr -d '\r')"
+            if [[ -n "$win_user" && -d "/c/Users/$win_user/AppData/Local/Microsoft/WindowsApps" ]]; then
+                PATH="/c/Users/$win_user/AppData/Local/Microsoft/WindowsApps:$PATH"
+                export PATH
+                py="$(command -v python3 || command -v python)"
+            fi
+        fi
+        [[ -n "$py" ]] || brand_die "python3 not found"
+        "$py" "$ROOT_DIR/core/stack/stack_cli.py" "${@:-help}"
+        ;;
+
+    install-stack-dry)
+        "$0" stack install "$1" --dry-run
+        ;;
+
+    doctor)
+        exec "$LEAFCTL_PYTHON" "$ROOT_DIR/core/python/leaf_doctor.py" --root "$ROOT_DIR" "$@"
+        ;;
+
+    new-module)
+        name="${1:-}"
+        [[ -n "$name" ]] || brand_die "new-module requires NAME"
+        out="$ROOT_DIR/bin/$name"
+        [[ ! -e "$out" ]] || brand_die "module exists: $out"
+        sed "s/module/$name/g" "$ROOT_DIR/share/templates/module.sh.tpl" > "$out"
+        chmod +x "$out"
+        brand_say "created module: bin/$name"
+        leaf_event module_create "created bin/$name"
+        ;;
+
+    session-start)
+        leaf_log INFO "session started"
+        leaf_event session "start"
+        brand_say "session log opened"
+        ;;
+
+    session-close)
+        leaf_log INFO "session closed"
+        leaf_event session "close"
+        brand_say "session log closed"
+        ;;
+
+    agents)
+        agent_list_profiles
+        leaf_event agent "listed profiles"
+        ;;
+
+    agent-task)
+        title="$*"
+        [[ -n "$title" ]] || brand_die "agent-task requires TITLE"
+        out="$(agent_task_new "$title")"
+        brand_say "created agent task: ${out#$ROOT_DIR/}"
+        leaf_event agent_task "created ${out#$ROOT_DIR/}"
+        ;;
+
+    agent-plan)
+        task_file="${1:-}"
+        plan_name="${2:-default}"
+        [[ -n "$task_file" ]] || brand_die "agent-plan requires TASK_FILE"
+        [[ "$task_file" = /* ]] || task_file="$ROOT_DIR/$task_file"
+        out="$(agent_plan_new "$task_file" "$plan_name")"
+        brand_say "created agent plan: ${out#$ROOT_DIR/}"
+        leaf_event agent_plan "created ${out#$ROOT_DIR/}"
+        ;;
+
+    agent-validate)
+        plan="${1:-}"
+        [[ -n "$plan" ]] || brand_die "agent-validate requires PLAN_FILE"
+        [[ "$plan" = /* ]] || plan="$ROOT_DIR/$plan"
+        agent_plan_validate "$plan" || brand_die "agent plan failed validation"
+        brand_say "agent plan valid: ${plan#$ROOT_DIR/}"
+        leaf_event agent_validate "validated ${plan#$ROOT_DIR/}"
+        ;;
+
+    agent-dry-run)
+        format=normal
+        dry_args=()
+        while [[ $# -gt 0 ]]; do
+            case "$1" in
+                --plain) format=plain ;;
+                --json) format=json ;;
+                --format=*) format="${1#--format=}" ;;
+                --format)
+                    [[ $# -ge 2 ]] || brand_die "agent-dry-run --format requires FORMAT"
+                    format="$2"
+                    shift
+                    ;;
+                --) shift; dry_args+=("$@"); break ;;
+                *) dry_args+=("$1") ;;
+            esac
+            shift
+        done
+        [[ "${#dry_args[@]}" -gt 0 ]] || brand_die "agent-dry-run requires PLAN_FILE or TASK_DESCRIPTION"
+        if [[ "${#dry_args[@]}" -eq 1 ]]; then
+            plan="${dry_args[0]}"
+            [[ "$plan" = /* ]] || plan="$ROOT_DIR/$plan"
+            if [[ -f "$plan" ]]; then
+                agent_plan_dry_run "$plan" "--format=$format"
+                leaf_event agent_dry_run "dry-ran ${plan#$ROOT_DIR/} ($format)"
+                exit 0
+            fi
+        fi
+        [[ "$format" == "normal" ]] || brand_die "formatted output modes require a plan file"
+        task_desc="${dry_args[*]}"
+        leaf_agent_dry_run "$task_desc" || exit $?
+        leaf_event agent_dry_run "completed dry-run: $task_desc"
+        ;;
+
+    agent-dry-run-file)
+        # Legacy: accepts a plan file directly
+        plan="${1:-}"
+        [[ -n "$plan" ]] || brand_die "agent-dry-run-file requires PLAN_FILE"
+        [[ "$plan" = /* ]] || plan="$ROOT_DIR/$plan"
+        shift || true
+        agent_plan_dry_run "$plan" "$@"
+        leaf_event agent_dry_run "dry-ran ${plan#$ROOT_DIR/}"
+        ;;
+
+    agent-run)
+        plan="${1:-}"
+        [[ -n "$plan" ]] || brand_die "agent-run requires PLAN_FILE"
+        [[ "$plan" = /* ]] || plan="$ROOT_DIR/$plan"
+        shift || true
+        leaf_require_capability "agent.run.execute" "cli.agent-run" "operator requested agent-run: $plan"
+        agent_plan_run "$plan" "$@"
+        leaf_event agent_run "ran ${plan#$ROOT_DIR/}"
+        ;;
+
+    agent-report)
+        label="${1:-agent-report}"
+        out="$(agent_report_write "$label")"
+        brand_say "wrote agent report: ${out#$ROOT_DIR/}"
+        leaf_event agent_report "wrote ${out#$ROOT_DIR/}"
+        ;;
+
+    provider-status)
+        leaf_provider_status
+        leaf_event provider "status checked: $LEAF_PROVIDER_MODE"
+        ;;
+
+    provider)
+        sub="${1:-status}"
+        shift || true
+        case "$sub" in
+            status)
+                leaf_provider_status
+                leaf_event provider "status checked: $LEAF_PROVIDER_MODE"
+                ;;
+            test)
+                source "$ROOT_DIR/core/providers/test.sh"
+                leaf_provider_test "$@" || exit 2
+                ;;
+            prompt)
+                source "$ROOT_DIR/core/providers/test.sh"
+                leaf_provider_prompt "$@" || exit 2
+                ;;
+            *)
+                brand_die "unknown provider subcommand: $sub"
+                ;;
+        esac
+        ;;
+
+    test)
+        sub="${1:-visual}"
+        if [[ "$sub" == "visual" ]]; then
+            shift || true
+        elif [[ "$sub" != --* ]]; then
+            brand_die "unknown test mode: $sub"
+        fi
+        py="$(command -v python3 || command -v python)"
+        [[ -n "$py" ]] || brand_die "python3 not found"
+        exec "$py" "$ROOT_DIR/core/testing/visual_test_runner.py" "$@"
+        ;;
+
+    runtime)
+        sub="${1:-select}"
+        shift || true
+        case "$sub" in
+            status|select)
+                leaf_runtime_select "$@"
+                ;;
+            validate|doctor)
+                leaf_runtime_validate
+                ;;
+            personas)
+                leaf_runtime_personas "$@"
+                ;;
+            models)
+                leaf_runtime_models "$@"
+                ;;
+            workers)
+                leaf_runtime_workers "$@"
+                ;;
+            event)
+                leaf_runtime_event "$@"
+                ;;
+            *)
+                brand_die "unknown runtime subcommand: $sub (select|validate|personas|models|workers|event)"
+                ;;
+        esac
+        leaf_event runtime "runtime $sub"
+        ;;
+
+    patch)
+        sub="${1:-check}"
+        shift || true
+        patch_target="${1:-}"
+        [[ -n "$patch_target" ]] || brand_die "leafctl patch $sub requires PATCH_FILE"
+        [[ "$patch_target" = /* ]] || patch_target="$ROOT_DIR/$patch_target"
+        case "$sub" in
+            check)
+                source "$ROOT_DIR/core/patch/validate.sh"
+                patch_validate "$patch_target" "$ROOT_DIR" || exit 1
+                leaf_event patch "check: ${patch_target#$ROOT_DIR/}"
+                ;;
+            preview)
+                source "$ROOT_DIR/core/patch/validate.sh"
+                patch_preview "$patch_target"
+                ;;
+            apply)
+                source "$ROOT_DIR/core/patch/apply.sh"
+                confirm="${2:-}"
+                patch_apply_file "$patch_target" "$ROOT_DIR" "$confirm" || exit 1
+                leaf_event patch "applied: ${patch_target#$ROOT_DIR/}"
+                ;;
+            *)
+                brand_die "unknown patch subcommand: $sub (check|preview|apply)"
+                ;;
+        esac
+        ;;
+
+    model-profile)
+        py="$(command -v python3 || command -v python)"
+        [[ -n "$py" ]] || brand_die "python3 not found"
+        exec "$py" "$ROOT_DIR/core/runtime/model_profiles.py" "$@"
+        ;;
+
+    coder)
+        sub="${1:-patch}"
+        shift || true
+        case "$sub" in
+            patch)
+                coder_task="${1:-}"
+                coder_run="${2:-}"
+                [[ -n "$coder_task" ]] || brand_die "leafctl coder patch requires TASK_FILE"
+                [[ "$coder_task" = /* ]] || coder_task="$ROOT_DIR/$coder_task"
+                coder_generate_patch "$coder_task" "$coder_run" || exit 1
+                leaf_event coder "patch generated from ${coder_task#$ROOT_DIR/}"
+                ;;
+            *)
+                brand_die "unknown coder subcommand: $sub (patch)"
+                ;;
+        esac
+        ;;
+
+    graph)
+        sub="${1:-validate}"
+        shift || true
+        case "$sub" in
+            validate)
+                gv_file="${1:-$ROOT_DIR/runs/latest/agent.graph.json}"
+                [[ "$gv_file" = /* ]] || gv_file="$ROOT_DIR/$gv_file"
+                graph_validate "$gv_file" "$ROOT_DIR" || exit 1
+                leaf_event graph "validated: ${gv_file#$ROOT_DIR/}"
+                ;;
+            *)
+                brand_die "unknown graph subcommand: $sub (validate)"
+                ;;
+        esac
+        ;;
+
+    agent-route)
+        task_file="${1:-}"
+        plan_name="generated"
+        # Parse remaining args: optional plan name and explicit provider mode.
+        shift || true
+        while [[ $# -gt 0 ]]; do
+            case "${1:-}" in
+                --provider)
+                    [[ $# -ge 2 ]] || brand_die "agent-route --provider requires MODE"
+                    LEAF_PROVIDER_MODE="$2"
+                    shift 2
+                    ;;
+                --provider=*)    LEAF_PROVIDER_MODE="${1#--provider=}"; shift ;;
+                -*)              brand_die "unknown agent-route flag: $1" ;;
+                *)               plan_name="$1"; shift ;;
+            esac
+        done
+        [[ -n "$task_file" ]] || brand_die "agent-route requires TASK_FILE"
+        [[ "$task_file" = /* ]] || task_file="$ROOT_DIR/$task_file"
+        leaf_status leaf.model "routing via $LEAF_PROVIDER_MODE" leaf.flow "${task_file#$ROOT_DIR/}"
+        out="$(agent_plan_generate "$task_file" "$plan_name")"
+        leaf_status leaf.verify "plan generated: ${out#$ROOT_DIR/}"
+        brand_say "created plan: ${out#$ROOT_DIR/}"
+        leaf_event agent_route "generated ${out#$ROOT_DIR/} via $LEAF_PROVIDER_MODE"
+        ;;
+
+    platform)
+        leaf_platform_summary
+        leaf_log INFO "platform queried"
+        ;;
+
+    versions)
+        leaf_versions_report
+        leaf_log INFO "versions checked"
+        ;;
+
+    agent-brain)
+        task_file="${1:-}"
+        graph_file="${2:-$ROOT_DIR/runs/latest/agent.graph.json}"
+        [[ -n "$task_file" ]] || brand_die "agent-brain requires TASK_FILE"
+        [[ "$task_file" = /* ]] || task_file="$ROOT_DIR/$task_file"
+        out="$(brain_generate_graph "$task_file" "$graph_file")"
+        brand_say "graph created: ${out#$ROOT_DIR/}"
+        graph_print "$out"
+        leaf_event agent_brain "created ${out#$ROOT_DIR/}"
+        ;;
+
+    agent-orchestrate)
+        orchestration_run "$@" || exit $?
+        leaf_event agent_orchestrate "completed three-input orchestration"
+        ;;
+
+    agent-graph)
+        graph_file="${1:-$ROOT_DIR/runs/latest/agent.graph.json}"
+        [[ "$graph_file" = /* ]] || graph_file="$ROOT_DIR/$graph_file"
+        graph_print "$graph_file"
+        graph_summary "$graph_file"
+        leaf_event agent_graph "inspected ${graph_file#$ROOT_DIR/}"
+        ;;
+
+    agent-loop)
+        graph_file="${1:-$ROOT_DIR/runs/latest/agent.graph.json}"
+        [[ "$graph_file" = /* ]] || graph_file="$ROOT_DIR/$graph_file"
+        shift || true
+        LEAF_RUN_DIR="$(dirname "$graph_file")"
+        export LEAF_RUN_DIR
+        agent_loop_run "$graph_file" "$@"
+        leaf_event agent_loop "loop on ${graph_file#$ROOT_DIR/}"
+        ;;
+
+    agent-gate)
+        graph_file="${1:-$ROOT_DIR/runs/latest/agent.graph.json}"
+        workdir="${2:-$ROOT_DIR}"
+        [[ "$graph_file" = /* ]] || graph_file="$ROOT_DIR/$graph_file"
+        gate_run "$graph_file" "$workdir" || brand_die "gate did not pass"
+        leaf_event agent_gate "gate on ${graph_file#$ROOT_DIR/}"
+        ;;
+
+    agent-node)
+        graph_file="${1:-}"
+        node_id="${2:-}"
+        [[ -n "$graph_file" && -n "$node_id" ]] || brand_die "agent-node requires GRAPH_FILE NODE_ID"
+        [[ "$graph_file" = /* ]] || graph_file="$ROOT_DIR/$graph_file"
+        status="$(graph_node_status "$graph_file" "$node_id")"
+        brand_kv "$node_id" "$status"
+        leaf_event agent_node "queried $node_id"
+        ;;
+
+    agent-action)
+        action_type="${1:-}"
+        node_id="${2:-anon}"
+        input_json="${3:-{}}"
+        [[ -n "$action_type" ]] || brand_die "agent-action requires ACTION NODE_ID [INPUT_JSON]"
+        LEAF_RUN_DIR="${LEAF_RUN_DIR:-$ROOT_DIR/runs/latest}"
+        export LEAF_RUN_DIR
+        mkdir -p "$LEAF_RUN_DIR"
+        agent_run_action "$action_type" "$node_id" "$input_json"
+        leaf_event agent_action "ran $action_type on $node_id"
+        ;;
+
+    agent-wait)
+        target="${1:-}"
+        interval="${2:-1}"
+        maxatt="${3:-60}"
+        [[ -n "$target" ]] || brand_die "agent-wait requires TARGET"
+        leaf_wait_file "$target" "$interval" "$maxatt"
+        leaf_event agent_wait "waited for $target"
+        ;;
+
+    agent-export)
+        module_dir="${1:-}"
+        work_order="${2:-}"
+        [[ -n "$module_dir" ]] || brand_die "agent-export requires MODULE_DIR [WORK_ORDER]"
+        [[ "$module_dir" = /* ]] || module_dir="$ROOT_DIR/$module_dir"
+        [[ -d "$module_dir" ]] || brand_die "module dir not found: $module_dir"
+        export_script="$module_dir/export.sh"
+        [[ -f "$export_script" ]] || brand_die "no export.sh in $module_dir"
+        brand_say "running export gate: ${module_dir#$ROOT_DIR/}"
+        bash "$export_script" "$work_order"
+        leaf_event agent_export "exported ${module_dir#$ROOT_DIR/}"
+        ;;
+
+    node)
+        sub="${1:-status}"
+        shift || true
+        case "$sub" in
+            init)     leaf_node_init "$@" ;;
+            status)   leaf_node_status "$@" ;;
+            hardware) leaf_node_hardware "$@" ;;
+            *)        brand_die "unknown node subcommand: $sub" ;;
+        esac
+        leaf_event node "node $sub"
+        ;;
+
+    nodes)
+        sub="${1:-list}"
+        shift || true
+        case "$sub" in
+            add)        leaf_nodes_add "$@" ;;
+            list)       leaf_nodes_list "$@" ;;
+            ping)       leaf_nodes_ping "$@" ;;
+            scan)       leaf_net_scan "$@" ;;
+            arp)        leaf_net_arp "$@" ;;
+            ping-sweep) leaf_net_ping "$@" ;;
+            *)          brand_die "unknown nodes subcommand: $sub" ;;
+        esac
+        leaf_event nodes "nodes $sub"
+        ;;
+
+    task)
+        sub="${1:-list}"
+        shift || true
+        case "$sub" in
+            accept)
+                ccis_cli="$(cd "$ROOT_DIR/../.." && pwd)/ccis/cli.py"
+                [[ -f "$ccis_cli" ]] || brand_die "CCIS CLI not found: $ccis_cli"
+                exec "$LEAFCTL_PYTHON" "$ccis_cli" accept "$@"
+                ;;
+            start)  leaf_task_start "$@" ;;
+            list)   leaf_task_list "$@" ;;
+            logs)   leaf_task_logs "$@" ;;
+            result) leaf_task_result "$@" ;;
+            submit) leaf_task_submit "$@" ;;
+            watch)  leaf_task_watch "$@" ;;
+            pull)   leaf_task_pull "$@" ;;
+            cancel)
+                # 1 arg = local receiver cancel; 2 args = distributor cancel
+                if [[ $# -ge 2 ]]; then leaf_task_cancel "$@"; else leaf_task_cancel_local "$@"; fi
+                ;;
+            *)      brand_die "unknown task subcommand: $sub" ;;
+        esac
+        leaf_event task "task $sub"
+        ;;
+
+    ccis)
+        ccis_cli="$(cd "$ROOT_DIR/../.." && pwd)/ccis/cli.py"
+        [[ -f "$ccis_cli" ]] || brand_die "CCIS CLI not found: $ccis_cli"
+        exec "$LEAFCTL_PYTHON" "$ccis_cli" "$@"
+        ;;
+
+    dashboard)
+        if [[ " $* " == *" --json "* ]] || [[ " $* " == *" --watch "* ]]; then
+            exec "$ROOT_DIR/core/ui/dashboard_json" "$@"
+        fi
+        [[ -n "${LEAFCTL_PYTHON}" ]] || brand_die "python3 not found (dashboard requires Python 3.8+)"
+        exec "$LEAFCTL_PYTHON" "$ROOT_DIR/core/ui/dashboard.py" "$@"
+        ;;
+
+    web-state)
+        py="$(command -v python3 || command -v python)"
+        [[ -n "$py" ]] || brand_die "python3 not found (web-state requires Python 3.8+)"
+        "$py" "$ROOT_DIR/core/web/state.py" "$@"
+        ;;
+
+    fullstackbench)
+        py="$(command -v python3 || command -v python)"
+        [[ -n "$py" ]] || brand_die "python3 not found (fullstackbench requires Python 3.8+)"
+        "$py" "$ROOT_DIR/core/bench/fullstackbench.py" "$@"
+        ;;
+
+    realbench)
+        py="$(command -v python3 || command -v python)"
+        [[ -n "$py" ]] || brand_die "python3 not found (realbench requires Python 3.8+)"
+        "$py" "$ROOT_DIR/core/bench/realbench.py" "$@"
+        ;;
+
+    telemetry)
+        py="$(command -v python3 || command -v python)"
+        [[ -n "$py" ]] || brand_die "python3 not found (telemetry requires Python 3.8+)"
+        "$py" "$ROOT_DIR/core/python/leaf_telemetry.py" "$@"
+        ;;
+
+    agent-loop-start|sandbox-create)
+        py="$(command -v python3 || command -v python)"
+        [[ -n "$py" ]] || brand_die "python3 not found (agent-loop requires Python 3.8+)"
+        leaf_require_capability "loop.spawn" "cli.agent-loop-start" "operator requested agent loop start"
+        if [[ "$cmd" == "agent-loop-start" && " $* " == *" --work-order "* ]]; then
+            "$py" "$ROOT_DIR/core/python/leaf_loop_inlet.py" start "$@"
+        else
+            "$py" "$ROOT_DIR/core/python/leaf_agent_loop.py" create "$@"
+        fi
+        ;;
+
+    agent-loop-status)
+        py="$(command -v python3 || command -v python)"
+        [[ -n "$py" ]] || brand_die "python3 not found (agent-loop requires Python 3.8+)"
+        "$py" "$ROOT_DIR/core/python/leaf_agent_loop.py" status "$@"
+        ;;
+
+    agent-loop-tick|sandbox-run)
+        py="$(command -v python3 || command -v python)"
+        [[ -n "$py" ]] || brand_die "python3 not found (agent-loop requires Python 3.8+)"
+        leaf_require_capability "loop.event.append" "cli.agent-loop-tick" "operator requested agent loop tick"
+        "$py" "$ROOT_DIR/core/python/leaf_agent_loop.py" tick "$@"
+        ;;
+
+    agent-loop-resume)
+        py="$(command -v python3 || command -v python)"
+        [[ -n "$py" ]] || brand_die "python3 not found (agent-loop requires Python 3.8+)"
+        leaf_require_capability "loop.event.append" "cli.agent-loop-resume" "operator requested agent loop resume"
+        "$py" "$ROOT_DIR/core/python/leaf_agent_loop.py" resume "$@"
+        ;;
+
+    agent-loop-stop)
+        py="$(command -v python3 || command -v python)"
+        [[ -n "$py" ]] || brand_die "python3 not found (agent-loop requires Python 3.8+)"
+        leaf_require_capability "loop.checkpoint" "cli.agent-loop-stop" "operator requested agent loop stop"
+        "$py" "$ROOT_DIR/core/python/leaf_agent_loop.py" stop "$@"
+        ;;
+
+    agent-loop-report)
+        py="$(command -v python3 || command -v python)"
+        [[ -n "$py" ]] || brand_die "python3 not found (agent-loop requires Python 3.8+)"
+        "$py" "$ROOT_DIR/core/python/leaf_agent_loop.py" report "$@"
+        ;;
+
+    continual-live)
+        py="$(command -v python3 || command -v python)"
+        [[ -n "$py" ]] || brand_die "python3 not found (continual-live requires Python 3.8+)"
+        sub="${1:-status}"
+        shift || true
+        case "$sub" in
+            start)
+                config="$ROOT_DIR/config/continual-live.json"
+                if [[ "${1:-}" == "--config" ]]; then
+                    config="${2:-}"
+                    shift 2
+                fi
+                [[ -f "$config" ]] || brand_die "continual-live config not found: $config"
+                LEAF_PROVIDER_MODE=llamacpp LEAF_REQUIRE_REAL_PROVIDER=1 \
+                    "$py" "$ROOT_DIR/core/runtime/continual_live.py" --config "$config"
+                ;;
+            status)
+                run_dir="${1:-}"
+                if [[ -z "$run_dir" ]]; then
+                    run_dir="$(find "$ROOT_DIR/runs" -maxdepth 1 -type d -name 'continual-live-*' -printf '%T@ %p\n' 2>/dev/null | sort -nr | head -1 | cut -d' ' -f2-)"
+                fi
+                [[ -n "$run_dir" && -f "$run_dir/live-state.json" ]] || brand_die "no continual-live state found"
+                cat "$run_dir/live-state.json"
+                ;;
+            *) brand_die "continual-live requires start or status" ;;
+        esac
+        ;;
+
+    chat)
+        if leaf_is_wsl; then
+            leaf_powershell_forward chat "$@"
+            exit $?
+        fi
+        # Read-only and model subcommands are routed to the Bash wrapper.
+        if [[ $# -eq 0 ]] || [[ " $* " == *" --list "* ]] || [[ " ${1:-} " == *" model "* ]] || [[ " $* " == *" --export "* ]]; then
+            exec "$ROOT_DIR/core/ui/chat_json" "$@"
+        fi
+        [[ -n "${LEAFCTL_PYTHON}" ]] || brand_die "python3 not found"
+        exec "$LEAFCTL_PYTHON" "$ROOT_DIR/core/ui/chat.py" "$@"
+        ;;
+
+    model)
+        exec "$ROOT_DIR/core/ui/chat_json" model "$@"
+        ;;
+
+    pack)
+        [[ -n "${LEAFCTL_PYTHON}" ]] || brand_die "python3 not found"
+        exec "$LEAFCTL_PYTHON" "$ROOT_DIR/core/pack_constructor_cli.py" "$@"
+        ;;
+
+    indicator)
+        leaf_detect_pwsh
+        leaf_pwsh_meets 5.0 || brand_die "PowerShell 5+ not found; install PowerShell or expose powershell.exe/pwsh.exe to this shell"
+        indicator_script="$ROOT_DIR/bin/leaf-indicator.ps1"
+        if [[ "${LEAF_PWSH_KIND:-native}" == windows-interop ]]; then
+            if command -v wslpath &>/dev/null; then
+                indicator_script="$(wslpath -w "$indicator_script")"
+                export LEAF_SHELL_ROUTE=wsl-windows-interop
+                case ":${WSLENV:-}:" in
+                    *:LEAF_SHELL_ROUTE:*) ;;
+                    *) export WSLENV="${WSLENV:+${WSLENV}:}LEAF_SHELL_ROUTE" ;;
+                esac
+            elif command -v cygpath &>/dev/null; then
+                indicator_script="$(cygpath -w "$indicator_script")"
+                export LEAF_SHELL_ROUTE=msys-windows-interop
+            else
+                export LEAF_SHELL_ROUTE=windows-interop
+            fi
+        elif leaf_is_wsl; then
+            export LEAF_SHELL_ROUTE=wsl-native
+        else
+            export LEAF_SHELL_ROUTE=unix-native
+        fi
+        exec "$LEAF_PWSH_CMD" -NoLogo -NoProfile -NonInteractive -File "$indicator_script" "$@"
+        ;;
+
+    models-install)
+        bash "$ROOT_DIR/bin/leaf-models" "$@"
+        ;;
+
+    serve)
+        py="$(command -v python3 || command -v python)"
+        [[ -n "$py" ]] || brand_die "python3 not found"
+        "$py" "$ROOT_DIR/core/net/serve.py" serve "$@"
+        ;;
+
+    download)
+        py="$(command -v python3 || command -v python)"
+        [[ -n "$py" ]] || brand_die "python3 not found"
+        "$py" "$ROOT_DIR/core/net/serve.py" download "$@"
+        ;;
+
+    dist-build)
+        py="$(command -v python3 || command -v python)"
+        [[ -n "$py" ]] || brand_die "python3 not found"
+        "$py" "$ROOT_DIR/core/net/serve.py" build "$@"
+        ;;
+
+    dist-info)
+        py="$(command -v python3 || command -v python)"
+        [[ -n "$py" ]] || brand_die "python3 not found"
+        "$py" "$ROOT_DIR/core/net/serve.py" info "$@"
+        ;;
+
+    *)
+        brand_die "unknown command: $cmd (try: leafos q)"
+        ;;
+esac

@@ -1,0 +1,170 @@
+{
+  "schema": "leafos.capability_registry.v1",
+  "version": 1,
+  "authority": "core/python/leaf_continual_bloom.py",
+  "enforced_by": "core/python/leaf_durable_bridge.py",
+  "default_policy": "disallow",
+  "rule_order": ["deny", "allow", "audit"],
+  "capabilities": [
+    {
+      "key": "instance.initialize",
+      "scope": "monday-primary",
+      "actor": ["operator", "supervisor"],
+      "action": "create",
+      "resource": "durable_instance",
+      "policy": "allow",
+      "requires_evidence": false,
+      "description": "Create the durable Monday instance from the canonical persona contract."
+    },
+    {
+      "key": "input.append",
+      "scope": "monday-primary",
+      "actor": ["operator", "tool", "supervisor"],
+      "action": "append",
+      "resource": "transcript",
+      "policy": "allow",
+      "requires_evidence": false,
+      "description": "Append operator or tool input to the durable transcript."
+    },
+    {
+      "key": "persona.claim",
+      "scope": "monday-primary",
+      "actor": ["monday"],
+      "action": "propose",
+      "resource": "claim",
+      "policy": "allow",
+      "requires_evidence": false,
+      "description": "Monday records an analytical claim at the current transcript head."
+    },
+    {
+      "key": "claim.validate",
+      "scope": "monday-primary",
+      "actor": ["native-validator", "supervisor"],
+      "action": "validate",
+      "resource": "claim",
+      "policy": "allow",
+      "requires_evidence": true,
+      "description": "Promote or refute a claim using native evidence only."
+    },
+    {
+      "key": "checkpoint.commit",
+      "scope": "monday-primary",
+      "actor": ["native-supervisor"],
+      "action": "commit",
+      "resource": "checkpoint",
+      "policy": "allow",
+      "requires_evidence": true,
+      "description": "Commit a checkpoint after a successful native validation."
+    },
+    {
+      "key": "runtime.recover",
+      "scope": "monday-primary",
+      "actor": ["operator", "supervisor"],
+      "action": "recover",
+      "resource": "state",
+      "policy": "audit",
+      "requires_evidence": false,
+      "description": "Replay transcript and rebuild derived state without trusting KV cache."
+    },
+    {
+      "key": "runtime.verify",
+      "scope": "monday-primary",
+      "actor": ["operator", "supervisor", "auditor"],
+      "action": "read",
+      "resource": "state",
+      "policy": "allow",
+      "requires_evidence": false,
+      "description": "Read-only verification of durable instance integrity."
+    },
+    {
+      "key": "mutation.direct",
+      "scope": "system",
+      "actor": ["any"],
+      "action": "mutate",
+      "resource": "project_files",
+      "policy": "deny",
+      "requires_evidence": true,
+      "description": "Direct project mutation is forbidden; must route through validated claim/checkpoint."
+    },
+    {
+      "key": "checkpoint.self_declare",
+      "scope": "monday-primary",
+      "actor": ["monday"],
+      "action": "declare",
+      "resource": "checkpoint",
+      "policy": "deny",
+      "requires_evidence": true,
+      "description": "Monday may not declare its own checkpoint success."
+    },
+    {
+      "key": "loop.event.append",
+      "scope": "loop-kernel",
+      "actor": ["loop-kernel"],
+      "action": "append",
+      "resource": "loop_events",
+      "policy": "allow",
+      "requires_evidence": false,
+      "description": "Loop kernel appends lifecycle events to a run directory."
+    },
+    {
+      "key": "loop.tick.record",
+      "scope": "loop-kernel",
+      "actor": ["loop-kernel"],
+      "action": "append",
+      "resource": "loop_ticks",
+      "policy": "allow",
+      "requires_evidence": false,
+      "description": "Loop kernel records tick entries during a run."
+    },
+    {
+      "key": "loop.spawn",
+      "scope": "loop-kernel",
+      "actor": ["loop-kernel"],
+      "action": "spawn",
+      "resource": "subprocess",
+      "policy": "allow",
+      "requires_evidence": false,
+      "description": "Loop kernel spawns tracked subprocesses within concurrency limits."
+    },
+    {
+      "key": "loop.spawn.cleanup",
+      "scope": "loop-kernel",
+      "actor": ["loop-kernel"],
+      "action": "terminate",
+      "resource": "subprocess",
+      "policy": "allow",
+      "requires_evidence": false,
+      "description": "Loop kernel terminates tracked subprocesses on cycle exit."
+    },
+    {
+      "key": "loop.checkpoint",
+      "scope": "loop-kernel",
+      "actor": ["loop-kernel"],
+      "action": "write",
+      "resource": "loop_checkpoint",
+      "policy": "allow",
+      "requires_evidence": false,
+      "description": "Loop kernel writes a checkpoint file for a run."
+    },
+    {
+      "key": "agent.run.execute",
+      "scope": "cli",
+      "actor": ["operator"],
+      "action": "execute",
+      "resource": "agent_plan",
+      "policy": "allow",
+      "requires_evidence": false,
+      "description": "CLI executes an agent plan that may mutate project files."
+    },
+    {
+      "key": "memory.journal.append",
+      "scope": "cli",
+      "actor": ["operator", "supervisor"],
+      "action": "append",
+      "resource": "journal",
+      "policy": "allow",
+      "requires_evidence": false,
+      "description": "CLI appends an event to a durable memory journal."
+    }
+  ]
+}

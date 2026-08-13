@@ -1,0 +1,34 @@
+name: Verify LeafOS
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  root-contract:
+    name: Root contract (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate declared paths, versions, and immutable README asset
+        shell: pwsh
+        run: ./Validate-RootContract.ps1
+      - name: Verify README and version program state
+        shell: pwsh
+        run: ./program.ps1 status
+
+  bash-surface:
+    name: Bash surface
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Inspect runtime status
+        run: bash ./Bash-Version/leaf.sh status

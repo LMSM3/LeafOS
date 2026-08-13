@@ -1,0 +1,15 @@
+# WO-004-C ticker universe
+# one ticker per line
+# blank lines ignored, lines starting with # ignored
+# symbols are uppercased at load time
+# this is a defined universe, not "all markets" -- see WO-004-C section 6
+NVDA
+AAPL
+MSFT
+AMD
+INTC
+TSLA
+AMZN
+GOOGL
+META
+NFLX

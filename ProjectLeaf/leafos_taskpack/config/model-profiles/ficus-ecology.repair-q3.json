@@ -1,0 +1,18 @@
+{
+  "schema": "leafos.model-profile.v1",
+  "profile_id": "ficus-ecology.repair-q3",
+  "base_catalog_key": "gemma4-coder",
+  "title": "Fable Ecology Repair (Q3_K_M)",
+  "role": "repair",
+  "lanes": ["slot.repair.bugfix", "slot.repair.patch", "slot.repair.optimize"],
+  "contracts": ["repair_output"],
+  "runtime": ["llama.cpp"],
+  "recommended_quant": "Q3_K_M",
+  "quality_quant": "Q4_K_M",
+  "low_memory_quant": "Q2_K",
+  "emergency_quant": "Q2_K",
+  "activation": "on_demand",
+  "escalation_from": ["ficus-ecology.coder-builder-q4", "ficus-ecology.critic-q3"],
+  "escalation_to": ["ficus-ecology.judge-q4"],
+  "notes": ["Focused bug-fix and patch worker. Takes failing code and a critique and produces corrected output."]
+}

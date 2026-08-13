@@ -1,0 +1,67 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "leafos.medium-moe-candidate.v1",
+  "title": "LeafOS Medium MoE Candidate",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "policy_id", "status", "identity", "topology", "runtime", "acceptance"],
+  "properties": {
+    "schema": {"const": "leafos.medium-moe-candidate.v1"},
+    "policy_id": {"type": "string", "minLength": 1},
+    "status": {"enum": ["template", "resolved"]},
+    "identity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["model_id", "source_repo", "revision", "artifact", "sha256", "license"],
+      "properties": {
+        "model_id": {"type": "string"},
+        "source_repo": {"type": "string"},
+        "revision": {"type": "string"},
+        "artifact": {"type": "string"},
+        "sha256": {"type": "string"},
+        "license": {"type": "string"}
+      }
+    },
+    "topology": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["total_parameters_billion", "active_parameters_billion", "expert_count", "active_experts_per_token"],
+      "properties": {
+        "total_parameters_billion": {"type": ["number", "null"]},
+        "active_parameters_billion": {"type": ["number", "null"]},
+        "expert_count": {"type": ["integer", "null"]},
+        "active_experts_per_token": {"type": ["integer", "null"]}
+      }
+    },
+    "runtime": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["provider", "compute_backend", "model_format", "model_path", "executable", "benchmark_command", "context_tokens", "gpu_layers", "mmap", "kv_cache_type_k", "kv_cache_type_v", "no_download"],
+      "properties": {
+        "provider": {"const": "llamacpp"},
+        "compute_backend": {"const": "vulkan"},
+        "model_format": {"const": "GGUF"},
+        "model_path": {"type": "string"},
+        "executable": {"type": "string", "minLength": 1},
+        "benchmark_command": {"type": "array", "items": {"type": "string"}},
+        "context_tokens": {"type": ["integer", "null"]},
+        "gpu_layers": {"type": ["integer", "null"]},
+        "mmap": {"const": true},
+        "kv_cache_type_k": {"type": "string", "minLength": 1},
+        "kv_cache_type_v": {"type": "string", "minLength": 1},
+        "no_download": {"const": true}
+      }
+    },
+    "acceptance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["minimum_generation_tokens_per_second", "maximum_time_to_first_token_seconds", "minimum_validated_useful_changes_per_hour", "threshold_provenance"],
+      "properties": {
+        "minimum_generation_tokens_per_second": {"type": ["number", "null"]},
+        "maximum_time_to_first_token_seconds": {"type": ["number", "null"]},
+        "minimum_validated_useful_changes_per_hour": {"type": ["number", "null"]},
+        "threshold_provenance": {"type": "string"}
+      }
+    }
+  }
+}

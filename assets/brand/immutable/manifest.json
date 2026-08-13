@@ -1,0 +1,12 @@
+{
+  "schema": "leafos.immutable-asset/v1",
+  "path": "assets/brand/immutable/leafos-ascii-growth-23704decb341ff08.png",
+  "sha256": "23704decb341ff0819e08977203b15f72171ee8bcced9eab4a49345ed3f297be",
+  "bytes": 535980,
+  "media_type": "image/png",
+  "width": 2639,
+  "height": 2640,
+  "immutable": true,
+  "purpose": "Permanent LeafOS README identity asset",
+  "policy": "assets/brand/immutable/POLICY.md"
+}

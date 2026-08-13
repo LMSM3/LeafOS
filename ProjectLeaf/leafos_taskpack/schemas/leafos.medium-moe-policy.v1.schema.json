@@ -1,0 +1,116 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "leafos.medium-moe-policy.v1",
+  "title": "LeafOS Medium MoE Selection Policy",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "policy_id", "status", "decision", "reference_host", "placement", "qualification", "provenance"],
+  "properties": {
+    "schema": {"const": "leafos.medium-moe-policy.v1"},
+    "policy_id": {"type": "string", "minLength": 1},
+    "status": {"const": "active"},
+    "decision": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["preferred_architecture", "total_parameter_band_billion", "selection_basis", "automatic_promotion", "deprecated_model_ids", "deprecated_profile_ids", "incumbent_route"],
+      "properties": {
+        "preferred_architecture": {"const": "moe"},
+        "total_parameter_band_billion": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["minimum", "maximum"],
+          "properties": {"minimum": {"const": 47}, "maximum": {"const": 156}}
+        },
+        "selection_basis": {"const": "operator_experiment_and_theory"},
+        "automatic_promotion": {"const": false},
+        "deprecated_model_ids": {"type": "array", "contains": {"const": "GLM-5.2"}},
+        "deprecated_profile_ids": {"type": "array", "contains": {"const": "glm52-q4-overnight"}},
+        "incumbent_route": {"type": "string", "minLength": 1}
+      }
+    },
+    "reference_host": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["gpu_name", "gpu_vram_gb", "system_ram_gb", "compute_backend", "resource_policy"],
+      "properties": {
+        "gpu_name": {"type": "string", "minLength": 1},
+        "gpu_vram_gb": {"type": "number", "exclusiveMinimum": 0},
+        "system_ram_gb": {"type": "number", "exclusiveMinimum": 0},
+        "compute_backend": {"const": "vulkan"},
+        "resource_policy": {"type": "string", "minLength": 1}
+      }
+    },
+    "placement": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["runtime", "model_format", "weights_source", "mmap_required", "ssd_semantics", "leafos_managed_ssd_tiering", "gpu_offload_selection", "kv_cache_variants", "expert_pinning_assumed"],
+      "properties": {
+        "runtime": {"const": "llama.cpp"},
+        "model_format": {"const": "GGUF"},
+        "weights_source": {"const": "local_stack_only"},
+        "mmap_required": {"const": true},
+        "ssd_semantics": {"const": "os_page_cache_backing_store"},
+        "leafos_managed_ssd_tiering": {"const": false},
+        "gpu_offload_selection": {"const": "measured_per_candidate"},
+        "kv_cache_variants": {"type": "array", "contains": {"const": "f16"}, "minContains": 1},
+        "expert_pinning_assumed": {"const": false}
+      }
+    },
+    "qualification": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["durations_minutes", "promotion_after_minutes", "required_scenarios", "required_runs", "required_metrics", "hard_gates", "ranking_metrics", "throughput_threshold_policy", "operator_approval_required"],
+      "properties": {
+        "durations_minutes": {"const": [4, 8, 64]},
+        "promotion_after_minutes": {"const": 64},
+        "required_scenarios": {"type": "array", "minItems": 3, "uniqueItems": true, "items": {"type": "string"}},
+        "required_runs": {
+          "type": "array",
+          "minItems": 3,
+          "maxItems": 3,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["duration_minutes", "mode", "scenario", "purpose"],
+            "properties": {
+              "duration_minutes": {"enum": [4, 8, 64]},
+              "mode": {"const": "leafos"},
+              "scenario": {"enum": ["cold_cache", "warm_cache", "resident_foreground"]},
+              "purpose": {"type": "string", "minLength": 1}
+            }
+          }
+        },
+        "required_metrics": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string"}},
+        "hard_gates": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["provider_must_survive_run", "no_out_of_memory", "baseline_validation_must_pass", "unknown_metrics_require_reason", "resource_limits_source"],
+          "properties": {
+            "provider_must_survive_run": {"const": true},
+            "no_out_of_memory": {"const": true},
+            "baseline_validation_must_pass": {"const": true},
+            "unknown_metrics_require_reason": {"const": true},
+            "resource_limits_source": {"type": "string", "minLength": 1}
+          }
+        },
+        "ranking_metrics": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string"}},
+        "throughput_threshold_policy": {"const": "candidate_specific_before_run"},
+        "operator_approval_required": {"const": true}
+      }
+    },
+    "provenance": {
+      "type": "array",
+      "minItems": 3,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["kind", "source", "claim"],
+        "properties": {
+          "kind": {"enum": ["operator_decision", "measured_repository_evidence", "historical_proposal"]},
+          "source": {"type": "string", "minLength": 1},
+          "claim": {"type": "string", "minLength": 1}
+        }
+      }
+    }
+  }
+}

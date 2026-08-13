@@ -1,0 +1,16 @@
+{
+  "schema": "leafos.model-group/v1",
+  "id": "coder.default-local",
+  "slot": "coder.primary",
+  "enabled": true,
+  "policy": {
+    "parallel_load": false,
+    "preferred_quantization": ["IQ2_M", "Q4_K_M"],
+    "max_vram_gib": 12.0,
+    "max_ram_gib": 16.0,
+    "allow_remote": false
+  },
+  "members": [
+    { "id": "qwen25-coder-32b-iq2m-local", "weight": 100 }
+  ]
+}

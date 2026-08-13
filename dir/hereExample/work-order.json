@@ -1,0 +1,27 @@
+{
+  "work_order_id": "WO-HERE-EXAMPLE-001",
+  "title": "Improve hereExample deterministic closure",
+  "objective": "Implement the smallest clear deterministic improvement that makes the closure classifier distinguish confirmed, contradicted, and inconclusive action responses.",
+  "allowed_paths": ["."],
+  "denied_paths": [".git", ".env", "secrets"],
+  "constraints": [
+    "Do not add dependencies.",
+    "Do not modify files outside the target directory.",
+    "Do not edit the work-order files.",
+    "Do not weaken or remove acceptance tests.",
+    "Keep classification side-effect free and deterministic."
+  ],
+  "acceptance": [
+    "Matching known values return confirmed.",
+    "Different known values return contradicted.",
+    "Missing values return inconclusive.",
+    "The unittest suite passes."
+  ],
+  "commands": {
+    "tests": [["python3", "-m", "unittest", "discover", "-s", "tests", "-v"]]
+  },
+  "approval_mode": "required",
+  "allow_mutation": true,
+  "max_attempts": 2,
+  "timeout_seconds": 300
+}

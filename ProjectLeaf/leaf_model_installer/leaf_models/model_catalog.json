@@ -1,0 +1,458 @@
+{
+  "schema_version": 1,
+  "catalog_version": "2026-06-25",
+  "storage": {
+    "environment_variable": "LEAF_MODEL_DIR",
+    "default_relative_to_home": ".leaf/models",
+    "state_directory": ".leafos-installer"
+  },
+  "profiles": {
+    "default": {
+      "description": "Real runtime default: Fable coder plus Opus main/scheduler.",
+      "slots": [1, 3]
+    },
+    "runtime-default": {
+      "description": "Empty-input LeafOS runtime set: Fable coder plus Opus main/scheduler.",
+      "slots": [1, 3]
+    },
+    "extended": {
+      "description": "Runtime default plus deeper non-coder reasoning/planning.",
+      "slots": [1, 3, 4]
+    },
+    "legacy-coder-pair": {
+      "description": "Historical coder-pair download profile. Not used by LeafOS runtime role policy.",
+      "slots": [1, 2]
+    },
+    "experimental": {
+      "description": "Runtime models, optional reasoning, legacy secondary coder, and guarded GPT-OSS 120B snapshot.",
+      "slots": [1, 3, 4, 2, 5]
+    },
+    "viola-nocturne": {
+      "description": "Viola Nocturne full pack: lightweight FableVibes, 27B coding/reference, 35B reasoning.",
+      "slots": [6, 7, 8]
+    },
+    "viola-nocturne-experimental": {
+      "description": "Viola Nocturne plus dormant experimental long-context and control models.",
+      "slots": [6, 7, 8, 9, 10]
+    }
+  },
+  "runtime_roles": {
+    "coding_default": {
+      "slot": 1,
+      "runtime_key": "gemma4-coder",
+      "catalog_key": "gemma4-coder",
+      "scope": "coding_only"
+    },
+    "assistant_default": {
+      "slot": 3,
+      "runtime_key": "gemma4-it-opus",
+      "catalog_key": "gemma4-opus-assistant",
+      "scope": "main_assistant"
+    },
+    "scheduler_default": {
+      "slot": 3,
+      "runtime_key": "gemma4-it-opus",
+      "catalog_key": "gemma4-opus-assistant",
+      "scope": "scheduler"
+    },
+    "scheduler_fallbacks": [
+      {
+        "slot": 4,
+        "runtime_key": "qwen35-opus-reasoning",
+        "catalog_key": "qwen35-opus-reasoning",
+        "scope": "deep_reasoning_scheduler_fallback"
+      }
+    ],
+    "legacy_optional_models": [
+      {
+        "slot": 2,
+        "runtime_key": "qwopus35-coder-mtp",
+        "catalog_key": "qwopus35-coder-mtp",
+        "scope": "legacy_secondary_coder"
+      }
+    ],
+    "forbidden_main_or_scheduler": ["gemma4-coder"]
+  },
+  "models": [
+    {
+      "slot": 1,
+      "key": "gemma4-coder",
+      "nickname": "Forge",
+      "title": "Gemma4 12B Coder Fable5 Composer2.5",
+      "repo_id": "yuxinlu1/gemma-4-12B-coder-fable5-composer2.5-v1-GGUF",
+      "local_dir": "Gemma4-Coder",
+      "role": "Primary local coder",
+      "default_quant": "Q4_K_M",
+      "fallback_quants": [],
+      "default_enabled": true,
+      "experimental": false,
+      "variants": {
+        "Q2_K": {
+          "format": "gguf",
+          "patterns": ["gemma4-coding-Q2_K.gguf"],
+          "estimated_bytes": 4830000000
+        },
+        "Q3_K_M": {
+          "format": "gguf",
+          "patterns": ["gemma4-coding-Q3_K_M.gguf"],
+          "estimated_bytes": 6090000000
+        },
+        "Q4_K_M": {
+          "format": "gguf",
+          "patterns": ["gemma4-coding-Q4_K_M.gguf"],
+          "estimated_bytes": 7381381664
+        },
+        "Q6_K": {
+          "format": "gguf",
+          "patterns": ["gemma4-coding-Q6_K.gguf"],
+          "estimated_bytes": 9790000000
+        },
+        "Q8_0": {
+          "format": "gguf",
+          "patterns": ["gemma4-coding-Q8_0.gguf"],
+          "estimated_bytes": 12700000000
+        }
+      }
+    },
+    {
+      "slot": 2,
+      "key": "qwopus35-coder-mtp",
+      "nickname": "Swift",
+      "title": "Qwopus3.5 9B Coder MTP",
+      "repo_id": "Jackrong/Qwopus3.5-9B-Coder-MTP-GGUF",
+      "local_dir": "Qwopus3.5-9B-Coder-MTP",
+      "role": "Legacy secondary coder / optional fast helper",
+      "default_quant": "Q4_K_M",
+      "fallback_quants": ["IQ4_XS", "Q3_K_M"],
+      "default_enabled": false,
+      "experimental": false,
+      "variants": {
+        "IQ4_XS": {
+          "format": "gguf",
+          "patterns": ["Qwopus3.5-9B-Coder-MTP-IQ4_XS.gguf"],
+          "estimated_bytes": 5360000000
+        },
+        "Q3_K_M": {
+          "format": "gguf",
+          "patterns": ["Qwopus3.5-9B-Coder-MTP-Q3_K_M.gguf"],
+          "estimated_bytes": 4740000000
+        },
+        "Q4_K_M": {
+          "format": "gguf",
+          "patterns": ["Qwopus3.5-9B-Coder-MTP-Q4_K_M.gguf"],
+          "estimated_bytes": 5780000000
+        },
+        "Q5_K_M": {
+          "format": "gguf",
+          "patterns": ["Qwopus3.5-9B-Coder-MTP-Q5_K_M.gguf"],
+          "estimated_bytes": 6640000000
+        },
+        "Q6_K": {
+          "format": "gguf",
+          "patterns": ["Qwopus3.5-9B-Coder-MTP-Q6_K.gguf"],
+          "estimated_bytes": 7560000000
+        }
+      },
+      "notes": [
+        "The repository also contains BF16 and mmproj files.",
+        "Vision projector files are never selected implicitly."
+      ]
+    },
+    {
+      "slot": 3,
+      "key": "gemma4-opus-assistant",
+      "nickname": "Sage",
+      "title": "Gemma4 12B IT Claude/Opus Distill",
+      "repo_id": "yuxinlu1/gemma-4-12B-it-Claude-4.6-4.8-Opus-GGUF",
+      "local_dir": "Gemma4-Opus-Assistant",
+      "role": "General reasoning / assistant",
+      "default_quant": "Q4_K_M",
+      "fallback_quants": ["Q2_K"],
+      "default_enabled": false,
+      "experimental": false,
+      "variants": {
+        "Q2_K": {
+          "format": "gguf",
+          "patterns": ["gemma4-opus48-Q2_K.gguf"],
+          "estimated_bytes": 4830000000
+        },
+        "Q4_K_M": {
+          "format": "gguf",
+          "patterns": ["gemma4-opus48-Q4_K_M.gguf"],
+          "estimated_bytes": 7380000000
+        },
+        "Q6_K": {
+          "format": "gguf",
+          "patterns": ["gemma4-opus48-Q6_K.gguf"],
+          "estimated_bytes": 9790000000
+        },
+        "Q8_0": {
+          "format": "gguf",
+          "patterns": ["gemma4-opus48-Q8_0.gguf"],
+          "estimated_bytes": 12700000000
+        }
+      },
+      "notes": [
+        "MTP draft files and fp16 training artifacts are excluded from normal installs."
+      ]
+    },
+    {
+      "slot": 4,
+      "key": "qwen35-opus-reasoning",
+      "nickname": "Oracle",
+      "title": "Qwen3.5 14B A3B Opus Reasoning Distill",
+      "repo_id": "tvall43/Qwen3.5-14B-A3B-Claude-4.6-Opus-Reasoning-Distilled-reap-gguf",
+      "local_dir": "Qwen3.5-Claude-Reasoning",
+      "role": "Deeper reasoning / planning",
+      "default_quant": "Q4_K_M",
+      "fallback_quants": ["Q5_K_M", "MXFP4_MOE"],
+      "default_enabled": false,
+      "experimental": false,
+      "variants": {
+        "Q4_K_M": {
+          "format": "gguf",
+          "patterns": ["*Q4_K_M*.gguf"],
+          "estimated_bytes": null
+        },
+        "Q5_K_M": {
+          "format": "gguf",
+          "patterns": ["*Q5_K_M*.gguf"],
+          "estimated_bytes": null
+        },
+        "MXFP4_MOE": {
+          "format": "gguf",
+          "patterns": ["Qwen3.5-14B-A3B-Claude-Opus-Reasoning-Distilled-4.6-MXFP4_MOE.gguf"],
+          "estimated_bytes": 8840947872
+        }
+      },
+      "notes": [
+        "Q4_K_M and Q5_K_M are preferred but were not present when the catalog was verified.",
+        "MXFP4_MOE is an explicit fallback and is never selected without --allow-fallback.",
+        "BF16 and the mismatched 35B mmproj artifact are excluded."
+      ]
+    },
+    {
+      "slot": 5,
+      "key": "gpt-oss-120b",
+      "nickname": "Titan",
+      "title": "GPT-OSS 120B",
+      "repo_id": "openai/gpt-oss-120b",
+      "local_dir": "GPT-OSS-120B",
+      "role": "Experimental heavyweight / non-default",
+      "default_quant": "MXFP4_NATIVE",
+      "fallback_quants": [],
+      "default_enabled": false,
+      "experimental": true,
+      "variants": {
+        "MXFP4_NATIVE": {
+          "format": "safetensors-snapshot",
+          "patterns": [
+            "model-*.safetensors",
+            "model.safetensors.index.json",
+            "config.json",
+            "generation_config.json",
+            "tokenizer.json",
+            "tokenizer_config.json",
+            "special_tokens_map.json",
+            "chat_template.jinja",
+            "LICENSE",
+            "USAGE_POLICY"
+          ],
+          "estimated_bytes": 61000000000
+        }
+      },
+      "notes": [
+        "This slot is never part of the default or extended install.",
+                 "Apply requires --include-experimental and --confirm-heavy gpt-oss-120b.",
+                "The original/ and metal/ folders are excluded."
+              ]
+            },
+            {
+              "slot": 6,
+              "key": "viola-fablevibes-14b-a3b",
+              "nickname": "FableVibes14B",
+              "title": "Qwen3.6 14B A3B FableVibes",
+              "repo_id": "tvall43/Qwen3.6-14B-A3B-FableVibes-GGUF",
+              "local_dir": "Viola/FableVibes-14B-A3B",
+              "role": "Lightweight Fable router / drafter / helper",
+              "default_quant": "Q2_K",
+              "fallback_quants": [],
+              "default_enabled": false,
+              "experimental": false,
+              "variants": {
+                "Q2_K": {
+                  "format": "gguf",
+                  "patterns": ["*Q2_K.gguf"],
+                  "estimated_bytes": 5320000000
+                },
+                "Q3_K_M": {
+                  "format": "gguf",
+                  "patterns": ["*Q3_K_M.gguf"],
+                  "estimated_bytes": 6770000000
+                },
+                "Q4_K_M": {
+                  "format": "gguf",
+                  "patterns": ["*Q4_K_M.gguf"],
+                  "estimated_bytes": 8470000000
+                }
+              },
+              "notes": [
+                "Used for Viola Nocturne routing, drafting, helper text, and experimental lanes.",
+                "mmproj files are never selected implicitly."
+              ]
+            },
+            {
+              "slot": 7,
+              "key": "viola-fable-fusion-27b",
+              "nickname": "FableFusion27B",
+              "title": "Qwen3.6 27B Fable Fusion 711",
+              "repo_id": "DavidAU/Qwen3.6-27B-Fable-Fusion-711-Uncensored-Heretic-NM-DAU-NEO-MAX-MTP-GGUF",
+              "local_dir": "Viola/Fable-Fusion-27B",
+              "role": "Primary coding and reference model",
+              "default_quant": "Q4_K_M",
+              "fallback_quants": [],
+              "default_enabled": false,
+              "experimental": false,
+              "variants": {
+                "Q4_K_M": {
+                  "format": "gguf",
+                  "patterns": ["*Q4_K_M.gguf"],
+                  "exclude_patterns": ["*MTP*"],
+                  "estimated_bytes": 18050000000
+                },
+                "Q6_K": {
+                  "format": "gguf",
+                  "patterns": ["*Q6_K.gguf"],
+                  "exclude_patterns": ["*MTP*"],
+                  "estimated_bytes": 23580000000
+                },
+                "Q8_0": {
+                  "format": "gguf",
+                  "patterns": ["*Q8_0.gguf"],
+                  "exclude_patterns": ["*MTP*"],
+                  "estimated_bytes": 29790000000
+                },
+                "Q4_K_M_MTP": {
+                  "format": "gguf",
+                  "patterns": ["*MTP*Q4_K_M*.gguf"],
+                  "estimated_bytes": 18500000000
+                },
+                "Q6_K_MTP": {
+                  "format": "gguf",
+                  "patterns": ["*MTP*Q6_K*.gguf"],
+                  "estimated_bytes": 24030000000
+                },
+                "Q8_0_MTP": {
+                  "format": "gguf",
+                  "patterns": ["*MTP*Q8_0*.gguf"],
+                  "estimated_bytes": 30240000000
+                }
+              },
+              "notes": [
+                "Repository contains both normal and MTP variants.",
+                "Non-MTP quant patterns exclude filenames containing 'MTP'.",
+                "MTP quant patterns explicitly require 'MTP' somewhere in the filename.",
+                "mmproj files are never selected implicitly."
+              ]
+            },
+            {
+              "slot": 8,
+              "key": "viola-fable5-distill-35b-a3b",
+              "nickname": "Fable5Distill35B",
+              "title": "Qwen3.6 35B A3B Fable 5 Distill",
+              "repo_id": "mradermacher/Qwen3.6-35B-A3B-Fable-5-Distill-i1-GGUF",
+              "local_dir": "Viola/Fable5-Distill-35B-A3B",
+              "role": "Deep reasoning / judge / critic",
+              "default_quant": "Q4_K_M",
+              "fallback_quants": [],
+              "default_enabled": false,
+              "experimental": false,
+              "variants": {
+                "Q4_K_M": {
+                  "format": "gguf",
+                  "patterns": ["*Q4_K_M*.gguf"],
+                  "exclude_patterns": ["*.imatrix.*"],
+                  "estimated_bytes": 21710000000
+                },
+                "Q6_K": {
+                  "format": "gguf",
+                  "patterns": ["*Q6_K*.gguf"],
+                  "exclude_patterns": ["*.imatrix.*"],
+                  "estimated_bytes": 29210000000
+                }
+              },
+              "notes": [
+                "Weighted/imatrix quants through Q6_K are published.",
+                "The .imatrix.gguf calibration file is excluded from weight installs."
+              ]
+            },
+            {
+              "slot": 9,
+              "key": "viola-opus-deepseek-27b-1m",
+              "nickname": "OpusDeepSeek27B1M",
+              "title": "Qwen3.6 27B Claude Opus DeepSeek Distilled Imatrix MTP 1M",
+              "repo_id": "Brian6145/Qwen3.6-27B-Claude-Opus-DeepSeek-Distilled-Imatrix-MTP-1M-GGUF",
+              "local_dir": "Viola/Opus-DeepSeek-27B-1M",
+              "role": "Experimental long-context model",
+              "default_quant": "Q4_K_M",
+              "fallback_quants": ["Q3_K_M"],
+              "default_enabled": false,
+              "experimental": true,
+              "variants": {
+                "Q3_K_M": {
+                  "format": "gguf",
+                  "patterns": ["*Q3_K_M*.gguf"],
+                  "estimated_bytes": 13500000000
+                },
+                "Q4_K_M": {
+                  "format": "gguf",
+                  "patterns": ["*Q4_K_M*.gguf"],
+                  "estimated_bytes": 16810000000
+                }
+              },
+              "notes": [
+                "Distinct 27B Opus/DeepSeek distillation, not Fable 5 trained.",
+                "Dormant by default; requires --include-experimental and a confirm-heavy key."
+              ]
+            },
+            {
+              "slot": 10,
+              "key": "viola-opus-sonnet-27b-v2",
+              "nickname": "OpusSonnet27BV2",
+              "title": "Qwen3.6 27B Claude Opus Sonnet DistilledV2 MTP",
+              "repo_id": "Brian6145/Qwen3.6-27B-Claude-Opus-Sonnet-DistilledV2-MTP-GGUF",
+              "local_dir": "Viola/Opus-Sonnet-27B-V2",
+              "role": "Experimental non-Fable control reasoning model",
+              "default_quant": "Q4_K_M",
+              "fallback_quants": ["Q2_K", "Q6_K", "Q8_0"],
+              "default_enabled": false,
+              "experimental": true,
+              "variants": {
+                "Q2_K": {
+                  "format": "gguf",
+                  "patterns": ["*Q2_K*.gguf"],
+                  "estimated_bytes": 10860000000
+                },
+                "Q4_K_M": {
+                  "format": "gguf",
+                  "patterns": ["*Q4_K_M*.gguf"],
+                  "estimated_bytes": 16810000000
+                },
+                "Q6_K": {
+                  "format": "gguf",
+                  "patterns": ["*Q6_K*.gguf"],
+                  "estimated_bytes": 22430000000
+                },
+                "Q8_0": {
+                  "format": "gguf",
+                  "patterns": ["*Q8_0*.gguf"],
+                  "estimated_bytes": 29050000000
+                }
+              },
+              "notes": [
+                "Non-Fable control for testing Fable training impact.",
+                "Dormant by default; requires --include-experimental and a confirm-heavy key."
+              ]
+            }
+          ]
+        }

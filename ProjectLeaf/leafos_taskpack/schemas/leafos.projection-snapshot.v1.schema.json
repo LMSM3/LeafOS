@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://leafos.local/schemas/leafos.projection-snapshot.v1.schema.json",
+  "title": "LeafOS Projection Snapshot",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["leafos_object", "version", "projection", "aggregate_id", "projection_version", "handler_version", "source_cursor", "generated_at", "state", "evidence_refs"],
+  "properties": {
+    "leafos_object": {"const": "leafos.projection_snapshot"},
+    "version": {"const": 1},
+    "projection": {"enum": ["project_summary", "run_timeline", "task_board", "hardware_status", "install_progress", "report_catalog"]},
+    "aggregate_id": {"type": "string"},
+    "projection_version": {"type": "integer", "minimum": 0},
+    "handler_version": {"type": "integer", "minimum": 1},
+    "source_cursor": {"type": "string"},
+    "generated_at": {"type": "string", "format": "date-time"},
+    "state": {"type": "object"},
+    "evidence_refs": {"type": "array", "uniqueItems": true, "items": {"type": "string", "pattern": "^evidence://"}},
+    "volatile_until": {"type": ["string", "null"], "format": "date-time"}
+  }
+}

@@ -1,0 +1,12 @@
+﻿{
+  "schema": "leafos.expert.v1",
+  "id": "kimi-k27-code-remote",
+  "model_ref": "kimi-k27",
+  "parameters_b": 27,
+  "provider": "openai_compatible",
+  "placement": "remote",
+  "endpoint_ref": "remote-kimi-bridge",
+  "context_tokens": 128000,
+  "capabilities": ["proposal.review", "diagnostic.deep", "qa"],
+  "enabled": true
+}

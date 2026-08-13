@@ -1,0 +1,59 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://leafos.local/ccis/contracts/evaluation.v1.schema.json",
+  "title": "CCIS Candidate Evaluation",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["ccis_object", "schema_version", "evaluation_id", "task_id", "candidate_id", "evaluated_at", "gate_state", "constitutional_questions", "validator_results", "recommendation", "evidence_refs"],
+  "properties": {
+    "ccis_object": {"const": "ccis.evaluation"},
+    "schema_version": {"const": 1},
+    "evaluation_id": {"$ref": "#/$defs/id"},
+    "task_id": {"$ref": "#/$defs/id"},
+    "candidate_id": {"$ref": "#/$defs/id"},
+    "evaluated_at": {"type": "string", "format": "date-time"},
+    "evaluator": {"type": "string", "minLength": 1},
+    "gate_state": {"const": "GATED"},
+    "constitutional_questions": {
+      "type": "array",
+      "minItems": 4,
+      "maxItems": 4,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["question_id", "question_ref", "question", "result", "rationale", "evidence_refs"],
+        "properties": {
+          "question_id": {"type": "string", "pattern": "^constitutional\\.q[1-4]$"},
+          "question_ref": {"enum": ["principles://ccis/bounded-change", "principles://ccis/evidence-before-acceptance", "principles://ccis/continual-improvement", "principles://ccis/legal-next-action"]},
+          "question": {"enum": ["Is the proposed transition bounded?", "Is there sufficient evidence?", "Is the new state better, or at least defensibly safer?", "What is the only legal next action?"]},
+          "result": {"enum": ["PASS", "FAIL", "UNKNOWN"]},
+          "rationale": {"type": "string", "minLength": 1},
+          "evidence_refs": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"$ref": "#/$defs/evidence_ref"}}
+        }
+      }
+    },
+    "validator_results": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["validator_id", "status", "required", "evidence_refs"],
+        "properties": {
+          "validator_id": {"$ref": "#/$defs/id"},
+          "status": {"enum": ["PASSED", "FAILED", "SKIPPED", "ERROR"]},
+          "required": {"type": "boolean"},
+          "exit_code": {"type": ["integer", "null"]},
+          "summary": {"type": "string"},
+          "evidence_refs": {"type": "array", "items": {"$ref": "#/$defs/evidence_ref"}}
+        }
+      }
+    },
+    "recommendation": {"enum": ["ACCEPTED", "REVISE", "REJECTED", "BLOCKED", "ESCALATED"]},
+    "evidence_refs": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"$ref": "#/$defs/evidence_ref"}}
+  },
+  "$defs": {
+    "id": {"type": "string", "pattern": "^[A-Za-z][A-Za-z0-9._-]{2,127}$"},
+    "evidence_ref": {"type": "string", "pattern": "^evidence://"}
+  }
+}

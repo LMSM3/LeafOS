@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>LeafOS Home</title>
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="stylesheet" href="/app.css">
+</head>
+<body>
+  <header><a class="brand" href="/">LeafOS</a><nav><a href="#hardware">Hardware</a><a href="#projects">Projects</a><a href="#runs">Runs</a><a href="/api/v1">API</a></nav></header>
+  <main>
+    <section class="hero"><p class="eyebrow">Local project automation</p><h1>Operator home</h1><p>Inspect durable resources and issue capability-scoped controls through the CPU-authoritative native inlet.</p><div id="status" class="status">Connecting to the local midend...</div></section>
+    <section id="hardware"><div class="section-heading"><h2>Hardware</h2><label class="rate-control" for="hardware-hz"><span>Sample rate</span><input id="hardware-hz" type="range" min="1" max="20" value="12" step="1"><output id="hardware-hz-value" for="hardware-hz">12 Hz</output></label></div><div id="hardware-list" class="grid"></div></section>
+    <section id="project-control"><div class="section-heading"><h2>Start project</h2><span>Existing or brand-new codebase</span></div><form id="project-form" class="control-form"><select name="mode"><option value="existing">Preexisting</option><option value="new">Brand-new</option></select><input name="target" required placeholder="Absolute project path"><input name="objective" placeholder="Initial objective (optional)"><select name="provider"><option value="required">Local model required</option><option value="off">CPU-only</option></select><button type="submit">Start project</button></form></section>
+    <section id="projects"><div class="section-heading"><h2>Projects</h2><span id="project-count">0</span></div><div id="project-list" class="grid"></div></section>
+    <section id="runs"><div class="section-heading"><h2>Recent runs</h2><span id="run-count">0</span></div><div id="run-list" class="table-wrap"></div></section>
+  </main>
+  <footer>LeafOS A → C → B midend · native admission required for every control</footer>
+  <script src="/app.js" defer></script>
+</body>
+</html>

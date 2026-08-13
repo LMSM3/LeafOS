@@ -1,0 +1,20 @@
+{
+  "schema_version": 2,
+  "duration_hours": 9,
+  "provider": "llamacpp",
+  "model": "../leaf_model_installer/models/Gemma4-Coder/gemma4-coding-Q4_K_M.gguf",
+  "llama_server": "../../tmp/llama-cpp-win-cpu-b9828/llama-server.exe",
+  "server_url": "http://127.0.0.1:8080",
+  "status_host": "127.0.0.1",
+  "status_port": 8766,
+  "request_interval_seconds": 300,
+  "runtime_profile": "continual",
+  "runtime_profiles_file": "runtime-profiles.json",
+  "max_tokens": 256,
+  "context_size": 4096,
+  "threads": 0,
+  "smoke_tests": false,
+  "require_real_provider": true,
+  "task": "Produce one concise, auditable next-action plan for improving LeafOS queue observability. Do not execute commands. Return only the plan.",
+  "_deprecated_note": "max_tokens/context_size are retained as compat-4k fallback values only; resolved values come from runtime_profile via runtime-profiles.json unless the model does not support that profile."
+}

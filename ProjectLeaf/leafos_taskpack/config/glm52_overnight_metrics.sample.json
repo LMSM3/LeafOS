@@ -1,0 +1,22 @@
+{
+  "model_load_seconds": 0,
+  "time_to_first_token_seconds": 0,
+  "prompt_tokens_per_second": 0,
+  "generation_tokens_per_second": 0.4,
+  "cold_cache_generation_tokens_per_second": 0,
+  "warm_cache_generation_tokens_per_second": 0,
+  "nvme_read_megabytes_per_second": 0,
+  "nvme_read_latency_milliseconds": 0,
+  "major_page_faults": 0,
+  "minor_page_faults": 0,
+  "ram_page_cache_residency_percent": 0,
+  "gpu_utilization_percent": 0,
+  "gpu_vram_used_gb": 0,
+  "cpu_utilization_percent": 0,
+  "cpu_temperature_celsius": 0,
+  "tokens_per_watt_hour": 0,
+  "validated_patches": 0,
+  "accepted_changes": 0,
+  "rejected_changes": 0,
+  "recovered_after_interruption": false
+}

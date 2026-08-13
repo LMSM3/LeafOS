@@ -1,0 +1,8 @@
+{
+  "kind": "echo",
+  "priority": 5,
+  "payload": {
+    "message": "hello from the master",
+    "duration_sec": 3
+  }
+}

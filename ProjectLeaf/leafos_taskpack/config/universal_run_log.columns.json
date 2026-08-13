@@ -1,0 +1,138 @@
+{
+  "leafos_object": "leafos.universal_run_log.columns",
+  "schema_version": 1,
+  "purpose": "Default table and dashboard columns for universal run telemetry.",
+  "log_file_name": "universal-run-log.jsonl",
+  "sample_interval_seconds": 5,
+  "primary_columns": [
+    {
+      "key": "sequence",
+      "label": "#",
+      "path": "$.sequence",
+      "unit": "count"
+    },
+    {
+      "key": "instances_initiated",
+      "label": "# instances initiated",
+      "path": "$.instances.initiated",
+      "unit": "count"
+    },
+    {
+      "key": "instances_alive",
+      "label": "# instances alive",
+      "path": "$.instances.alive",
+      "unit": "count"
+    },
+    {
+      "key": "brain_tk_s",
+      "label": "brain tk/s",
+      "path": "$.throughput.brain_generation_tk_s",
+      "unit": "tokens_per_second"
+    },
+    {
+      "key": "coder_tk_s",
+      "label": "coder tk/s",
+      "path": "$.throughput.coder_generation_tk_s",
+      "unit": "tokens_per_second"
+    },
+    {
+      "key": "gpu_percent",
+      "label": "GPU %",
+      "path": "$.hardware.gpu.utilization_percent",
+      "unit": "percent"
+    },
+    {
+      "key": "cpu_percent",
+      "label": "CPU %",
+      "path": "$.hardware.cpu.utilization_percent",
+      "unit": "percent"
+    },
+    {
+      "key": "vram_used_gb",
+      "label": "VRAM GB",
+      "path": "$.hardware.gpu.vram_used_gb",
+      "unit": "gigabytes"
+    },
+    {
+      "key": "ram_used_gb",
+      "label": "RAM GB",
+      "path": "$.hardware.memory.ram_used_gb",
+      "unit": "gigabytes"
+    },
+    {
+      "key": "power_watts",
+      "label": "W",
+      "path": "$.hardware.gpu.power_watts",
+      "unit": "watts"
+    },
+    {
+      "key": "queue_depth",
+      "label": "queue",
+      "path": "$.scheduler.queue_depth",
+      "unit": "count"
+    },
+    {
+      "key": "validation_status",
+      "label": "validation",
+      "path": "$.quality.validation_status",
+      "unit": "state"
+    },
+    {
+      "key": "local_token_value_usd",
+      "label": "local token $",
+      "path": "$.economics.gross_cloud_equivalent_usd",
+      "unit": "USD gross cloud equivalent"
+    }
+  ],
+  "derived_columns": [
+    {
+      "key": "gpu_starved",
+      "label": "GPU starved?",
+      "rule": "true when instances.alive > 0 and hardware.gpu.utilization_percent < 35 for three consecutive samples"
+    },
+    {
+      "key": "cpu_bound",
+      "label": "CPU bound?",
+      "rule": "true when hardware.cpu.utilization_percent > 85 and hardware.gpu.utilization_percent < 50"
+    },
+    {
+      "key": "coder_idle",
+      "label": "coder idle?",
+      "rule": "true when instances.coder_alive > 0 and throughput.coder_generation_tk_s is null or 0"
+    },
+    {
+      "key": "brain_coder_ratio",
+      "label": "brain/coder tk/s",
+      "rule": "throughput.brain_generation_tk_s / throughput.coder_generation_tk_s when both are positive"
+    }
+  ],
+  "views": {
+    "operator": [
+      "sequence",
+      "instances_initiated",
+      "instances_alive",
+      "brain_tk_s",
+      "coder_tk_s",
+      "gpu_percent",
+      "cpu_percent",
+      "validation_status",
+      "local_token_value_usd"
+    ],
+    "hardware": [
+      "sequence",
+      "gpu_percent",
+      "cpu_percent",
+      "vram_used_gb",
+      "ram_used_gb",
+      "power_watts",
+      "queue_depth"
+    ],
+    "scheduler": [
+      "sequence",
+      "instances_initiated",
+      "instances_alive",
+      "queue_depth",
+      "validation_status"
+    ]
+  }
+}

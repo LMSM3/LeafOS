@@ -1,0 +1,33 @@
+[build-system]
+requires = ["setuptools>=69", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "floweros-hardware-monitor"
+version = "0.1.0"
+description = "FlowerOS-branded terminal hardware monitor with real or estimated fan speed reporting."
+readme = "README.md"
+requires-python = ">=3.9"
+license = { text = "MIT" }
+authors = [{ name = "FlowerOS" }]
+dependencies = [
+  "psutil>=5.9.8",
+  "rich>=13.7.0"
+]
+classifiers = [
+  "Environment :: Console",
+  "Intended Audience :: End Users/Desktop",
+  "Operating System :: MacOS",
+  "Operating System :: Microsoft :: Windows",
+  "Operating System :: POSIX :: Linux",
+  "Programming Language :: Python :: 3",
+  "Topic :: System :: Monitoring"
+]
+
+[project.scripts]
+floweros-hwmon = "floweros_hwmon.cli:main"
+flower-hwmon = "floweros_hwmon.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["floweros_hwmon*"]

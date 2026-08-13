@@ -1,0 +1,136 @@
+{
+  "leafos_object": "leafos.universal_run_log.event",
+  "schema_version": 1,
+  "event_id": "sample-agent-loop-0001",
+  "sequence": 1,
+  "recorded_at": "2026-07-19T00:00:00Z",
+  "run_id": "agent-loop-20260719-generic",
+  "run_kind": "agent-loop",
+  "run_dir": "runs/agent-loop/agent-loop-20260719-generic",
+  "task_id": "001-generic-baseline",
+  "project": "generic",
+  "event_type": "sample",
+  "phase": "validation",
+  "stack": {
+    "local_stack_id": "local-stack:auto",
+    "brain_stack_entry": "qwen3.5-14b-a3b-q4",
+    "coder_stack_entry": "fable-12b-q4_k_m",
+    "helper_stack_entry": null,
+    "quantization": "Q4_K_M"
+  },
+  "provider": {
+    "mode": "auto",
+    "backend": "vulkan",
+    "endpoint": "http://127.0.0.1:8080",
+    "status": "running",
+    "pid": 12345
+  },
+  "instances": {
+    "initiated": 3,
+    "alive": 2,
+    "brain_initiated": 1,
+    "brain_alive": 1,
+    "coder_initiated": 1,
+    "coder_alive": 1,
+    "provider_initiated": 1,
+    "provider_alive": 0,
+    "crashed": 1,
+    "restarted": 1
+  },
+  "throughput": {
+    "brain_prompt_tk_s": 42.1,
+    "brain_generation_tk_s": 18.6,
+    "coder_prompt_tk_s": 38.4,
+    "coder_generation_tk_s": 22.9,
+    "helper_generation_tk_s": null,
+    "aggregate_generation_tk_s": 41.5,
+    "time_to_first_token_seconds": 0.71,
+    "prompt_tokens": 2048,
+    "generated_tokens": 512
+  },
+  "economics": {
+    "currency": "USD",
+    "comparison_output_usd_per_million": 10.0,
+    "pricing_basis": "operator_assumption",
+    "local_costs_included": false,
+    "note": "Gross cloud-equivalent output value only; local costs and cloud input/cache charges are excluded.",
+    "token_count_scope": "interval",
+    "generated_tokens": 512,
+    "gross_cloud_equivalent_usd": 0.00512,
+    "local_energy_cost_usd": null,
+    "net_savings_usd": null
+  },
+  "hardware": {
+    "cpu": {
+      "utilization_percent": 62.4,
+      "process_percent": 48.2,
+      "temperature_celsius": 71.0,
+      "threads": 16
+    },
+    "gpu": {
+      "name": "RTX 4070",
+      "utilization_percent": 28.0,
+      "vram_used_gb": 7.8,
+      "vram_total_gb": 12.0,
+      "temperature_celsius": 66.0,
+      "power_watts": 112.0,
+      "backend": "vulkan",
+      "active_layers": 999
+    },
+    "memory": {
+      "ram_used_gb": 21.4,
+      "ram_total_gb": 64.0,
+      "page_cache_residency_percent": 81.0,
+      "major_page_faults": 0,
+      "minor_page_faults": 421
+    },
+    "io": {
+      "nvme_read_mb_s": 420.0,
+      "nvme_write_mb_s": 18.0,
+      "read_latency_ms": 1.2,
+      "write_latency_ms": 2.4
+    },
+    "power": {
+      "total_watts": 235.0,
+      "energy_watt_hours": 0.33,
+      "tokens_per_watt_hour": 1551.5
+    }
+  },
+  "scheduler": {
+    "queue_depth": 4,
+    "active_task_count": 1,
+    "blocked_task_count": 0,
+    "repair_task_count": 0,
+    "max_concurrency": 2
+  },
+  "quality": {
+    "validation_status": "passed",
+    "checkpoint_valid": true,
+    "accepted_changes": 1,
+    "rejected_changes": 0,
+    "score_delta": 0.12
+  },
+  "availability": {
+    "cpu_counters": "collected",
+    "gpu_counters": "collected",
+    "vram_counters": "collected",
+    "power_counters": "estimated",
+    "io_counters": "collected",
+    "throughput_counters": "collected"
+  },
+  "artifacts": [
+    {
+      "kind": "run_report",
+      "path": "runs/agent-loop/agent-loop-20260719-generic/report.md",
+      "sha256": null
+    },
+    {
+      "kind": "run_checkpoint",
+      "path": "runs/agent-loop/agent-loop-20260719-generic/checkpoint.json",
+      "sha256": null
+    }
+  ],
+  "notes": [
+    "Sample shows the desired hardware-underuse signal: GPU is alive but only 28 percent utilized."
+  ]
+}

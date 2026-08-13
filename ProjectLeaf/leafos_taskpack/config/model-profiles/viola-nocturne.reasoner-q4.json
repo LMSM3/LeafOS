@@ -1,0 +1,18 @@
+{
+  "schema": "leafos.model-profile.v1",
+  "profile_id": "viola-nocturne.reasoner-q4",
+  "base_catalog_key": "viola-fable5-distill-35b-a3b",
+  "title": "Viola Nocturne Reasoner (Q4_K_M)",
+  "role": "reasoner",
+  "lanes": ["slot.reason.plan", "slot.reason.analyze", "slot.reason.solve"],
+  "contracts": ["reasoning_output"],
+  "runtime": ["llama.cpp"],
+  "recommended_quant": "Q4_K_M",
+  "quality_quant": "Q6_K",
+  "low_memory_quant": "Q3_K_M",
+  "emergency_quant": "Q2_K",
+  "activation": "on_demand",
+  "escalation_from": ["viola-nocturne.router-q2", "viola-nocturne.drafter-q2"],
+  "escalation_to": ["viola-nocturne.judge-q6"],
+  "notes": ["Step-by-step reasoner from Fable 5 Distill 35B-A3B."]
+}

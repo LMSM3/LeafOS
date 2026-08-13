@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://leafos.local/contracts/llamacpp-capability-preflight.v1.schema.json",
+  "title": "LeafOS llama.cpp capability preflight result",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "mode", "capable", "inference_started", "server_started", "network_used", "task_digest", "inputs", "binary", "model", "backend", "host", "failures", "capability_digest"],
+  "properties": {
+    "schema": {"const": "leafos.llamacpp_capability_preflight.v1"},
+    "mode": {"const": "preflight_only"},
+    "capable": {"type": "boolean"},
+    "inference_started": {"const": false},
+    "server_started": {"const": false},
+    "network_used": {"const": false},
+    "task_digest": {"type": ["string", "null"], "pattern": "^sha256:[0-9a-f]{64}$"},
+    "inputs": {
+      "type": "object", "additionalProperties": false,
+      "required": ["executable", "model", "backend", "expected_version"],
+      "properties": {
+        "executable": {"type": "string", "minLength": 1},
+        "model": {"type": "string", "minLength": 1},
+        "backend": {"enum": ["cpu", "cuda", "hip", "metal", "sycl", "vulkan"]},
+        "expected_version": {"type": ["string", "null"]}
+      }
+    },
+    "binary": {"type": "object"},
+    "model": {"type": "object"},
+    "backend": {"type": "object"},
+    "host": {"type": "object"},
+    "failures": {"type": "array", "items": {"type": "object", "required": ["code", "field", "message"]}},
+    "capability_digest": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"}
+  }
+}

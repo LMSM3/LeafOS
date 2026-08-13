@@ -1,0 +1,602 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "LeafOS Universal Run Log Event",
+  "type": "object",
+  "required": [
+    "leafos_object",
+    "schema_version",
+    "event_id",
+    "sequence",
+    "recorded_at",
+    "run_id",
+    "run_kind",
+    "event_type",
+    "phase",
+    "instances",
+    "throughput",
+    "hardware",
+    "availability"
+  ],
+  "properties": {
+    "leafos_object": {
+      "const": "leafos.universal_run_log.event"
+    },
+    "schema_version": {
+      "const": 1
+    },
+    "event_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "sequence": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "recorded_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "run_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "run_kind": {
+      "enum": [
+        "agent-loop",
+        "fullstackbench",
+        "continual-live",
+        "dual-harness",
+        "overnight",
+        "oneshot",
+        "manual"
+      ]
+    },
+    "run_dir": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "task_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "project": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "event_type": {
+      "enum": [
+        "run_start",
+        "sample",
+        "provider_start",
+        "provider_stop",
+        "task_start",
+        "task_end",
+        "validation",
+        "checkpoint",
+        "repair",
+        "run_end",
+        "run_error"
+      ]
+    },
+    "phase": {
+      "enum": [
+        "startup",
+        "planning",
+        "provider_warmup",
+        "brain",
+        "coder",
+        "execution",
+        "validation",
+        "checkpoint",
+        "idle",
+        "shutdown",
+        "error"
+      ]
+    },
+    "stack": {
+      "$ref": "#/$defs/stack"
+    },
+    "provider": {
+      "$ref": "#/$defs/provider"
+    },
+    "instances": {
+      "$ref": "#/$defs/instances"
+    },
+    "throughput": {
+      "$ref": "#/$defs/throughput"
+    },
+    "hardware": {
+      "$ref": "#/$defs/hardware"
+    },
+    "scheduler": {
+      "$ref": "#/$defs/scheduler"
+    },
+    "quality": {
+      "$ref": "#/$defs/quality"
+    },
+    "economics": {
+      "$ref": "#/$defs/economics"
+    },
+    "availability": {
+      "$ref": "#/$defs/availability"
+    },
+    "artifacts": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/artifact"
+      }
+    },
+    "notes": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "nullableNumber": {
+      "type": [
+        "number",
+        "null"
+      ]
+    },
+    "nullableInteger": {
+      "type": [
+        "integer",
+        "null"
+      ]
+    },
+    "counterStatus": {
+      "enum": [
+        "collected",
+        "not_collected",
+        "unsupported",
+        "permission_denied",
+        "timeout",
+        "estimated"
+      ]
+    },
+    "stack": {
+      "type": "object",
+      "properties": {
+        "local_stack_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "brain_stack_entry": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "coder_stack_entry": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "helper_stack_entry": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "quantization": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    "provider": {
+      "type": "object",
+      "properties": {
+        "mode": {
+          "enum": [
+            "off",
+            "mock",
+            "auto",
+            "required",
+            "llamacpp",
+            "ollama",
+            "openai",
+            "other"
+          ]
+        },
+        "backend": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "endpoint": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "status": {
+          "enum": [
+            "off",
+            "starting",
+            "ready",
+            "running",
+            "stopped",
+            "degraded",
+            "failed",
+            "unknown"
+          ]
+        },
+        "pid": {
+          "$ref": "#/$defs/nullableInteger"
+        }
+      },
+      "additionalProperties": false
+    },
+    "instances": {
+      "type": "object",
+      "required": [
+        "initiated",
+        "alive"
+      ],
+      "properties": {
+        "initiated": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "alive": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "brain_initiated": {
+          "$ref": "#/$defs/nullableInteger"
+        },
+        "brain_alive": {
+          "$ref": "#/$defs/nullableInteger"
+        },
+        "coder_initiated": {
+          "$ref": "#/$defs/nullableInteger"
+        },
+        "coder_alive": {
+          "$ref": "#/$defs/nullableInteger"
+        },
+        "provider_initiated": {
+          "$ref": "#/$defs/nullableInteger"
+        },
+        "provider_alive": {
+          "$ref": "#/$defs/nullableInteger"
+        },
+        "crashed": {
+          "$ref": "#/$defs/nullableInteger"
+        },
+        "restarted": {
+          "$ref": "#/$defs/nullableInteger"
+        }
+      },
+      "additionalProperties": false
+    },
+    "throughput": {
+      "type": "object",
+      "properties": {
+        "brain_prompt_tk_s": {
+          "$ref": "#/$defs/nullableNumber"
+        },
+        "brain_generation_tk_s": {
+          "$ref": "#/$defs/nullableNumber"
+        },
+        "coder_prompt_tk_s": {
+          "$ref": "#/$defs/nullableNumber"
+        },
+        "coder_generation_tk_s": {
+          "$ref": "#/$defs/nullableNumber"
+        },
+        "helper_generation_tk_s": {
+          "$ref": "#/$defs/nullableNumber"
+        },
+        "aggregate_generation_tk_s": {
+          "$ref": "#/$defs/nullableNumber"
+        },
+        "time_to_first_token_seconds": {
+          "$ref": "#/$defs/nullableNumber"
+        },
+        "prompt_tokens": {
+          "$ref": "#/$defs/nullableInteger"
+        },
+        "generated_tokens": {
+          "$ref": "#/$defs/nullableInteger"
+        }
+      },
+      "additionalProperties": false
+    },
+    "hardware": {
+      "type": "object",
+      "required": [
+        "cpu",
+        "gpu",
+        "memory",
+        "io"
+      ],
+      "properties": {
+        "cpu": {
+          "$ref": "#/$defs/cpu"
+        },
+        "gpu": {
+          "$ref": "#/$defs/gpu"
+        },
+        "memory": {
+          "$ref": "#/$defs/memory"
+        },
+        "io": {
+          "$ref": "#/$defs/io"
+        },
+        "power": {
+          "$ref": "#/$defs/power"
+        }
+      },
+      "additionalProperties": false
+    },
+    "cpu": {
+      "type": "object",
+      "properties": {
+        "utilization_percent": {
+          "$ref": "#/$defs/nullableNumber"
+        },
+        "process_percent": {
+          "$ref": "#/$defs/nullableNumber"
+        },
+        "temperature_celsius": {
+          "$ref": "#/$defs/nullableNumber"
+        },
+        "threads": {
+          "$ref": "#/$defs/nullableInteger"
+        }
+      },
+      "additionalProperties": false
+    },
+    "gpu": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "utilization_percent": {
+          "$ref": "#/$defs/nullableNumber"
+        },
+        "vram_used_gb": {
+          "$ref": "#/$defs/nullableNumber"
+        },
+        "vram_total_gb": {
+          "$ref": "#/$defs/nullableNumber"
+        },
+        "temperature_celsius": {
+          "$ref": "#/$defs/nullableNumber"
+        },
+        "power_watts": {
+          "$ref": "#/$defs/nullableNumber"
+        },
+        "backend": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "active_layers": {
+          "$ref": "#/$defs/nullableInteger"
+        }
+      },
+      "additionalProperties": false
+    },
+    "memory": {
+      "type": "object",
+      "properties": {
+        "ram_used_gb": {
+          "$ref": "#/$defs/nullableNumber"
+        },
+        "ram_total_gb": {
+          "$ref": "#/$defs/nullableNumber"
+        },
+        "page_cache_residency_percent": {
+          "$ref": "#/$defs/nullableNumber"
+        },
+        "major_page_faults": {
+          "$ref": "#/$defs/nullableInteger"
+        },
+        "minor_page_faults": {
+          "$ref": "#/$defs/nullableInteger"
+        }
+      },
+      "additionalProperties": false
+    },
+    "io": {
+      "type": "object",
+      "properties": {
+        "nvme_read_mb_s": {
+          "$ref": "#/$defs/nullableNumber"
+        },
+        "nvme_write_mb_s": {
+          "$ref": "#/$defs/nullableNumber"
+        },
+        "read_latency_ms": {
+          "$ref": "#/$defs/nullableNumber"
+        },
+        "write_latency_ms": {
+          "$ref": "#/$defs/nullableNumber"
+        }
+      },
+      "additionalProperties": false
+    },
+    "power": {
+      "type": "object",
+      "properties": {
+        "total_watts": {
+          "$ref": "#/$defs/nullableNumber"
+        },
+        "energy_watt_hours": {
+          "$ref": "#/$defs/nullableNumber"
+        },
+        "tokens_per_watt_hour": {
+          "$ref": "#/$defs/nullableNumber"
+        }
+      },
+      "additionalProperties": false
+    },
+    "scheduler": {
+      "type": "object",
+      "properties": {
+        "queue_depth": {
+          "$ref": "#/$defs/nullableInteger"
+        },
+        "active_task_count": {
+          "$ref": "#/$defs/nullableInteger"
+        },
+        "blocked_task_count": {
+          "$ref": "#/$defs/nullableInteger"
+        },
+        "repair_task_count": {
+          "$ref": "#/$defs/nullableInteger"
+        },
+        "max_concurrency": {
+          "$ref": "#/$defs/nullableInteger"
+        },
+        "governor_profile": {
+          "type": ["string", "null"]
+        },
+        "governor_reason": {
+          "type": ["string", "null"]
+        },
+        "cpu_target_percent": {
+          "$ref": "#/$defs/nullableNumber"
+        },
+        "gpu_target_percent": {
+          "$ref": "#/$defs/nullableNumber"
+        },
+        "claim_allowed": {
+          "type": ["boolean", "null"]
+        },
+        "input_idle_seconds": {
+          "$ref": "#/$defs/nullableNumber"
+        },
+        "responsiveness_ms": {
+          "$ref": "#/$defs/nullableNumber"
+        },
+        "provider_delay_seconds": {
+          "$ref": "#/$defs/nullableNumber"
+        }
+      },
+      "additionalProperties": false
+    },
+    "quality": {
+      "type": "object",
+      "properties": {
+        "validation_status": {
+          "enum": [
+            "pending",
+            "passed",
+            "failed",
+            "skipped",
+            "unknown"
+          ]
+        },
+        "checkpoint_valid": {
+          "type": [
+            "boolean",
+            "null"
+          ]
+        },
+        "accepted_changes": {
+          "$ref": "#/$defs/nullableInteger"
+        },
+        "rejected_changes": {
+          "$ref": "#/$defs/nullableInteger"
+        },
+        "score_delta": {
+          "$ref": "#/$defs/nullableNumber"
+        }
+      },
+      "additionalProperties": false
+    },
+    "economics": {
+      "type": "object",
+      "required": [
+        "currency", "comparison_output_usd_per_million", "pricing_basis",
+        "local_costs_included", "token_count_scope", "generated_tokens",
+        "gross_cloud_equivalent_usd", "local_energy_cost_usd", "net_savings_usd"
+      ],
+      "properties": {
+        "currency": {"const": "USD"},
+        "comparison_output_usd_per_million": {"type": "number", "minimum": 0},
+        "pricing_basis": {"enum": ["operator_assumption", "provider_quote"]},
+        "local_costs_included": {"const": false},
+        "note": {"type": "string"},
+        "token_count_scope": {"enum": ["interval", "cumulative", "benchmark_repetitions", "completed_benchmark_cells", "unknown"]},
+        "generated_tokens": {"type": ["number", "null"], "minimum": 0},
+        "gross_cloud_equivalent_usd": {"type": ["number", "null"], "minimum": 0},
+        "local_energy_cost_usd": {"type": ["number", "null"], "minimum": 0},
+        "net_savings_usd": {"type": ["number", "null"]}
+      },
+      "additionalProperties": false
+    },
+    "availability": {
+      "type": "object",
+      "properties": {
+        "cpu_counters": {
+          "$ref": "#/$defs/counterStatus"
+        },
+        "gpu_counters": {
+          "$ref": "#/$defs/counterStatus"
+        },
+        "vram_counters": {
+          "$ref": "#/$defs/counterStatus"
+        },
+        "power_counters": {
+          "$ref": "#/$defs/counterStatus"
+        },
+        "io_counters": {
+          "$ref": "#/$defs/counterStatus"
+        },
+        "throughput_counters": {
+          "$ref": "#/$defs/counterStatus"
+        }
+      },
+      "additionalProperties": false
+    },
+    "artifact": {
+      "type": "object",
+      "required": [
+        "kind",
+        "path"
+      ],
+      "properties": {
+        "kind": {
+          "type": "string",
+          "minLength": 1
+        },
+        "path": {
+          "type": "string",
+          "minLength": 1
+        },
+        "sha256": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}

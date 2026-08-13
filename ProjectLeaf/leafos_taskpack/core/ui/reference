@@ -1,0 +1,89 @@
+#!/usr/bin/env bash
+# Locate the canonical LeafOS primary reference documents.
+set -euo pipefail
+
+ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
+
+die() { printf '%s\n' "$*" >&2; exit 1; }
+
+command -v jq >/dev/null || die "jq is required for reference lookup"
+
+# Walk up from leafos_taskpack looking for leafos.root.json.
+find_root() {
+	local dir="$ROOT_DIR"
+	while [[ "$dir" != "/" ]]; do
+		if [[ -f "$dir/leafos.root.json" ]]; then
+			printf '%s' "$dir"
+			return 0
+		fi
+		dir="$(dirname "$dir")"
+	done
+	return 1
+}
+
+JSON="compact"
+MODE="full"
+while [[ $# -gt 0 ]]; do
+	case "$1" in
+		--json)      JSON="json"; shift ;;
+		--markdown)  MODE="markdown"; JSON="text"; shift ;;
+		--tex)       MODE="tex"; JSON="text"; shift ;;
+		*)           die "unknown argument: $1" ;;
+	esac
+done
+
+if ! CANONICAL_ROOT=$(find_root); then
+	status="not_registered"
+	markdown=""
+	tex=""
+else
+	ROOT_JSON="$CANONICAL_ROOT/leafos.root.json"
+	markdown=$(jq -r '.documentation.primary_reference // empty' "$ROOT_JSON")
+	tex=$(jq -r '.documentation.primary_reference_tex // empty' "$ROOT_JSON")
+
+	if [[ -n "$markdown" ]]; then
+		markdown="$CANONICAL_ROOT/$markdown"
+	fi
+	if [[ -n "$tex" ]]; then
+		tex="$CANONICAL_ROOT/$tex"
+	fi
+
+	md_ok=0; [[ -n "$markdown" && -f "$markdown" ]] && md_ok=1
+	tx_ok=0; [[ -n "$tex" && -f "$tex" ]] && tx_ok=1
+
+	if (( md_ok && tx_ok )); then
+		status="available"
+	elif (( md_ok || tx_ok )); then
+		status="partial"
+	else
+		status="missing"
+	fi
+fi
+
+if [[ "$JSON" == "json" ]]; then
+	jq -n \
+		--arg status "$status" \
+		--arg markdown "${markdown:-}" \
+		--arg tex "${tex:-}" \
+		'{leafos_object: "leafos.primary_reference", version: 1, status: $status, markdown: $markdown, tex: $tex}'
+	exit 0
+fi
+
+if [[ "$MODE" == "markdown" ]]; then
+	printf '%s\n' "${markdown:-}"
+	exit 0
+fi
+if [[ "$MODE" == "tex" ]]; then
+	printf '%s\n' "${tex:-}"
+	exit 0
+fi
+
+printf 'LeafOS Primary Reference\n'
+printf 'Status    %s\n' "$status"
+printf 'Markdown  %s\n' "${markdown:-not available}"
+printf 'LaTeX     %s\n' "${tex:-not available}"
+
+if [[ "$status" == "available" || "$status" == "partial" ]]; then
+	exit 0
+fi
+exit 1

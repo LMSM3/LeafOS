@@ -1,0 +1,278 @@
+% Architectural projection of WO-053-A.
+% This document intentionally omits implementation ordering and tracker state.
+\documentclass[11pt]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage{microtype}
+\usepackage[margin=1in]{geometry}
+\usepackage{enumitem}
+\usepackage{xcolor}
+\usepackage[hidelinks]{hyperref}
+
+\definecolor{leafgreen}{HTML}{2F6B45}
+\definecolor{leafgray}{HTML}{4B5563}
+\newcommand{\LeafOS}{\textsc{LeafOS}}
+\newcommand{\contract}[1]{\texttt{#1}}
+
+\title{\textbf{\LeafOS{} Model Pack and Installer Trust Architecture}\\
+\large A design mission for reliable local-model acquisition and discovery}
+\author{LeafOS Architecture Series}
+\date{August 9, 2026}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+The local-model installer is the first operational trust boundary between a
+declared model architecture and the weights that later enter execution. Its
+purpose is not merely to move files. It must turn model intent into a stable,
+inspectable, and verifiable local state that every LeafOS surface understands
+in exactly the same way. This document defines that mission, the architectural
+boundaries that support it, and the truth conditions required before the
+llama.cpp capability preflight may consume a model path.
+\end{abstract}
+
+\section{Mission Statement}
+
+The \LeafOS{} model-pack and installation system shall provide one coherent
+answer to five questions:
+
+\begin{quote}
+\color{leafgreen}\bfseries
+What model was selected?  Why was it selected?  Where will it live?  What
+operation is permitted next?  What evidence proves the answer?
+\end{quote}
+
+The guided interface, canonical backend, model catalog, pack manifests, local
+store, runtime status, and capability preflight must agree on those answers.
+Convenience surfaces may explain or visualize the process, but they may not
+reinterpret success, hide failure, invent a destination, or substitute a stale
+catalog for the current source of truth.
+
+The mission is therefore to make model acquisition \emph{deterministic in
+contract, explicit in authority, resumable in operation, and honest in
+evidence}. A user should be able to inspect the system before permitting a
+large transfer, interrupt it without losing durable progress, and return later
+to the same model identity and destination without reconstructing intent from
+conversation or shell history.
+
+\section{Architectural Premise}
+
+Model installation is a state transition, not a download shortcut. The
+canonical lifecycle is:
+
+\begin{verbatim}
+catalog -> offline plan -> metadata resolution -> explicit apply -> verification
+\end{verbatim}
+
+Each boundary has a distinct meaning.
+
+\begin{description}[style=nextline,leftmargin=0pt,labelindent=0pt]
+  \item[Catalog]
+  Defines the allowable repositories, model identities, roles, variants,
+  quantizations, expected artifact patterns, and safety classification.
+
+  \item[Offline plan]
+  Expands user intent into a reviewable set of model and quantization choices,
+  a deterministic destination, and an estimated resource commitment. Planning
+  must not require a network connection or begin a transfer.
+
+  \item[Metadata resolution]
+  Reads remote metadata, selects exact files, and pins immutable repository
+  revisions. It changes knowledge, not local model weights.
+
+  \item[Explicit apply]
+  Crosses the transfer boundary only after acknowledgement. It owns download,
+  resume, locking, bounded concurrency, and durable event recording.
+
+  \item[Verification]
+  Establishes whether the local artifacts satisfy the resolved contract. It
+  must be distinct from inventory and must never infer validity from presence
+  alone.
+\end{description}
+
+The lifecycle is shared by standard profiles and model packs. A pack adds role
+composition and orchestration intent, but it does not create a second download
+engine, a second catalog, or a weaker acceptance path.
+
+\section{One Truth Across Surfaces}
+
+The Python installation backend is the semantic authority for planning,
+resolution, application, and verification. PowerShell, Bash, menus, launchers,
+and dashboards are projections over that authority. Their responsibilities are
+limited to argument transport, presentation, confirmation, and faithful exit
+propagation.
+
+This yields four invariants:
+
+\begin{itemize}[leftmargin=*]
+  \item Arguments reach the backend as exact tokens, including paths containing
+  spaces and non-default storage locations.
+  \item A backend failure remains a failure at every wrapper boundary, with the
+  original reason preserved for both humans and automation.
+  \item Installed tooling and source tooling identify the same catalog version,
+  command set, profiles, slots, and catalog digest before readiness is granted.
+  \item Human-readable and structured output describe the same state and legal
+  next action.
+\end{itemize}
+
+Readiness is consequently a parity claim, not merely evidence that Python is
+installed and a directory is writable. A stale environment must refuse to
+present itself as ready and must provide one deterministic repair action.
+
+\section{Model Packs as Typed Intent}
+
+A model pack is a typed declaration of roles and the catalog artifacts needed
+to realize them. The installer must distinguish among installable packs,
+identity-only architectural packs, companion manifests, and invalid documents.
+File extension alone is not a sufficient type system.
+
+An installable pack must name a supported schema and contain a non-empty set of
+catalog-backed installation items. Each item resolves through the canonical
+catalog. Multiple roles may share one model and quantization; the plan may
+deduplicate the physical transfer while retaining the role-level intent needed
+by the runtime.
+
+Pack identity does not weaken catalog policy. A pack cannot introduce an
+unregistered repository, silently broaden an artifact pattern, or relabel an
+experimental model as ordinary. Unsupported documents remain inspectable as
+design material but are not offered as executable installation choices.
+
+\section{Deterministic Model-Root Discovery}
+
+Every surface must resolve the local model root through one precedence
+contract. The selected root is an architectural fact and must be reported with
+its reason. The contract recognizes:
+
+\begin{itemize}[leftmargin=*]
+  \item an explicit destination supplied for the current operation;
+  \item the \contract{LEAF\_MODEL\_DIR} environment contract;
+  \item a recognized installer-local model store when present; and
+  \item the documented per-user default as the final fallback.
+\end{itemize}
+
+The same result must appear in doctor output, plans, pack plans, status,
+verification, runtime provider configuration, and the handoff to WO-053. No
+surface may create a second model library merely because another surface failed
+to expose the already populated one.
+
+The resolved root should be absolute and accompanied by a machine-readable
+reason. Plans bind this destination so later resolution and application cannot
+quietly drift to another volume or user profile.
+
+\section{Safety and Experimental Authority}
+
+Large model transfers are consequential operations. Safety must be represented
+in the plan rather than added as a final prompt. Estimates, free-space margins,
+artifact counts, fallback decisions, and experimental status must be visible
+before application.
+
+Base packs and experimental extensions are separate authorities. Dormant or
+experimental lanes must not enter a base plan implicitly. When an operator
+chooses an experimental plan, every experimental catalog key in that plan must
+be acknowledged; confirmation of one key cannot authorize unrelated heavy
+models by association.
+
+This policy preserves useful experimentation without making the ordinary path
+ambiguous. Experimental models remain first-class catalog entries with explicit
+identity and evidence, but their cost and risk cannot be hidden behind role
+deduplication or friendly pack naming.
+
+\section{Verification Doctrine}
+
+Inventory answers \emph{what files are present}. Verification answers
+\emph{whether those files satisfy a declared contract}. The two operations must
+have different names, fields, and exit behavior.
+
+A verified GGUF store requires, as applicable:
+
+\begin{itemize}[leftmargin=*]
+  \item valid GGUF magic and a credible minimum artifact size;
+  \item catalog membership and an expected model/variant relationship;
+  \item exact resolved paths and byte sizes when a pinned plan is available;
+  \item explicit treatment of missing, duplicate, unknown, or unclassified
+  artifacts; and
+  \item a truthful aggregate disposition derived from every required artifact.
+\end{itemize}
+
+Optional cryptographic hashes strengthen identity and provenance, but a hash is
+not a substitute for classification. Conversely, catalog recognition is not a
+substitute for local integrity. Verification combines structural validity,
+resolved expectation, and evidence provenance.
+
+The verifier fails closed. Zero-byte placeholders, invalid headers, missing
+pinned files, size mismatches, and unexplained artifacts cannot produce a green
+result merely because the directory exists.
+
+\section{Relationship to the llama.cpp Capability Boundary}
+
+This architecture prepares reliable model identity and location. It does not
+prove that llama.cpp can load the selected model, that the requested CPU or GPU
+backend is available, or that inference produces tokens.
+
+WO-053 consumes the verified handoff and independently proves executable
+identity, GGUF compatibility, backend devices, host facts, and capability
+policy. WO-054 through WO-056 remain responsible for live generation,
+streaming, cancellation, timeout, cleanup, and execution evidence.
+
+The boundary is deliberate:
+
+\begin{verbatim}
+installer verification  ->  artifact is the declared local artifact
+capability preflight     ->  artifact and backend may enter evaluation
+live inference           ->  fresh tokens were generated by owned execution
+\end{verbatim}
+
+None of these claims implies the next. Each produces evidence appropriate to
+its own authority.
+
+\section{Design Success}
+
+The architecture succeeds when a new or returning user can inspect a pack,
+understand its resource and safety implications, produce an offline plan,
+resolve exact immutable artifacts, apply or resume deliberately, verify the
+result, and hand one unambiguous model path into capability evaluation.
+
+Success is observable when wrappers and backend agree, stale tooling refuses
+readiness, unsupported pack documents are classified rather than executed,
+storage discovery is consistent, experimental authority is explicit, and
+corrupt fixtures cannot appear verified. These properties must be demonstrated
+with temporary environments and synthetic artifacts so validation does not
+depend on downloading or hashing the production model library.
+
+\section{Non-Goals}
+
+This design does not choose model quality rankings, alter runtime role policy,
+assign GPU placement, perform remote transfers as part of validation, or start
+an inference provider. It does not claim that a structurally valid model is
+semantically good, operationally compatible, or safe for an unrestricted
+workload. Those decisions belong to later capability and evaluation gates.
+
+\section{Conclusion}
+
+The model installer is the bridge between architectural intent and executable
+local state. If that bridge offers multiple catalogs, ambiguous destinations,
+decorative verification, or softened failure codes, every downstream claim is
+weaker. If it is deterministic, typed, explicit, and evidence-bearing, WO-053
+can begin from a trustworthy artifact rather than a guessed path.
+
+The governing principle is simple:
+
+\begin{quote}
+\color{leafgreen}\bfseries
+The installer does not prove intelligence. It proves that the exact model we
+intended is the model we possess, in the place every LeafOS component agrees to
+find it.
+\end{quote}
+
+\vfill
+\begin{center}
+\small\color{leafgray}
+Architectural projection derived from WO-053-A. Implementation ordering,
+tracker state, and evidence chronology remain in the work-order record.
+\end{center}
+
+\end{document}

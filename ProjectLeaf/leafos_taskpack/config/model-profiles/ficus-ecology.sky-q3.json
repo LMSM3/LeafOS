@@ -1,0 +1,18 @@
+{
+  "schema": "leafos.model-profile.v1",
+  "profile_id": "ficus-ecology.sky-q3",
+  "base_catalog_key": "deepseek-r1-distill-14b",
+  "title": "Fable Ecology Sky (Q3_K_M)",
+  "role": "reinforcer",
+  "lanes": ["slot.reinforce.chain", "slot.reinforce.verify", "slot.reinforce.cot"],
+  "contracts": ["chain_output"],
+  "runtime": ["llama.cpp"],
+  "recommended_quant": "Q3_K_M",
+  "quality_quant": "Q4_K_M",
+  "low_memory_quant": "Q2_K",
+  "emergency_quant": "Q2_K",
+  "activation": "on_demand",
+  "escalation_from": ["ficus-ecology.reasoner-q4", "ficus-ecology.coder-builder-q4"],
+  "escalation_to": ["ficus-ecology.judge-q4"],
+  "notes": ["Chain-of-thought reinforcer. Adds verification passes and structured reasoning scaffolding."]
+}

@@ -1,0 +1,101 @@
+#!/usr/bin/env python3
+"""
+LeafOS Python CLI -- leafpy
+Multi-platform complement to the Bash leafctl.
+Usage: leafpy <command> [args...]
+	   python3 bin/leafpy <command> [args...]
+"""
+import sys
+import os
+from pathlib import Path
+
+# ── locate project root and add core/python to sys.path ──────────────────────
+_HERE = Path(__file__).resolve().parent           # bin/
+_ROOT = _HERE.parent                              # leafos_taskpack/
+sys.path.insert(0, str(_ROOT / "core" / "python"))
+
+from leaf_runtime import (
+	LeafBrand,
+	LeafDoctor,
+	LeafLoader,
+	LeafLog,
+	LeafPlatform,
+	LeafVersionChecker,
+	LOADER_FRAMES,
+	leaf_runtime,
+)
+
+
+def _root() -> Path:
+	env = os.environ.get("LEAF_ROOT")
+	return Path(env) if env else _ROOT
+
+
+# ── command handlers ──────────────────────────────────────────────────────────
+
+def cmd_doctor(root: Path, brand: LeafBrand, log: LeafLog, _args):
+	ok = LeafDoctor(root, brand, log).run()
+	sys.exit(0 if ok else 1)
+
+
+def cmd_status(root: Path, brand: LeafBrand, log: LeafLog, _args):
+	plat = LeafPlatform()
+	brand.say("LeafOS status")
+	print(f"  platform : {plat.summary()}")
+	print(f"  root     : {root}")
+	log.info("status (python)")
+
+
+def cmd_loaders(_root, brand: LeafBrand, _log, _args):
+	brand.say("available loaders")
+	for name in sorted(LOADER_FRAMES):
+		print(f"  {name}")
+
+
+def cmd_loader(_root, brand: LeafBrand, log: LeafLog, args):
+	name  = args[0] if args else "orbit"
+	label = args[1] if len(args) > 1 else "loading"
+	LeafLoader(brand, name=name, label=label).run()
+	log.info(f"ran loader {name}")
+
+
+def cmd_versions(_root, brand: LeafBrand, _log, _args):
+	brand.say("version matrix")
+	LeafVersionChecker().report()
+
+
+def cmd_platform(_root, brand: LeafBrand, _log, _args):
+	plat = LeafPlatform()
+	brand.say("platform info")
+	print(f"  {plat.summary()}")
+
+
+COMMANDS = {
+	"doctor":   cmd_doctor,
+	"status":   cmd_status,
+	"loaders":  cmd_loaders,
+	"loader":   cmd_loader,
+	"versions": cmd_versions,
+	"platform": cmd_platform,
+}
+
+
+def main():
+	argv = sys.argv[1:]
+	if not argv:
+		print("Usage: leafpy <command> [args...]")
+		print("Commands: " + ", ".join(sorted(COMMANDS)))
+		sys.exit(1)
+
+	root             = _root()
+	plat, brand, log = leaf_runtime(root)
+	cmd, rest        = argv[0], argv[1:]
+
+	fn = COMMANDS.get(cmd)
+	if fn is None:
+		brand.die(f"unknown command: {cmd}")
+	fn(root, brand, log, rest)
+
+
+if __name__ == "__main__":
+	main()

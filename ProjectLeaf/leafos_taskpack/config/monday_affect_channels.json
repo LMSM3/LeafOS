@@ -1,0 +1,12 @@
+{
+  "schema_version": 1,
+  "report_interval_minutes": 30,
+  "heatmap": {"rows": 16, "columns": 16, "palette": "viridis", "scale": "normalized_0_to_1", "source_policy": "journaled_persona_summaries_and_operational_telemetry_only"},
+  "channels": [
+    "persona_positive_terms", "persona_caution_terms", "persona_urgency_terms", "persona_clarity_terms",
+    "planner_events", "coder_events", "validation_passes", "validation_failures",
+    "checkpoint_valid", "accepted_changes", "rejected_changes", "generation_rate",
+    "gpu_utilization", "gpu_vram_used", "cpu_utilization", "recovery_events"
+  ],
+  "artifacts": {"html": "LIVE_REPORT.html", "pdf_directory": "reports/monday_affect", "journal": "journal.lje"}
+}

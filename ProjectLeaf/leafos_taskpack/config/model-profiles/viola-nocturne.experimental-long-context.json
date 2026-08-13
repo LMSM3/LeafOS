@@ -1,0 +1,21 @@
+{
+  "schema": "leafos.model-profile.v1",
+  "profile_id": "viola-nocturne.experimental-long-context",
+  "base_catalog_key": "viola-opus-deepseek-27b-1m",
+  "title": "Viola Nocturne Experimental Long Context (Q4_K_M)",
+  "role": "experimental",
+  "lanes": ["slot.context.long", "slot.context.summarize", "slot.context.retrieve"],
+  "contracts": ["context_output"],
+  "runtime": ["llama.cpp"],
+  "recommended_quant": "Q4_K_M",
+  "quality_quant": "Q4_K_M",
+  "low_memory_quant": "Q3_K_M",
+  "emergency_quant": "Q2_K",
+  "activation": "dormant",
+  "escalation_from": ["viola-nocturne.router-q2"],
+  "escalation_to": ["viola-nocturne.reasoner-q4"],
+  "notes": [
+    "Dormant experimental long-context lane from a non-Fable Opus/DeepSeek distillation with 1M YaRN context.",
+    "Requires manual activation and explicit heavyweight confirmation."
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "schema": "leafos.model-group.v1",
+  "group_id": "ficus-ecology.synthesis",
+  "name": "Fable Ecology Synthesis Layer",
+  "priority": 6,
+  "mode": "on_demand",
+  "profiles": [
+    "ficus-ecology.composer-q4",
+    "ficus-ecology.sleeping-giant-q8"
+  ],
+  "default": false,
+  "comment": "Final merge and dormant-expert synthesis group. Sleeping Giant is experimental and manually gated."
+}

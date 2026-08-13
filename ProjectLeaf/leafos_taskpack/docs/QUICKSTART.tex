@@ -1,0 +1,187 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[margin=1.8cm]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{listings,xcolor,hyperref,booktabs,enumitem,parskip}
+\usepackage[expansion=false]{microtype}
+
+\definecolor{leafgreen}{RGB}{27,116,76}
+\definecolor{leafblue}{RGB}{30,94,135}
+\definecolor{leafgray}{RGB}{245,247,246}
+\hypersetup{colorlinks=true,linkcolor=leafgreen,urlcolor=leafblue,citecolor=leafgreen}
+\lstset{
+  basicstyle=\ttfamily\small,
+  breaklines=true,
+  backgroundcolor=\color{leafgray},
+  frame=single,
+  rulecolor=\color{black!20},
+  xleftmargin=6pt,xrightmargin=6pt,
+  aboveskip=7pt,belowskip=6pt,
+  showstringspaces=false
+}
+
+\title{\textbf{LeafOS Resident Project Stack}\\[5pt]\large Quick Start \texttt{v0.5.0}}
+\author{LeafOS}
+\date{Updated 2026-07-21}
+
+\begin{document}
+\maketitle
+
+\begin{center}
+\fcolorbox{leafgreen}{leafgray}{\parbox{0.88\linewidth}{
+\textbf{Current default:} attach the local stack to a project with
+\texttt{leafctl live PATH}. The stack means all downloaded and locally
+available models in this LeafOS instance. Models propose; CPU-side policy
+executes and validates.
+}}
+\end{center}
+
+\section*{1. Check The Host}
+
+From PowerShell in the taskpack directory:
+
+\begin{lstlisting}
+.\bin\leafctl.ps1 doctor
+.\bin\leafctl.ps1 versions
+.\bin\leafctl.ps1 provider-stack check
+\end{lstlisting}
+
+The provider check validates the configured llama.cpp executable, local GGUF
+model, Vulkan route, endpoint, and lifecycle settings. It does not download a
+model.
+
+\section*{2. Open A Project}
+
+\begin{lstlisting}
+.\bin\leafctl.ps1 live C:\R\MyProject
+\end{lstlisting}
+
+LeafOS performs bounded read-only intake, derives an objective when none is
+supplied, creates or reattaches a persistent version-2 run, starts the resident
+supervisor, and opens the terminal interface.
+
+Inspect without starting work:
+
+\begin{lstlisting}
+.\bin\leafctl.ps1 live C:\R\MyProject --inspect --json
+\end{lstlisting}
+
+Create a minimal generic project:
+
+\begin{lstlisting}
+.\bin\leafctl.ps1 live C:\R\MyNewProject \
+  --new --template generic --yes --budget 64
+\end{lstlisting}
+
+Intake does not add LeafOS control files to an existing target. Run state stays
+in the LeafOS runs directory.
+
+\section*{3. Give Instructions}
+
+Inside the active window, plain language is enough:
+
+\begin{lstlisting}
+:improve
+:improve add deterministic replay
+:again
+:make state changes easier to inspect
+\end{lstlisting}
+
+Every instruction converges on one lifecycle:
+
+\begin{center}
+\texttt{INTAKE -> PLAN -> APPROVE -> EXECUTE -> VALIDATE -> CHECKPOINT/REPORT}
+\end{center}
+
+The provider creates a bounded structured proposal. The CPU inlet validates
+paths, commands, approval, dependencies, attempts, execution, and acceptance.
+A failure preserves evidence and may create one bounded repair task.
+
+\section*{4. Control The Resident Stack}
+
+\begin{lstlisting}
+:mode quiet
+:mode auto
+:targets cpu 80 gpu 90
+:budget 64m
+:pause
+:resume
+:drain
+\end{lstlisting}
+
+The utilization values are useful-work targets, not load quotas. Recent input,
+responsiveness, RAM, VRAM, temperature, and provider health can reduce or close
+dispatch. Pressing \texttt{q} closes only the interface. Drain finishes
+accepted work. Stop uses a confirmed typed request.
+
+\section*{5. Reconnect And Observe}
+
+\begin{lstlisting}
+.\bin\leafctl.ps1 tui --run active
+.\bin\leafctl.ps1 loop status active
+.\bin\leafctl.ps1 loop attach active --after 0
+.\bin\leafctl.ps1 resident status active --json
+\end{lstlisting}
+
+Run directories retain the work order, queue, state, events, controls,
+resident decision, provider artifacts, command output, validation, checkpoint,
+telemetry, and report required to reconnect without conversation memory.
+
+\section*{6. Verify}
+
+\begin{lstlisting}
+.\bin\leafctl.ps1 test visual --plain
+.\bin\leafctl.ps1 test visual \
+  --match provider --live-stack --plain
+.\bin\leafctl.ps1 resident start \
+  --contract-only --iterations 3
+\end{lstlisting}
+
+The current discovery suite contains 199 tests.
+is explicitly real-provider evidence. Contract and fixture tests remain
+clearly labeled and do not make that claim.
+
+\section*{Authority And Privacy}
+
+The TUI is a structured projection and typed control surface, not a shell or a
+second scheduler. Models cannot approve themselves, write files directly, or
+turn output into evidence. LeafOS displays plans, progress, decisions, tools,
+validation, and accepted results. It does not expose or persist private model
+chain-of-thought.
+
+\section*{Next Documents}
+
+\begin{tabular}{@{}p{0.31\linewidth}p{0.61\linewidth}@{}}
+\toprule
+Document & Purpose \\
+\midrule
+\texttt{DOCUMENTATION\_MAP.md} & Current authority and historical boundaries. \\
+\texttt{ARCHITECTURE.md} & Process, data, provider, and UI boundaries. \\
+\texttt{AGENTIC\_CLI.md} & Instruction normalization and lifecycle. \\
+\texttt{RESIDENT\_STACK\_USAGE.md} & Resource policy, budgets, recovery, and soaks. \\
+\texttt{MEDIUM\_MOE\_MODEL\_POLICY.md} & Model candidates, SSD truth, and qualification gates. \\
+\texttt{TUI\_USAGE.md} & Pages, keys, snapshots, and control transport. \\
+\bottomrule
+\end{tabular}
+
+\section*{Current Acceptance State}
+
+The resident implementation, contract profile, 199-test observatory, native
+TUI, bounded live-provider demonstration, and real four-minute generic resident
+profile pass. The real eight-minute and 64-minute soaks remain open evidence. A
+profile is not complete merely because its command exists.
+
+\section*{Optional Surfaces}
+
+\begin{itemize}[nosep,leftmargin=1.4em]
+  \item \texttt{oneshot} creates a handoff bundle; it does not run a project.
+  \item \texttt{dashboard} displays the optional node/cluster subsystem.
+  \item \texttt{node}, \texttt{nodes}, and \texttt{task} distribute explicit SSH jobs.
+  \item Early agent-plan and graph commands remain compatibility paths.
+\end{itemize}
+
+Historical work orders and reports preserve their original terminology as
+dated evidence. Use the Documentation Map when a historical command conflicts
+with this guide.
+
+\end{document}

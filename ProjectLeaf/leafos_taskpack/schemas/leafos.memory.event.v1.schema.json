@@ -1,0 +1,70 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://leafos.local/schemas/leafos.memory.event.v1.schema.json",
+  "title": "LeafOS memory event v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "event_id", "run_id", "project_id", "sequence", "timestamp_utc", "kind", "epistemic_class", "source", "scope", "content", "retrieval", "integrity"],
+  "properties": {
+    "schema": { "const": "leafos.memory.event.v1" },
+    "event_id": { "type": "string", "pattern": "^mem_[A-Za-z0-9_-]{8,128}$" },
+    "run_id": { "type": "string", "minLength": 1, "maxLength": 128 },
+    "project_id": { "type": "string", "minLength": 1, "maxLength": 256 },
+    "sequence": { "type": "integer", "minimum": 1 },
+    "timestamp_utc": { "type": "string", "format": "date-time" },
+    "kind": { "enum": ["observation", "user_intent", "constraint", "plan", "resolution", "approval", "action_request", "action_result", "validation", "reflection", "summary", "checkpoint", "error", "recovery", "tombstone"] },
+    "epistemic_class": { "enum": ["record", "evidence", "committed_fact"] },
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["actor", "model", "tool", "parent_event_ids"],
+      "properties": {
+        "actor": { "type": "string", "minLength": 1 },
+        "model": { "type": ["string", "null"] },
+        "tool": { "type": ["string", "null"] },
+        "parent_event_ids": { "type": "array", "items": { "type": "string" }, "uniqueItems": true }
+      }
+    },
+    "scope": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["task_id", "paths", "symbols"],
+      "properties": {
+        "task_id": { "type": ["string", "null"] },
+        "paths": { "type": "array", "items": { "type": "string" } },
+        "symbols": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "content": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["mime", "text", "data"],
+      "properties": {
+        "mime": { "type": "string", "minLength": 1 },
+        "text": { "type": "string" },
+        "data": {}
+      }
+    },
+    "retrieval": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["importance", "expires_at", "sensitivity", "indexable"],
+      "properties": {
+        "importance": { "type": "number", "minimum": 0, "maximum": 1 },
+        "expires_at": { "type": ["string", "null"], "format": "date-time" },
+        "sensitivity": { "enum": ["public", "project", "private", "secret"] },
+        "indexable": { "type": "boolean" }
+      }
+    },
+    "integrity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["payload_sha256", "previous_event_sha256", "writer_version"],
+      "properties": {
+        "payload_sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+        "previous_event_sha256": { "type": ["string", "null"], "pattern": "^[a-f0-9]{64}$" },
+        "writer_version": { "type": "string", "minLength": 1 }
+      }
+    }
+  }
+}

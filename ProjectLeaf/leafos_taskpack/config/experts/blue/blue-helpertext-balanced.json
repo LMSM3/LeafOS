@@ -1,0 +1,45 @@
+{
+  "schema": "leafos.expert.v1",
+  "source_repo": "GnLOLot/MiniCPM5-1B-Claude-Opus-Fable5-Thinking-GGUF",
+  "revision": "main",
+  "parameters_b": 9,
+  "provider": "llama.cpp",
+  "placement": "local",
+  "stack_segment": "local_cpu",
+  "endpoint_ref": "local-helpertext",
+  "quantization": "Q5_K_M",
+  "estimated_memory_gib": 0.8,
+  "context_tokens": 32768,
+  "capabilities": [
+    "helpertext.summary",
+    "helpertext.rewrite"
+  ],
+  "fallback_chain": [
+    "blue-helpertext-fast",
+    "blue-helpertext-primary"
+  ],
+  "enabled": true,
+  "purpose": "helpertext balanced Banyan Council expert",
+  "notes": "Installed member of the Blue (Banyan Council) stack from flower-pack-1.2.0.",
+  "install_state": {
+    "status": "installed",
+    "local_path": "C:\\R\\LeafOS0.2.2\\models\\packs\\pack-1\\blue-helpertext-balanced\\minicpm5-opus-fable5-gnlolot-Q5_K_M.gguf",
+    "blob_sha256": null,
+    "verified": true,
+    "download_attempts": 1
+  },
+  "runtime_params": {
+    "flash_attention": true,
+    "mmap": true,
+    "mlock": false,
+    "n_gpu_layers": 0,
+    "seed": 42
+  },
+  "validation": {
+    "launch_test_passed": false,
+    "checksum_ok": false,
+    "benchmark_tag": null
+  },
+  "id": "blue-helpertext-balanced",
+  "model_ref": "minicpm5-opus-fable5"
+}

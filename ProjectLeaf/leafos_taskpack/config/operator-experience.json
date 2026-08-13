@@ -1,0 +1,17 @@
+{
+  "$schema": "./operator-experience.schema.json",
+  "schema": "leafos.operator-experience.v1",
+  "surface": {
+    "name": "FlowerOS",
+    "engine": "LeafOS",
+    "stage": "usage-layer",
+    "default_command": ".\\leafos.ps1 home"
+  },
+  "economics": {
+    "currency": "USD",
+    "comparison_output_usd_per_million": 10.0,
+    "pricing_basis": "operator_assumption",
+    "local_costs_included": false,
+    "note": "Gross cloud-equivalent output value only; input, cache, electricity, cooling, storage, depreciation, and quality differences are excluded."
+  }
+}

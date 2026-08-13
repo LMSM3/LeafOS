@@ -1,0 +1,87 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://leafos.local/schemas/leafos.context-pack.v1.schema.json",
+  "title": "LeafOS context pack v1",
+  "description": "A deterministic, reproducible assembly of retrieved LMEM records bounded to a token budget. A context pack is a disposable projection: it never grants independent authority to the records it includes, and it must be fully reproducible from the same LMEM head, query, and tokenizer.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "pack_id", "created_at", "run_id", "task_id", "source", "query", "tokenizer", "budget", "records", "exclusions", "pack_sha256"],
+  "properties": {
+    "schema": { "const": "leafos.context-pack.v1" },
+    "pack_id": { "type": "string", "minLength": 1, "maxLength": 128 },
+    "created_at": { "type": "string", "format": "date-time" },
+    "run_id": { "type": "string", "minLength": 1, "maxLength": 128 },
+    "task_id": { "type": "string", "minLength": 1, "maxLength": 128 },
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["journal_path", "head_sequence", "head_hash"],
+      "properties": {
+        "journal_path": { "type": "string", "minLength": 1 },
+        "head_sequence": { "type": "integer", "minimum": 0 },
+        "head_hash": { "type": ["string", "null"], "pattern": "^[a-f0-9]{64}$" }
+      }
+    },
+    "query": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["text", "filters", "weights_version"],
+      "properties": {
+        "text": { "type": "string", "maxLength": 8192 },
+        "filters": { "type": "object" },
+        "weights_version": { "type": "string", "minLength": 1 }
+      }
+    },
+    "tokenizer": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["model_id", "tokenizer_id"],
+      "properties": {
+        "model_id": { "type": "string", "minLength": 1 },
+        "tokenizer_id": { "type": "string", "minLength": 1 }
+      }
+    },
+    "budget": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["token_budget", "measured_tokens"],
+      "properties": {
+        "token_budget": { "type": "integer", "minimum": 0 },
+        "measured_tokens": { "type": "integer", "minimum": 0 }
+      }
+    },
+    "records": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["sequence", "event_id", "payload_sha256", "epistemic_class", "kind", "score", "score_components", "inclusion_reason", "tokens"],
+        "properties": {
+          "sequence": { "type": "integer", "minimum": 1 },
+          "event_id": { "type": "string", "minLength": 1 },
+          "payload_sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+          "epistemic_class": { "enum": ["record", "evidence", "committed_fact"] },
+          "kind": { "type": "string", "minLength": 1 },
+          "score": { "type": "number" },
+          "score_components": { "type": "object" },
+          "inclusion_reason": { "type": "string", "minLength": 1, "maxLength": 256 },
+          "tokens": { "type": "integer", "minimum": 0 },
+          "excerpt": { "type": ["object", "null"] }
+        }
+      }
+    },
+    "exclusions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["sequence", "reason"],
+        "properties": {
+          "sequence": { "type": "integer", "minimum": 1 },
+          "reason": { "enum": ["tombstoned", "redacted", "age", "authority", "token_budget", "duplicate"] }
+        }
+      }
+    },
+    "pack_sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" }
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "schema": "leafos.pack-manifest.v1",
+  "pack_id": "viola-nocturne",
+  "profiles": [
+    "config/model-profiles/viola-nocturne.router-q2.json",
+    "config/model-profiles/viola-nocturne.drafter-q2.json",
+    "config/model-profiles/viola-nocturne.helpertext-q2.json",
+    "config/model-profiles/viola-nocturne.coder-scout-q3.json",
+    "config/model-profiles/viola-nocturne.coder-builder-q4.json",
+    "config/model-profiles/viola-nocturne.coder-reviewer-q6.json",
+    "config/model-profiles/viola-nocturne.coder-finalizer-q8.json",
+    "config/model-profiles/viola-nocturne.reference-q8.json",
+    "config/model-profiles/viola-nocturne.reasoner-q4.json",
+    "config/model-profiles/viola-nocturne.deep-reasoner-q4.json",
+    "config/model-profiles/viola-nocturne.judge-q6.json",
+    "config/model-profiles/viola-nocturne.critic-q4.json",
+    "config/model-profiles/viola-nocturne.experimental-fable-vision.json",
+    "config/model-profiles/viola-nocturne.experimental-moe-router.json",
+    "config/model-profiles/viola-nocturne.experimental-long-context.json",
+    "config/model-profiles/viola-nocturne.experimental-reasoning-control.json"
+  ],
+  "groups": [
+    "config/groups/viola-nocturne.routing.json",
+    "config/groups/viola-nocturne.code.json",
+    "config/groups/viola-nocturne.reasoning.json",
+    "config/groups/viola-nocturne.reference.json",
+    "config/groups/viola-nocturne.experimental.json"
+  ],
+  "pack": "config/packs/viola-nocturne.json"
+}

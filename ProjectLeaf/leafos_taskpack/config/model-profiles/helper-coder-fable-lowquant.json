@@ -1,0 +1,17 @@
+{
+  "schema": "leafos.model-profile.v1",
+  "profile_id": "helper-coder-fable-lowquant",
+  "model_repo": "yuxinlu1/gemma-4-12B-coder-fable5-composer2.5-v1-GGUF",
+  "role": "helper",
+  "lanes": ["slot.helper.docs", "slot.helper.testgen", "slot.helper.repair", "slot.helper.error_summary"],
+  "contracts": ["unified_diff", "review_json", "report_markdown"],
+  "runtime": ["llama.cpp", "LM Studio", "Ollama"],
+  "recommended_quant": "Q3_K_M",
+  "emergency_quant": "Q2_K",
+  "status": "helper_candidate",
+  "notes": [
+    "Use for cheap helper actions.",
+    "Do not let helper lanes apply patches directly.",
+    "All helper output still goes through parsers."
+  ]
+}
