@@ -14,6 +14,9 @@ sys.path.insert(0, str(BRAND_DIR))
 sys.path.insert(0, str(UI_DIR))
 
 import flower_palette  # noqa: E402
+import chat  # noqa: E402
+import dashboard  # noqa: E402
+import live_stream  # noqa: E402
 import menu  # noqa: E402
 
 
@@ -31,6 +34,22 @@ class FlowerPaletteTests(unittest.TestCase):
             with self.subTest(name=name):
                 self.assertNotIn("; ", value)
                 self.assertNotIn(" ;", value)
+
+    def test_default_theme_uses_true_color_semantic_roles(self) -> None:
+        theme = flower_palette.default_theme()
+        for role in ("accent", "ok", "warn", "err", "you", "bot", "border", "spinner"):
+            with self.subTest(role=role):
+                self.assertIn("\x1b[38;2;", theme[role])
+        plain = flower_palette.default_theme(disable_color=True)
+        self.assertFalse(any("\x1b[" in value for value in plain.values()))
+        self.assertEqual(("#", "-"), (plain["bar_fill"], plain["bar_empty"]))
+
+    def test_python_animation_surfaces_share_one_spinner(self) -> None:
+        frames = flower_palette.SPINNER_FRAMES
+        self.assertEqual(10, len(frames))
+        self.assertIs(frames, chat._SPIN)
+        self.assertIs(frames, dashboard._SPINNER_FRAMES)
+        self.assertIs(frames, live_stream._SPIN_FRAMES)
 
     def test_no_color_wins_over_force_color(self) -> None:
         with self.environment(NO_COLOR="1", FORCE_COLOR="1"):

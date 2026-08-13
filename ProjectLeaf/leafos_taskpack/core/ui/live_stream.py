@@ -30,13 +30,19 @@ Design goals
 """
 from __future__ import annotations
 
+import os
 import shutil
 import sys
 import time
 from dataclasses import dataclass, field
 from typing import Callable, Optional
 
-_SPIN_FRAMES = ["\u280b", "\u2819", "\u2838", "\u2834", "\u2826", "\u2827", "\u2807", "\u280f"]
+_BRAND_DIR = os.path.normpath(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "brand"))
+if _BRAND_DIR not in sys.path:
+    sys.path.insert(0, _BRAND_DIR)
+from flower_palette import SPINNER_FRAMES  # noqa: E402
+
+_SPIN_FRAMES = SPINNER_FRAMES
 
 # Default refresh interval for a smooth, high refresh-rate readout.
 DEFAULT_REFRESH_SECONDS = 0.05  # 20 Hz

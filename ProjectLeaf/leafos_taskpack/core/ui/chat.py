@@ -64,6 +64,10 @@ for _s in ("stdout", "stderr"):
 # ---------------------------------------------------------------------------
 _HERE   = os.path.dirname(os.path.abspath(__file__))
 _ROOT   = os.path.normpath(os.path.join(_HERE, "..", ".."))
+_BRAND  = os.path.normpath(os.path.join(_HERE, "..", "brand"))
+if _BRAND not in sys.path:
+    sys.path.insert(0, _BRAND)
+from flower_palette import SPINNER_FRAMES, default_theme  # noqa: E402
 
 
 def _read_version() -> str:
@@ -105,21 +109,7 @@ def _chat_dir(home: str) -> str:
 # Themes
 # ---------------------------------------------------------------------------
 _THEMES: dict = {
-    "default": {
-        "accent":    "\033[1;36m",
-        "dim":       "\033[2m",
-        "bold":      "\033[1m",
-        "ok":        "\033[1;32m",
-        "warn":      "\033[1;33m",
-        "err":       "\033[1;31m",
-        "you":       "\033[1;37m",
-        "bot":       "\033[1;36m",
-        "border":    "\033[36m",
-        "reset":     "\033[0m",
-        "spinner":   "\033[1;36m",
-        "bar_fill":  "\u2588",
-        "bar_empty": "\u2591",
-    },
+    "default": default_theme(),
     "forest": {
         "accent":    "\033[1;32m",
         "dim":       "\033[2m",
@@ -216,7 +206,7 @@ def _load_theme(name: "str | None", no_color: bool = False) -> dict:
 # ---------------------------------------------------------------------------
 # Spinner / progress helpers
 # ---------------------------------------------------------------------------
-_SPIN = ["\u280b", "\u2819", "\u2838", "\u2834", "\u2826", "\u2807"]
+_SPIN = SPINNER_FRAMES
 _spin_idx = [0]
 
 

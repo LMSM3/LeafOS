@@ -30,6 +30,63 @@ PALETTE = {
     "info": "\033[38;2;178;223;255m",
 }
 
+# One motion sequence for Python terminal surfaces.  It matches the canonical
+# Bash ``braille`` transition so chat, dashboard, and stream status do not each
+# carry a slightly different spinner.
+SPINNER_FRAMES = ("⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏")
+
+# The default terminal theme uses the softer Flower palette while retaining
+# the stable semantic keys consumed by the existing UI modules.
+DEFAULT_THEME = {
+    "accent": PALETTE["semibold"] + PALETTE["lavender"],
+    "dim": PALETTE["dim"],
+    "bold": PALETTE["semibold"],
+    "ok": PALETTE["semibold"] + PALETTE["leaf"],
+    "warn": PALETTE["semibold"] + PALETTE["butter"],
+    "err": PALETTE["semibold"] + PALETTE["error"],
+    "you": PALETTE["semibold"] + PALETTE["sky"],
+    "bot": PALETTE["mint"],
+    "border": PALETTE["fern"],
+    "reset": PALETTE["reset"],
+    "spinner": PALETTE["semibold"] + PALETTE["blossom"],
+    "bar_fill": "█",
+    "bar_empty": "░",
+}
+
+DASHBOARD_THEME = {
+    "reset": PALETTE["reset"],
+    "bold": PALETTE["semibold"],
+    "dim": PALETTE["dim"],
+    "green": PALETTE["leaf"],
+    "cyan": PALETTE["sky"],
+    "yellow": PALETTE["butter"],
+    "red": PALETTE["error"],
+    "magenta": PALETTE["blossom"],
+    "blue": PALETTE["lavender"],
+    "green_b": PALETTE["semibold"] + PALETTE["leaf"],
+    "cyan_b": PALETTE["semibold"] + PALETTE["sky"],
+    "yellow_b": PALETTE["semibold"] + PALETTE["butter"],
+    "red_b": PALETTE["semibold"] + PALETTE["error"],
+}
+
+
+def default_theme(disable_color: bool = False) -> dict[str, str]:
+    """Return an isolated default theme, preserving non-color bar glyphs."""
+    theme = dict(DEFAULT_THEME)
+    if disable_color:
+        for key in theme.keys() - {"bar_fill", "bar_empty"}:
+            theme[key] = ""
+        theme["bar_fill"] = "#"
+        theme["bar_empty"] = "-"
+    return theme
+
+
+def dashboard_theme(disable_color: bool = False) -> dict[str, str]:
+    """Return dashboard-compatible semantic colors from the shared palette."""
+    if disable_color:
+        return {key: "" for key in DASHBOARD_THEME}
+    return dict(DASHBOARD_THEME)
+
 
 def no_color() -> bool:
     if os.environ.get("NO_COLOR") == "1":

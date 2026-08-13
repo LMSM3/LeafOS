@@ -64,6 +64,10 @@ _HERE = os.path.dirname(os.path.abspath(__file__))
 _ENGINE = os.path.join(_HERE, "..", "node", "leaf_node.py")
 _DISCOVER = os.path.join(_HERE, "..", "net", "discover.py")
 _WEB = os.path.join(_HERE, "..", "web")
+_BRAND = os.path.normpath(os.path.join(_HERE, "..", "brand"))
+if _BRAND not in sys.path:
+    sys.path.insert(0, _BRAND)
+from flower_palette import SPINNER_FRAMES, dashboard_theme  # noqa: E402
 if _WEB not in sys.path:
     sys.path.insert(0, _WEB)
 try:
@@ -135,7 +139,7 @@ _LEAF_FRAMES = [
     ],
 ]
 
-_SPINNER_FRAMES = ["⠋", "⠙", "⠸", "⠴", "⠦", "⠇"]
+_SPINNER_FRAMES = SPINNER_FRAMES
 _spinner_idx = [0]   # mutable cell so watch_loop can advance it
 
 
@@ -229,27 +233,7 @@ def boot_splash(no_color=False):
 # ANSI colour palette (mirrors brand.sh exactly)
 # ---------------------------------------------------------------------------
 def _init_colors(no_color=False):
-    if no_color or not sys.stdout.isatty():
-        return {k: "" for k in (
-            "reset", "bold", "dim",
-            "green", "cyan", "yellow", "red", "magenta", "blue",
-            "green_b", "cyan_b", "yellow_b", "red_b",
-        )}
-    return {
-        "reset":    "\033[0m",
-        "bold":     "\033[1m",
-        "dim":      "\033[2m",
-        "green":    "\033[32m",
-        "cyan":     "\033[36m",
-        "yellow":   "\033[33m",
-        "red":      "\033[31m",
-        "magenta":  "\033[35m",
-        "blue":     "\033[34m",
-        "green_b":  "\033[1;32m",
-        "cyan_b":   "\033[1;36m",
-        "yellow_b": "\033[1;33m",
-        "red_b":    "\033[1;31m",
-    }
+    return dashboard_theme(disable_color=no_color or not sys.stdout.isatty())
 
 C = {}  # populated in main()
 

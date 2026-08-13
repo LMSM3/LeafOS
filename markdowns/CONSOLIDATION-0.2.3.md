@@ -79,14 +79,30 @@ unless promoted by a separate release decision.
   PowerShell and Bash doctor paths report disabled with no network, credential,
   or legacy-auth access.
 
+## Final presentation cleanup
+
+- Removed 11 ignored Python cache directories from the isolated 0.2.3 tree;
+  no tracked or untracked source artifact was deleted.
+- Chat, dashboard, and live-stream surfaces now reference one shared ten-frame
+  spinner sequence, aligned with the Bash `braille` transition.
+- Default chat and dashboard semantic colors now derive from the existing
+  true-color Flower palette. Custom themes, `NO_COLOR`, redirected output, and
+  reduced-motion behavior remain intact.
+- Focused palette, dashboard, chat-provider, and shell-motion tests: PASS,
+  23/23. Bash palette syntax and shared-frame smoke check: PASS.
+- Supplemental visual-runner, TUI, hardware, and blank-web regression tests:
+  PASS, 36/36. The unrelated `test_live_project` module remains coupled to
+  ignored `instances/monday-primary/persona.json` runtime state and is not
+  counted as presentation evidence.
+
 ## Status
 
 [W] Release 0.2.3: isolate the overgrown 0.2.2 source state without opening later planned releases
 [D] Day 3: release-line reset and GitHub handoff
-[I] COMPLETE: isolated snapshot plus one disabled-by-default secure web-model pipe
-[V] PASS: 31 CCIS tests + 77 focused tests + both root contracts; no live provider probes
-[P] READY: agent/leafos-0.2.3-snapshot is validated for one intentional snapshot commit and draft PR
-[N] Implement the Flower-owned short-lived credential broker, configure one exact endpoint/model, rerun `--doctor`, then authorize a separate controlled live-provider acceptance test
+[I] COMPLETE: isolated snapshot, disabled web pipe, and bounded presentation cleanup
+[V] PASS: prior release gates plus 23/23 focused presentation tests; no live provider probes
+[P] READY: agent/leafos-0.2.3-snapshot remains the clean draft-PR release line
+[N] Await the user-supplied backend and issuer code; keep endpoint, model, and live acceptance testing blank/disabled until then
 
 ## Out of scope
 
