@@ -76,7 +76,10 @@ if ($manifest.immutable -ne $true) {
 	throw 'Brand asset manifest is not marked immutable.'
 }
 $assetPath = [IO.Path]::GetFullPath((Join-Path $root $manifest.path))
-$rootPrefix = [IO.Path]::GetFullPath($root).TrimEnd('\') + '\'
+$rootPrefix = [IO.Path]::GetFullPath($root).TrimEnd(
+	[IO.Path]::DirectorySeparatorChar,
+	[IO.Path]::AltDirectorySeparatorChar
+) + [IO.Path]::DirectorySeparatorChar
 if (-not $assetPath.StartsWith($rootPrefix, [StringComparison]::OrdinalIgnoreCase)) {
 	throw 'Immutable asset escapes the LeafOS root.'
 }
