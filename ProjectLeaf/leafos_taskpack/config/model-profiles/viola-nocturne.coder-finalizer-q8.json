@@ -1,0 +1,18 @@
+{
+  "schema": "leafos.model-profile.v1",
+  "profile_id": "viola-nocturne.coder-finalizer-q8",
+  "base_catalog_key": "viola-fable-fusion-27b",
+  "title": "Viola Nocturne Coder Finalizer (Q8_0)",
+  "role": "coder",
+  "lanes": ["slot.code.finalize", "slot.code.optimize", "slot.code.polish"],
+  "contracts": ["code_output"],
+  "runtime": ["llama.cpp"],
+  "recommended_quant": "Q8_0",
+  "quality_quant": "Q8_0",
+  "low_memory_quant": "Q4_K_M",
+  "emergency_quant": "Q2_K",
+  "activation": "on_demand",
+  "escalation_from": ["viola-nocturne.coder-builder-q4", "viola-nocturne.coder-reviewer-q6"],
+  "escalation_to": ["viola-nocturne.judge-q6"],
+  "notes": ["Highest-quality coding finalizer from Fable Fusion 27B. Non-MTP Q8_0 variant."]
+}

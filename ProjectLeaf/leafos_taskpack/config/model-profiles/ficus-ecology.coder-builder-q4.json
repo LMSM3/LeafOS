@@ -1,0 +1,18 @@
+{
+  "schema": "leafos.model-profile.v1",
+  "profile_id": "ficus-ecology.coder-builder-q4",
+  "base_catalog_key": "gemma4-coder",
+  "title": "Fable Ecology Coder-Builder (Q4_K_M)",
+  "role": "coder",
+  "lanes": ["slot.code.generate", "slot.code.review", "slot.code.test"],
+  "contracts": ["code_output"],
+  "runtime": ["llama.cpp"],
+  "recommended_quant": "Q4_K_M",
+  "quality_quant": "Q6_K",
+  "low_memory_quant": "Q3_K_M",
+  "emergency_quant": "Q2_K",
+  "activation": "on_demand",
+  "escalation_from": ["ficus-ecology.router-q2", "ficus-ecology.drafter-q2"],
+  "escalation_to": ["ficus-ecology.critic-q3", "ficus-ecology.judge-q4"],
+  "notes": ["Coding-only worker. Never holds main_model or scheduler role. Produces and reviews patches."]
+}

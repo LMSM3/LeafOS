@@ -1,0 +1,165 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{geometry}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\usepackage{booktabs}
+\usepackage{amsmath}
+
+\geometry{margin=1in}
+\hypersetup{colorlinks=true,linkcolor=blue,urlcolor=blue}
+
+\definecolor{codebg}{RGB}{248,248,248}
+\definecolor{codeborder}{RGB}{204,204,204}
+\lstset{
+  backgroundcolor=\color{codebg},
+  frame=single,
+  rulecolor=\color{codeborder},
+  basicstyle=\ttfamily\small,
+  breaklines=true,
+  showstringspaces=false,
+  tabsize=2,
+  keywordstyle=\color{blue},
+  commentstyle=\color{gray},
+  stringstyle=\color{orange}
+}
+
+\title{Accelerated Retrieval for Local Language Model Packs}
+\author{LeafOS Install Engineering}
+\date{\today}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Flower Pack installs can exceed 100~GiB, so download throughput dominates the first-run experience.  This note describes the Windows pipeline we built around \texttt{huggingface\_hub}, the Rust-based \texttt{hf\_transfer} backend, a small DPAPI-backed token vault, and a hardware-aware concurrency model.  It also records the PowerShell version mismatch that blocked the first invocation and the one-line fix.
+\end{abstract}
+
+\tableofcontents
+\newpage
+
+\section{Problem statement}
+The Flower Pack Windows installer was previously orchestrated through an aria2-based watchdog.  On this machine (32 logical cores, fiber connection) the aria2 path saturated at roughly 1--2~MiB/s for large model files.  Two independent issues complicated the switch to Hugging Face's high-performance backend:
+
+\begin{enumerate}
+  \item \textbf{PowerShell version mismatch:} helper scripts declare \texttt{\#Requires -Version 7.0}, but the default shell on this system is Windows PowerShell~5.1.
+  \item \textbf{Token handling:} the downloader needs a Hugging Face read token with good rate limits, and storing that token in plaintext inside a script is unacceptable.
+\end{enumerate}
+
+\section{PowerShell 7 requirement and the launcher fix}
+Any script that contains the line
+\begin{lstlisting}[language=bash]
+#Requires -Version 7.0
+\end{lstlisting}
+must be invoked with \texttt{pwsh} (PowerShell 7+).  Calling it with the legacy \texttt{powershell.exe} produces:
+
+\begin{lstlisting}
+The script '...' cannot be run because it contained a "#requires" statement
+for Windows PowerShell 7.0. The version of Windows PowerShell that is required
+by the script does not match the currently running version of Windows
+PowerShell 5.1.26100.8875.
+\end{lstlisting}
+
+Correct launcher:
+\begin{lstlisting}[language=bash]
+pwsh -NoProfile -ExecutionPolicy Bypass -File `
+  C:\R\LeafOS0.2.2\ProjectLeaf\install\windows\_start_pack1_download.ps1
+\end{lstlisting}
+
+\noindent All future Windows launchers should call PowerShell~7 scripts through \texttt{pwsh}, never the built-in \texttt{powershell.exe}.
+
+\section{DPAPI token vault}
+\subsection{Design}
+Rather than embedding tokens in source, we store them in an encrypted vault file:
+
+\begin{itemize}
+  \item Location: \texttt{\%USERPROFILE\%\.cache\huggingface\flower\_token\_vault.dat}
+  \item Encryption: Windows DPAPI \texttt{CryptProtectData} / \texttt{CryptUnprotectData}
+  \item Extra entropy: SHA-256 of the user's password
+  \item Contents: \texttt{read=<token>} and \texttt{write=<token>}
+\end{itemize}
+
+A small C program (\texttt{token\_vault.c}, compiled with \texttt{gcc -lcrypt32}) exposes three operations:
+
+\begin{lstlisting}[language=bash]
+token_vault.exe save
+token_vault.exe get read
+token_vault.exe get write
+\end{lstlisting}
+
+\subsection{Why prompts go to stderr}
+When the vault is invoked from a PowerShell sub-expression such as
+\begin{lstlisting}[language=PowerShell]
+$tok = pwsh ... -File flower-token-vault.ps1 get read | Select-Object -Last 1
+\end{lstlisting}
+stdout is captured.  If the password prompt is printed to stdout, the captured string becomes \texttt{Password: ...} instead of the token.  The vault therefore prints all prompts to stderr and emits only the token on stdout.
+
+\section{Downloader architecture}
+\subsection{File layout}
+\begin{table}[h]
+\centering
+\begin{tabular}{@{}ll@{}}
+\toprule
+File & Purpose \\
+\midrule
+\texttt{download-pack-hftransfer.py} & Registry-aware downloader using \texttt{hf\_transfer} \\
+\texttt{flower-token-vault.ps1}     & Build / save / retrieve wrapper \\
+\texttt{token\_vault.c}              & DPAPI C implementation \\
+\texttt{\_start\_pack1\_download.ps1} & Unlock vault and launch Pack 1 \\
+\texttt{bench-hf-1b.ps1}            & Quick 1B-model throughput test \\
+\bottomrule
+\end{tabular}
+\caption{Files in the accelerated Windows install path}
+\end{table}
+
+\subsection{Token resolution order}
+The Python downloader resolves a token in this priority order:
+\begin{enumerate}
+  \item Command-line argument \texttt{--hf-token}
+  \item Environment variables \texttt{HF\_TOKEN} or \texttt{HF\_READ\_TOKEN}
+  \item DPAPI vault \texttt{get read}
+  \item Cached Hugging Face token at \texttt{...\.cache\huggingface\token}
+  \item Anonymous mode
+\end{enumerate}
+
+\subsection{Backend selection}
+\texttt{huggingface\_hub} 1.25+ prefers the Xet high-performance backend.  The older environment variable \texttt{HF\_HUB\_ENABLE\_HF\_TRANSFER} is deprecated.  We set
+\begin{lstlisting}[language=Python]
+os.environ.setdefault('HF_XET_HIGH_PERFORMANCE', '1')
+\end{lstlisting}
+before importing \texttt{hf\_hub\_download}.
+
+\subsection{Hardware-aware concurrency}
+The downloader spawns one thread per file with a cap derived from CPU count:
+\begin{lstlisting}[language=Python]
+workers = max(2, os.cpu_count() - 2)   # 30 on a 32-core machine
+\end{lstlisting}
+A \texttt{--turbo} flag removes the cap and launches all files concurrently.  This is useful when the bottleneck is wide-area throughput and the local disk is fast NVMe.
+
+\section{Benchmark}
+A single-file test on the 688~MiB MiniCPM5-1B model, after deleting the previous copy, completed in approximately 78~seconds:
+\begin{equation*}
+\frac{688\ \text{MiB}}{78\ \text{s}} \approx 8.84\ \text{MiB/s}
+\end{equation*}
+
+For Pack~1 the total registry plan is 14 artifacts and approximately 193~GiB.  At an aggregate 5--7~MiB/s the batch should complete within the overnight window.
+
+\section{Operations checklist}
+\begin{enumerate}
+  \item Ensure \texttt{pwsh} is available and default launchers use it.
+  \item Install dependencies:\\ \texttt{python -m pip install --upgrade huggingface\_hub hf\_transfer}
+  \item Build the vault:\\ \texttt{pwsh -File flower-token-vault.ps1 build}
+  \item Save tokens:\\ \texttt{pwsh -File flower-token-vault.ps1 save}
+  \item Start Pack~1:\\ \texttt{pwsh -File \_start\_pack1\_download.ps1}
+\end{enumerate}
+
+\section{Future work}
+\begin{itemize}
+  \item Suppress non-fatal \texttt{huggingface\_hub} deprecation warnings for cleaner logs.
+  \item Add a progress observer that writes a JSON status file every minute so a UI can display completion percentage without parsing ANSI progress bars.
+  \item Document the intended vault loading animation as a UI note for a later milestone; keep the critical path minimal until then.
+\end{itemize}
+
+\end{document}

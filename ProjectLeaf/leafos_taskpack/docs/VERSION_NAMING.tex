@@ -1,0 +1,121 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[margin=2.2cm]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{booktabs,longtable,hyperref,listings,xcolor,parskip}
+\usepackage[expansion=false]{microtype}
+
+\hypersetup{colorlinks=true,linkcolor=teal,urlcolor=teal,citecolor=teal}
+\lstset{
+  basicstyle=\ttfamily\small,
+  breaklines=true,
+  backgroundcolor=\color{gray!8},
+  frame=single,
+  rulecolor=\color{gray!35},
+  xleftmargin=6pt,
+  xrightmargin=6pt
+}
+
+\title{\textbf{LeafOS Version Naming}\\[4pt]\large Release Planes, Evidence, and Recommended Labels}
+\author{LeafOS}
+\date{}
+
+\begin{document}
+\maketitle
+
+\section*{Recommendation}
+
+Do not name the current functional agent stack \texttt{0.2.2.1}. The codebase
+has moved beyond the \texttt{0.2} task spine, but it has not yet earned a stable
+\texttt{0.5} reliable-loop claim.
+
+\begin{center}
+\Large\textbf{Recommended functional label: \texttt{0.4.0-alpha.1 Provider Spine}}
+\end{center}
+
+For the root package, keep a separate packaging label:
+
+\begin{center}
+\texttt{0.6.0-alpha.1+root-reformat}
+\end{center}
+
+\section*{Current Version Planes}
+
+\begin{longtable}{@{}p{0.25\linewidth}p{0.25\linewidth}p{0.42\linewidth}@{}}
+\toprule
+Plane & Label & Meaning \\
+\midrule
+Root package & \texttt{0.6.0-root-reformat} & Two-surface root packaging and handoff layout. Not proof of complete \texttt{0.6} function. \\
+Taskpack docs & \texttt{0.5.0} & LAN/node CLI and distribution documentation label. \\
+Model installer & \texttt{0.4.0} & Plan-first model catalog, resolve/apply/verify workflow. \\
+Hardware monitor & \texttt{0.1.0} & Separate telemetry package. \\
+Graph contract & \texttt{0.3.0} & Graph object, dependency readiness, and graph gate version. \\
+Functional agent stack & \texttt{0.4.0-alpha.1} & Honest current target for provider spine, actions, and patch loop closure. \\
+\bottomrule
+\end{longtable}
+
+\section*{Why Not \texttt{0.2.2.1}}
+
+\begin{itemize}
+  \item Four-part numbers obscure whether the change is packaging, taskpack, model installer, or graph contract.
+  \item \texttt{0.2.x} undersells the graph, provider, patch, node, and runtime work already present.
+  \item The project already has explicit stage boundaries; the version should name the stage being promoted.
+  \item Alpha labels are clearer than pretending staged 0.5/0.6 design is already proven.
+\end{itemize}
+
+\section*{Promotion Rule}
+
+\begin{lstlisting}[language={}]
+captured test or run artifact
+  > accepted work-order result
+  > implementation documentation
+  > roadmap intention
+  > conceptual proposal
+\end{lstlisting}
+
+No stage should be promoted from prose alone.
+
+\section*{Stage Map}
+
+\begin{longtable}{@{}p{0.16\linewidth}p{0.34\linewidth}p{0.42\linewidth}@{}}
+\toprule
+Stage & Capability & Promotion evidence \\
+\midrule
+\texttt{0.2.0} & Universal CLI task pipeline & \texttt{tests/spine.sh} completion gate. \\
+\texttt{0.3.0} & Brain graph and dependency model & \texttt{tests/graph.sh}; graph validation and gate smoke. \\
+\texttt{0.4.0} & Embedded actions, waits, coder patches & Coder action bridge, patch apply boundary, repair nodes, provider lane tests. \\
+\texttt{0.5.0} & Reliable persistent coding loop & Durable journal, checkpoints, source hashes, repair classification, resume evidence. \\
+\texttt{0.6.0} & Replicable local project factory & Templates, project identity, runtime detection, local hosting foundation, stale-base refusal. \\
+\texttt{0.7.0} & Nodal deployment and relays & Multi-node transfer, recovery, deduplication, and bounded queue evidence. \\
+\bottomrule
+\end{longtable}
+
+\section*{Suggested Labels}
+
+\begin{longtable}{@{}p{0.32\linewidth}p{0.58\linewidth}@{}}
+\toprule
+Label & Use \\
+\midrule
+\texttt{0.4.0-alpha.1 Provider Spine} & Current functional release candidate for the agent/provider/patch bridge. \\
+\texttt{0.4.0-alpha.2 Patch Closure} & When \texttt{agent.ask\_coder} routes through the coder provider and produces validated patches. \\
+\texttt{0.4.0-beta.1 Repair Gate} & When repair-node creation and bounded retry behavior are tested end to end. \\
+\texttt{0.5.0-alpha.1 Persistent Loop} & First implementation of journal, checkpoint, source hash, and resume flow. \\
+\texttt{0.6.0-alpha.1 Local Factory} & First project-template and runtime-capability detection snapshot. \\
+\bottomrule
+\end{longtable}
+
+\section*{Version String Pattern}
+
+\begin{lstlisting}[language={}]
+<functional-stage>-<stability>.<iteration> <short-name>
+
+Examples:
+  0.4.0-alpha.1 Provider Spine
+  0.4.0-alpha.2 Patch Closure
+  0.5.0-alpha.1 Persistent Loop
+
+Root packaging may add build metadata:
+  0.6.0-alpha.1+root-reformat
+\end{lstlisting}
+
+\end{document}

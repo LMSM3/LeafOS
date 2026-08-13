@@ -1,0 +1,66 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{booktabs}
+\usepackage{amsmath}
+\usepackage{hyperref}
+\title{LeafOS Brain Model Selection Benchmark\\\large CPU Selection Followed by RTX 4070 Offload Variation}
+\author{LeafOS / FlowerOS Measurement Harness}
+\date{2026-07-17}
+\begin{document}
+\maketitle
+\begin{abstract}
+Three locally installed brain-model candidates were measured on CPU with three decode trials per model. The highest-throughput CPU candidate was then measured with CPU-only, partial, and full RTX 4070 Vulkan offload. This study separates model selection for the persistent brain lane from hardware acceleration of the selected candidate.
+\end{abstract}
+\section{Method}
+All tests used llama.cpp build c4ae9a88f, an Intel i9-13900K, an RTX 4070, a 512-token prompt, a 128-token decode, and three repetitions per setting. CPU selection used \texttt{-ngl 0}. GPU variation used the selected model under the same benchmark parameters. The reported value is mean decode throughput in tokens/s.
+\section{CPU Brain Selection}
+\begin{table}[h]
+\centering
+\caption{CPU-only decode results.}
+\begin{tabular}{lrr}
+\toprule
+Candidate & Mean tokens/s & Standard deviation \\
+\midrule
+Qwen3.5 14B A3B MXFP4 MoE & 6.269 & 0.194 \\
+Qwopus3.5 9B Q4 & 4.365 & 0.039 \\
+Gemma4 Opus Q4 & 4.051 & 0.029 \\
+\bottomrule
+\end{tabular}
+\end{table}
+The selected CPU brain is Qwen3.5 14B A3B MXFP4 MoE. It exceeds the next CPU candidate by
+\[
+\frac{6.269}{4.365}=1.44\times.
+\]
+The raw trial results and CPU chart are stored in \path{reports/brain-selection-20260717/results.json} and \path{cpu-decode.svg}.
+\section{GPU Offload Variation of Selected Brain}
+\begin{table}[h]
+\centering
+\caption{Qwen3.5 14B A3B MXFP4 MoE decode results by GPU placement.}
+\begin{tabular}{lrr}
+\toprule
+Placement & Mean tokens/s & Standard deviation \\
+\midrule
+CPU only (0 layers) & 6.259 & 0.093 \\
+Partial offload (16 layers) & 9.917 & 0.677 \\
+Full offload (999 layers) & 107.550 & 0.163 \\
+\bottomrule
+\end{tabular}
+\end{table}
+Full offload produces
+\[
+\frac{107.550}{6.259}=17.18\times
+\]
+the CPU-only decode throughput, while partial offload provides only
+\[
+\frac{9.917}{6.259}=1.58\times.
+\]
+The full-offload result is therefore the preferred interactive/worker configuration when its VRAM requirements are satisfied. The CPU-only rate remains a viable persistent low-rate brain baseline, but it is not the preferred production throughput configuration.
+\section{Operational Interpretation}
+LeafOS retains authority, checkpoints, validation, and reporting regardless of model selection. FlowerOS owns the RTX 4070 placement, telemetry, isolation, and reporting surface. GLM-5.2 is now a deprecated historical proposal. This study establishes the measured local comparison baseline for the medium-MoE candidate policy, but its 14B A3B result does not establish that a 47--156B candidate fits the host.
+\section{Artifacts}
+\begin{itemize}
+\item Raw llama.cpp JSON: \texttt{reports/brain-selection-20260717/raw/}.
+\item Normalized data: \texttt{reports/brain-selection-20260717/results.json}.
+\item Visualizations: \texttt{cpu-decode.svg} and \texttt{gpu-variation.svg} in the same report directory.
+\end{itemize}
+\end{document}

@@ -1,0 +1,36 @@
+{
+  "schema": "leafos.vulkan-provider-stack.v1",
+  "provider": "llamacpp",
+  "backend": "vulkan",
+  "server": {
+    "executable": "C:\\Users\\liamm\\AppData\\Local\\Microsoft\\WinGet\\Packages\\ggml.llamacpp_Microsoft.Winget.Source_8wekyb3d8bbwe\\llama-server.exe",
+    "model": "C:\\R\\LeafOS0.2.3\\ProjectLeaf\\leaf_model_installer\\models\\Gemma4-Coder\\gemma4-coding-Q3_K_M.gguf",
+    "host": "127.0.0.1",
+    "port": 8080,
+    "gpu_layers": 999,
+    "context_tokens": 8192,
+    "parallel_slots": 1
+  },
+  "lifecycle": {
+    "startup_timeout_seconds": 90,
+    "health_poll_milliseconds": 500
+  },
+  "api": {
+    "path": "/v1/chat/completions",
+    "protocol": "openai-compatible"
+  },
+  "thinking_loop": {
+    "enabled": true,
+    "max_output_tokens": 512,
+    "work_order_max_output_tokens": 4096,
+    "work_order_inspection_content_bytes": 4096,
+    "work_order_file_excerpt_bytes": 2048,
+    "temperature": 0.2
+  },
+  "authority": {
+    "provider_role": "proposal_only",
+    "cpu_validates": true,
+    "cpu_journals": true,
+    "provider_may_write_files": false
+  }
+}

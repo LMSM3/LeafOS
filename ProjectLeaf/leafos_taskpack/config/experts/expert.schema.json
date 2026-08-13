@@ -1,0 +1,4 @@
+﻿{
+  "schema": "leafos.expert.schema.v1",
+  "required": ["id", "model_ref", "parameters_b", "provider", "placement", "endpoint_ref", "context_tokens", "capabilities", "enabled"]
+}

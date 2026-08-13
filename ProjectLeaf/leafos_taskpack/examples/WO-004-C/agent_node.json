@@ -1,0 +1,30 @@
+{
+  "leafos_object": "agent_node",
+  "version": "0.4.0-C",
+  "id": "WO-004-C-wakeup",
+  "symbol": "\u2766",
+  "type": "embedded_action",
+  "action": "run_wakeup",
+  "entrypoint": "./wakeup.sh",
+  "expected_outputs": [
+    "runs/latest/wakeup_result.json",
+    "runs/wakeup_log.csv"
+  ],
+  "test_commands": [
+    "bash -n wakeup.sh",
+    "python3 -m py_compile wakeup.py",
+    "./wakeup.sh --force tails",
+    "./wakeup.sh --force heads --ticker NVDA"
+  ],
+  "completion_gate": {
+    "required_files": [
+      "wakeup.py",
+      "wakeup.sh",
+      "tickers.txt",
+      "README.md"
+    ],
+    "required_outputs": [
+      "runs/latest/wakeup_result.json"
+    ]
+  }
+}

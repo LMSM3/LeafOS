@@ -1,0 +1,18 @@
+{
+  "schema": "leafos.model-profile.v1",
+  "profile_id": "ficus-ecology.classifier-q2",
+  "base_catalog_key": "gemma4-opus-assistant",
+  "title": "Fable Ecology Classifier (Q2_K)",
+  "role": "classifier",
+  "lanes": ["slot.classify.intent", "slot.classify.sentiment", "slot.classify.domain"],
+  "contracts": ["classification_output"],
+  "runtime": ["llama.cpp"],
+  "recommended_quant": "Q2_K",
+  "quality_quant": "Q3_K_M",
+  "low_memory_quant": "Q2_K",
+  "emergency_quant": "Q2_K",
+  "activation": "on_demand",
+  "escalation_from": ["ficus-ecology.router-q2"],
+  "escalation_to": ["ficus-ecology.reasoner-q4", "ficus-ecology.judge-q4"],
+  "notes": ["Ultra-cheap tagger that labels a request so the scheduler can pick the right worker lane."]
+}

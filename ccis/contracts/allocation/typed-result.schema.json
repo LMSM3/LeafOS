@@ -1,0 +1,37 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://leafos.local/ccis/contracts/allocation/typed-result.v1.schema.json",
+  "title": "CCIS Typed Task Result",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["ccis_object", "schema_version", "task_id", "task_digest", "task_type", "task_version", "status", "summary", "started_at", "completed_at", "evidence_refs", "resource_use", "output"],
+  "properties": {
+    "ccis_object": {"const": "ccis.typed_result"},
+    "schema_version": {"const": 1},
+    "task_id": {"type": "string", "minLength": 3},
+    "task_digest": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"},
+    "task_type": {"type": "string", "minLength": 3},
+    "task_version": {"type": "integer", "minimum": 1},
+    "status": {"enum": ["SUCCEEDED", "REVISE", "REJECTED", "BLOCKED", "ESCALATED", "FAILED"]},
+    "summary": {"type": "string", "minLength": 1},
+    "started_at": {"type": "string", "format": "date-time"},
+    "completed_at": {"type": "string", "format": "date-time"},
+    "evidence_refs": {"type": "array", "items": {"type": "string", "minLength": 1}},
+    "resource_use": {"type": "array", "items": {"$ref": "#/$defs/resource_use"}},
+    "output": {"type": "object"}
+  },
+  "$defs": {
+    "resource_use": {
+      "type": "object", "additionalProperties": false,
+      "required": ["resource", "requested", "reserved", "consumed", "remaining", "unit"],
+      "properties": {
+        "resource": {"type": "string", "minLength": 1},
+        "requested": {"type": "number", "minimum": 0},
+        "reserved": {"type": "number", "minimum": 0},
+        "consumed": {"type": "number", "minimum": 0},
+        "remaining": {"type": "number", "minimum": 0},
+        "unit": {"type": "string", "minLength": 1}
+      }
+    }
+  }
+}

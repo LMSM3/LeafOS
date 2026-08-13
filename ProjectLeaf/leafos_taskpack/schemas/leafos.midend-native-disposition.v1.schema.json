@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://leafos.local/schemas/leafos.midend-native-disposition.v1.schema.json",
+  "title": "LeafOS Native Inlet Disposition",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["leafos_object", "version", "request_id", "control_id", "capability_id", "status", "recorded_at", "request_digest"],
+  "properties": {
+    "leafos_object": {"const": "leafos.midend_native_disposition"},
+    "version": {"const": 1},
+    "request_id": {"type": "string", "pattern": "^req_"},
+    "control_id": {"type": "string", "pattern": "^ctl_"},
+    "capability_id": {"type": "string"},
+    "status": {"enum": ["granted", "denied", "accepted", "executed", "validated", "failed"]},
+    "recorded_at": {"type": "string", "format": "date-time"},
+    "request_digest": {"type": "string", "pattern": "^sha256:[a-fA-F0-9]{64}$"},
+    "reason_code": {"type": ["string", "null"]},
+    "evidence_ref": {"type": ["string", "null"], "pattern": "^evidence://"},
+    "checkpoint_ref": {"type": ["string", "null"]}
+  }
+}

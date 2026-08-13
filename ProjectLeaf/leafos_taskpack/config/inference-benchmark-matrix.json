@@ -1,0 +1,173 @@
+{
+  "$schema": "./inference-benchmark-matrix.schema.json",
+  "schema": "leafos.inference-benchmark-matrix.v1",
+  "benchmark_id": "clean-expanded-20260721",
+  "runtime": {
+    "command": [
+      "C:\\Users\\liamm\\AppData\\Local\\Microsoft\\WinGet\\Packages\\ggml.llamacpp_Microsoft.Winget.Source_8wekyb3d8bbwe\\llama-bench.exe"
+    ],
+    "backend_expected": "Vulkan"
+  },
+  "conditions": {
+    "power": "AC power; record the active Windows power mode before interpreting results",
+    "background_processes": "Close user applications and stop LeafOS provider instances before starting",
+    "thermal_state": "Begin near idle; use sampled GPU temperature and end-of-run repeat to quantify drift",
+    "interpretation": "Results are model, quantization, llama.cpp build, placement, KV type, thread count, workload, thermal, and host-state specific",
+    "historical_candidate": "The 7.37 GB Gemma4 Opus Q4 file matches the rounded footprint in the old paper, but the repository does not preserve enough provenance to prove it was the original 3.90 tokens/s model"
+  },
+  "economics": {
+    "currency": "USD",
+    "comparison_output_usd_per_million": 10.0,
+    "pricing_basis": "operator_assumption",
+    "local_costs_included": false,
+    "note": "Gross cloud-equivalent output value only; local costs and cloud input/cache charges are excluded."
+  },
+  "idle_policy": {
+    "required": true,
+    "settle_sample_seconds": 2.0,
+    "max_cpu_percent": 15.0,
+    "max_gpu_percent": 10.0,
+    "max_gpu_vram_used_mib": 2048.0,
+    "minimum_available_ram_gib": 8.0,
+    "forbidden_process_names": ["llama-server", "llama-cli", "llama-bench"]
+  },
+  "protocol": {
+    "telemetry_interval_seconds": 0.5,
+    "cooldown_seconds": 10.0,
+    "hash_models": false,
+    "continue_on_error": false,
+    "ordering": "CPU model/thread sweep, GPU placement, workload/KV sensitivity, then thermal-drift repeat"
+  },
+  "cells": [
+    {
+      "id": "historical-candidate-gemma-q4-t24",
+      "label": "Historical protocol reconstruction, model identity unverified",
+      "phase": "historical-reconstruction",
+      "model": "C:\\R\\LeafOS0.2.3\\ProjectLeaf\\leaf_model_installer\\models\\Gemma4-Opus-Assistant\\gemma4-opus48-Q4_K_M.gguf",
+      "prompt_tokens": 512,
+      "generated_tokens": 128,
+      "repetitions": 3,
+      "threads": 24,
+      "gpu_layers": 0,
+      "kv_key_type": "f16",
+      "kv_value_type": "f16",
+      "warmup": false,
+      "notes": "Comparable to the surviving 2026 brain-selection protocol, not asserted to be the undocumented initial run."
+    },
+    {
+      "id": "gemma-opus-q4-cpu-t8", "phase": "cpu-thread-sweep",
+      "model": "C:\\R\\LeafOS0.2.3\\ProjectLeaf\\leaf_model_installer\\models\\Gemma4-Opus-Assistant\\gemma4-opus48-Q4_K_M.gguf",
+      "prompt_tokens": 512, "generated_tokens": 256, "repetitions": 5, "threads": 8,
+      "gpu_layers": 0, "kv_key_type": "f16", "kv_value_type": "f16"
+    },
+    {
+      "id": "gemma-opus-q4-cpu-t16", "phase": "cpu-thread-sweep",
+      "model": "C:\\R\\LeafOS0.2.3\\ProjectLeaf\\leaf_model_installer\\models\\Gemma4-Opus-Assistant\\gemma4-opus48-Q4_K_M.gguf",
+      "prompt_tokens": 512, "generated_tokens": 256, "repetitions": 5, "threads": 16,
+      "gpu_layers": 0, "kv_key_type": "f16", "kv_value_type": "f16"
+    },
+    {
+      "id": "gemma-opus-q4-cpu-t24", "phase": "cpu-thread-sweep",
+      "model": "C:\\R\\LeafOS0.2.3\\ProjectLeaf\\leaf_model_installer\\models\\Gemma4-Opus-Assistant\\gemma4-opus48-Q4_K_M.gguf",
+      "prompt_tokens": 512, "generated_tokens": 256, "repetitions": 5, "threads": 24,
+      "gpu_layers": 0, "kv_key_type": "f16", "kv_value_type": "f16"
+    },
+    {
+      "id": "gemma-opus-q4-cpu-t32", "phase": "cpu-thread-sweep",
+      "model": "C:\\R\\LeafOS0.2.3\\ProjectLeaf\\leaf_model_installer\\models\\Gemma4-Opus-Assistant\\gemma4-opus48-Q4_K_M.gguf",
+      "prompt_tokens": 512, "generated_tokens": 256, "repetitions": 5, "threads": 32,
+      "gpu_layers": 0, "kv_key_type": "f16", "kv_value_type": "f16"
+    },
+    {
+      "id": "qwen14-a3b-moe-cpu-t8", "phase": "cpu-thread-sweep",
+      "model": "C:\\R\\LeafOS0.2.3\\ProjectLeaf\\leaf_model_installer\\models\\Qwen3.5-Claude-Reasoning\\Qwen3.5-14B-A3B-Claude-Opus-Reasoning-Distilled-4.6-MXFP4_MOE.gguf",
+      "prompt_tokens": 512, "generated_tokens": 256, "repetitions": 5, "threads": 8,
+      "gpu_layers": 0, "kv_key_type": "f16", "kv_value_type": "f16"
+    },
+    {
+      "id": "qwen14-a3b-moe-cpu-t16", "phase": "cpu-thread-sweep",
+      "model": "C:\\R\\LeafOS0.2.3\\ProjectLeaf\\leaf_model_installer\\models\\Qwen3.5-Claude-Reasoning\\Qwen3.5-14B-A3B-Claude-Opus-Reasoning-Distilled-4.6-MXFP4_MOE.gguf",
+      "prompt_tokens": 512, "generated_tokens": 256, "repetitions": 5, "threads": 16,
+      "gpu_layers": 0, "kv_key_type": "f16", "kv_value_type": "f16"
+    },
+    {
+      "id": "qwen14-a3b-moe-cpu-t24", "phase": "cpu-thread-sweep",
+      "model": "C:\\R\\LeafOS0.2.3\\ProjectLeaf\\leaf_model_installer\\models\\Qwen3.5-Claude-Reasoning\\Qwen3.5-14B-A3B-Claude-Opus-Reasoning-Distilled-4.6-MXFP4_MOE.gguf",
+      "prompt_tokens": 512, "generated_tokens": 256, "repetitions": 5, "threads": 24,
+      "gpu_layers": 0, "kv_key_type": "f16", "kv_value_type": "f16"
+    },
+    {
+      "id": "qwen14-a3b-moe-cpu-t32", "phase": "cpu-thread-sweep",
+      "model": "C:\\R\\LeafOS0.2.3\\ProjectLeaf\\leaf_model_installer\\models\\Qwen3.5-Claude-Reasoning\\Qwen3.5-14B-A3B-Claude-Opus-Reasoning-Distilled-4.6-MXFP4_MOE.gguf",
+      "prompt_tokens": 512, "generated_tokens": 256, "repetitions": 5, "threads": 32,
+      "gpu_layers": 0, "kv_key_type": "f16", "kv_value_type": "f16"
+    },
+    {
+      "id": "qwopus9b-q4-cpu-t8", "phase": "cpu-thread-sweep",
+      "model": "C:\\R\\LeafOS0.2.3\\ProjectLeaf\\leaf_model_installer\\models\\Qwopus3.5-9B-Coder-MTP\\Qwopus3.5-9B-Coder-MTP-Q4_K_M.gguf",
+      "prompt_tokens": 512, "generated_tokens": 256, "repetitions": 5, "threads": 8,
+      "gpu_layers": 0, "kv_key_type": "f16", "kv_value_type": "f16"
+    },
+    {
+      "id": "qwopus9b-q4-cpu-t16", "phase": "cpu-thread-sweep",
+      "model": "C:\\R\\LeafOS0.2.3\\ProjectLeaf\\leaf_model_installer\\models\\Qwopus3.5-9B-Coder-MTP\\Qwopus3.5-9B-Coder-MTP-Q4_K_M.gguf",
+      "prompt_tokens": 512, "generated_tokens": 256, "repetitions": 5, "threads": 16,
+      "gpu_layers": 0, "kv_key_type": "f16", "kv_value_type": "f16"
+    },
+    {
+      "id": "qwopus9b-q4-cpu-t24", "phase": "cpu-thread-sweep",
+      "model": "C:\\R\\LeafOS0.2.3\\ProjectLeaf\\leaf_model_installer\\models\\Qwopus3.5-9B-Coder-MTP\\Qwopus3.5-9B-Coder-MTP-Q4_K_M.gguf",
+      "prompt_tokens": 512, "generated_tokens": 256, "repetitions": 5, "threads": 24,
+      "gpu_layers": 0, "kv_key_type": "f16", "kv_value_type": "f16"
+    },
+    {
+      "id": "qwopus9b-q4-cpu-t32", "phase": "cpu-thread-sweep",
+      "model": "C:\\R\\LeafOS0.2.3\\ProjectLeaf\\leaf_model_installer\\models\\Qwopus3.5-9B-Coder-MTP\\Qwopus3.5-9B-Coder-MTP-Q4_K_M.gguf",
+      "prompt_tokens": 512, "generated_tokens": 256, "repetitions": 5, "threads": 32,
+      "gpu_layers": 0, "kv_key_type": "f16", "kv_value_type": "f16"
+    },
+    {
+      "id": "gemma-coder-q3-cpu-t24", "phase": "current-stack-reference",
+      "model": "C:\\R\\LeafOS0.2.3\\ProjectLeaf\\leaf_model_installer\\models\\Gemma4-Coder\\gemma4-coding-Q3_K_M.gguf",
+      "prompt_tokens": 512, "generated_tokens": 256, "repetitions": 5, "threads": 24,
+      "gpu_layers": 0, "kv_key_type": "f16", "kv_value_type": "f16"
+    },
+    {
+      "id": "qwen14-a3b-moe-gpu16", "phase": "placement-sweep",
+      "model": "C:\\R\\LeafOS0.2.3\\ProjectLeaf\\leaf_model_installer\\models\\Qwen3.5-Claude-Reasoning\\Qwen3.5-14B-A3B-Claude-Opus-Reasoning-Distilled-4.6-MXFP4_MOE.gguf",
+      "prompt_tokens": 512, "generated_tokens": 256, "repetitions": 5, "threads": 24,
+      "gpu_layers": 16, "kv_key_type": "f16", "kv_value_type": "f16"
+    },
+    {
+      "id": "qwen14-a3b-moe-gpu-full", "phase": "placement-sweep",
+      "model": "C:\\R\\LeafOS0.2.3\\ProjectLeaf\\leaf_model_installer\\models\\Qwen3.5-Claude-Reasoning\\Qwen3.5-14B-A3B-Claude-Opus-Reasoning-Distilled-4.6-MXFP4_MOE.gguf",
+      "prompt_tokens": 512, "generated_tokens": 256, "repetitions": 5, "threads": 24,
+      "gpu_layers": 999, "kv_key_type": "f16", "kv_value_type": "f16"
+    },
+    {
+      "id": "qwen14-a3b-moe-gpu-full-p128", "phase": "prompt-sensitivity",
+      "model": "C:\\R\\LeafOS0.2.3\\ProjectLeaf\\leaf_model_installer\\models\\Qwen3.5-Claude-Reasoning\\Qwen3.5-14B-A3B-Claude-Opus-Reasoning-Distilled-4.6-MXFP4_MOE.gguf",
+      "prompt_tokens": 128, "generated_tokens": 256, "repetitions": 5, "threads": 24,
+      "gpu_layers": 999, "kv_key_type": "f16", "kv_value_type": "f16"
+    },
+    {
+      "id": "qwen14-a3b-moe-gpu-full-p2048", "phase": "prompt-sensitivity",
+      "model": "C:\\R\\LeafOS0.2.3\\ProjectLeaf\\leaf_model_installer\\models\\Qwen3.5-Claude-Reasoning\\Qwen3.5-14B-A3B-Claude-Opus-Reasoning-Distilled-4.6-MXFP4_MOE.gguf",
+      "prompt_tokens": 2048, "generated_tokens": 256, "repetitions": 5, "threads": 24,
+      "gpu_layers": 999, "kv_key_type": "f16", "kv_value_type": "f16"
+    },
+    {
+      "id": "qwen14-a3b-moe-gpu-full-kvq8", "phase": "kv-cache-sensitivity",
+      "model": "C:\\R\\LeafOS0.2.3\\ProjectLeaf\\leaf_model_installer\\models\\Qwen3.5-Claude-Reasoning\\Qwen3.5-14B-A3B-Claude-Opus-Reasoning-Distilled-4.6-MXFP4_MOE.gguf",
+      "prompt_tokens": 512, "generated_tokens": 256, "repetitions": 5, "threads": 24,
+      "gpu_layers": 999, "kv_key_type": "q8_0", "kv_value_type": "q8_0"
+    },
+    {
+      "id": "qwen14-a3b-moe-gpu-full-drift-repeat", "phase": "thermal-drift-check",
+      "model": "C:\\R\\LeafOS0.2.3\\ProjectLeaf\\leaf_model_installer\\models\\Qwen3.5-Claude-Reasoning\\Qwen3.5-14B-A3B-Claude-Opus-Reasoning-Distilled-4.6-MXFP4_MOE.gguf",
+      "prompt_tokens": 512, "generated_tokens": 256, "repetitions": 5, "threads": 24,
+      "gpu_layers": 999, "kv_key_type": "f16", "kv_value_type": "f16",
+      "notes": "Compare with qwen14-a3b-moe-gpu-full to quantify within-run thermal or background-state drift."
+    }
+  ]
+}

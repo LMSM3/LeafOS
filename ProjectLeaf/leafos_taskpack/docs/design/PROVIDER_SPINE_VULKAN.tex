@@ -1,0 +1,127 @@
+\documentclass[11pt]{article}
+\usepackage[margin=0.8in]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{booktabs,longtable,hyperref,fancyvrb,parskip}
+\usepackage[expansion=false]{microtype}
+
+\hypersetup{
+  colorlinks=true,
+  linkcolor=black,
+  urlcolor=black,
+  citecolor=black,
+  pdftitle={LeafOS llama.cpp Vulkan Provider Spine},
+  pdfauthor={LeafOS}
+}
+
+\title{\textbf{LeafOS llama.cpp Vulkan Provider Spine}\\[4pt]\large Runtime Boundary and Operator Checks}
+\author{LeafOS}
+\date{}
+
+\newcommand{\code}[1]{\texttt{#1}}
+
+\begin{document}
+\maketitle
+
+\section*{Purpose}
+
+This document records the intended local inference boundary for LeafOS:
+\code{llama.cpp} is the model provider, and Vulkan is the preferred local GPU
+backend. The provider is a long-lived \code{llama-server} process. It is not the
+node transport and it is not the filesystem authority.
+
+\section*{Control Plane}
+
+\begin{Verbatim}[fontsize=\small, frame=single]
+Human task
+  -> task file
+  -> CPU graph and policy checks
+  -> provider call to llama.cpp HTTP endpoint
+  -> model proposal
+  -> parser
+  -> patch gate / verification gate
+  -> accepted artifact or rejection
+  -> journal / report
+\end{Verbatim}
+
+\section*{Provider Startup}
+
+On Windows, use the PowerShell provider launcher:
+
+\begin{Verbatim}[fontsize=\small, frame=single]
+cd C:\path\to\LeafOS\PowerShell-Version
+.\serve-llamacpp.ps1 --llama-dir C:\llama-vulkan --backend vulkan --model fable
+\end{Verbatim}
+
+Use \code{--check-only} before a real run:
+
+\begin{Verbatim}[fontsize=\small, frame=single]
+.\serve-llamacpp.ps1 --llama-dir C:\llama-vulkan --check-only --backend vulkan
+\end{Verbatim}
+
+\section*{Provider Environment}
+
+Set these in the shell that will run LeafOS commands:
+
+\begin{Verbatim}[fontsize=\small, frame=single]
+$env:LEAF_PROVIDER_MODE = 'llamacpp'
+$env:LEAF_BRAIN_PROVIDER = 'llamacpp'
+$env:LEAF_CODER_PROVIDER = 'llamacpp'
+$env:LEAF_LLAMACPP_URL = 'http://127.0.0.1:8080'
+\end{Verbatim}
+
+\section*{Diagnostics}
+
+\begin{longtable}{@{}p{0.34\linewidth}p{0.56\linewidth}@{}}
+\toprule
+Check & Meaning \\
+\midrule
+\code{vulkaninfo --summary} & Confirms the OS Vulkan stack sees a GPU. \\
+\code{llama-server --list-devices} & Confirms the selected llama.cpp build exposes accelerator devices. \\
+\code{leafctl provider test llamacpp} & Confirms the HTTP provider is reachable and returns model text. \\
+\code{nvidia-smi} & Confirms the NVIDIA driver and live GPU activity. \\
+\bottomrule
+\end{longtable}
+
+\section*{Common Failure}
+
+\begin{Verbatim}[fontsize=\small, frame=single]
+Observed:
+  vulkaninfo sees NVIDIA GeForce RTX 4070
+  llama-server --list-devices prints only:
+    Available devices:
+
+Meaning:
+  The selected llama.cpp package is CPU-only.
+
+Fix:
+  Use a Windows x64 Vulkan llama.cpp build.
+  Pass its directory with --llama-dir or set LEAF_LLAMACPP_DIR.
+\end{Verbatim}
+
+\section*{Runtime Doctrine}
+
+\begin{Verbatim}[fontsize=\small, frame=single]
+The GPU proposes.
+The CPU disposes.
+
+Model output is untrusted text.
+The parser turns it into a typed artifact.
+The patch gate decides whether it can touch files.
+The journal records what happened.
+\end{Verbatim}
+
+\section*{Promotion Gate}
+
+The provider spine is ready for \code{0.4.0-alpha.1} evidence when all of these
+are true:
+
+\begin{enumerate}
+  \item \code{serve-llamacpp.ps1 --check-only --backend vulkan} sees at least one device.
+  \item \code{llama-server} stays alive as a persistent HTTP endpoint.
+  \item \code{leafctl provider test llamacpp} passes all checks.
+  \item Brain and coder lanes can route to \code{llamacpp} independently.
+  \item A generated patch is validated before any apply operation.
+\end{enumerate}
+
+\end{document}

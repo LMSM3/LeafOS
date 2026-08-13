@@ -1,0 +1,65 @@
+#!/usr/bin/env bash
+# Render the versioned FlowerOS quick shell syntax contract.
+set -euo pipefail
+
+ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
+CONTRACT="$ROOT_DIR/config/quick-syntax.json"
+
+die() { printf '%s\n' "$*" >&2; exit 1; }
+
+[[ -f "$CONTRACT" ]] || die "quick-syntax contract not found: $CONTRACT"
+command -v jq >/dev/null || die "jq is required for quick-syntax rendering"
+
+schema=$(jq -r '.schema // empty' "$CONTRACT")
+[[ "$schema" == "leafos.quick-syntax.v1" ]] || die "quick syntax schema must be leafos.quick-syntax.v1"
+
+surface=$(jq -r '.surface // empty' "$CONTRACT")
+engine=$(jq -r '.engine // empty' "$CONTRACT")
+[[ "$surface" == "FlowerOS" ]] || die "quick syntax surface must be FlowerOS"
+[[ "$engine" == "LeafOS" ]] || die "quick syntax engine must be LeafOS"
+
+command_name=$(jq -r '.command // "leafos"' "$CONTRACT")
+
+if [[ "${1:-}" == "--json" ]]; then
+	cat "$CONTRACT"
+	exit 0
+fi
+
+entries_tmp=$(mktemp)
+trap 'rm -f "$entries_tmp"' EXIT
+
+jq -r '.entries[] | [.alias, (.expansion | join(" ")), (.read_only|tostring), (.interactive|tostring), .description] | @tsv' \
+	"$CONTRACT" > "$entries_tmp"
+
+[[ -s "$entries_tmp" ]] || die "quick syntax entries must be a non-empty list"
+
+# Validate no duplicate aliases.
+sort -t$'\t' -k1,1 "$entries_tmp" | awk -F'\t' '
+	NR>1 && $1==last { print "duplicate alias: " $1; exit 1 }
+	{ last=$1 }
+'
+
+# Render compact table.
+max_alias=0
+max_exp=0
+while IFS=$'\t' read -r alias exp _ _ _; do
+	(( ${#alias} > max_alias )) && max_alias=${#alias}
+	(( ${#exp} > max_exp )) && max_exp=${#exp}
+done < "$entries_tmp"
+
+printf '%s quick syntax (%s engine)\n' "$surface" "$engine"
+printf 'Usage: %s <shortcut> [arguments]\n\n' "$command_name"
+printf '%-*s  %-*s  %s\n' "$max_alias" "Shortcut" "$max_exp" "Expands to" "Mode"
+
+while IFS=$'\t' read -r alias exp ro inter desc; do
+	mode="active"
+	[[ "$ro" == "true" ]] && mode="read-only"
+	[[ "$inter" == "true" ]] && mode="$mode, interactive"
+	printf '%-*s  %-*s  %s - %s\n' "$max_alias" "$command_name $alias" "$max_exp" "$exp" "$mode" "$desc"
+done < "$entries_tmp"
+
+printf '\n'
+printf 'No arguments: %s -> home\n' "$command_name"
+printf 'Full command list: %s help\n' "$command_name"
+printf 'Machine-readable card: %s q --json\n' "$command_name"
+printf 'Shortcuts expand fixed command tokens; extra arguments are forwarded unchanged.\n'

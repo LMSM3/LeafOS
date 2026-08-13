@@ -1,0 +1,42 @@
+{
+  "groups": [
+    "config/groups/ficus-ecology.routing.json",
+    "config/groups/ficus-ecology.memory.json",
+    "config/groups/ficus-ecology.reasoning.json",
+    "config/groups/ficus-ecology.code.json",
+    "config/groups/ficus-ecology.creative.json",
+    "config/groups/ficus-ecology.safety.json",
+    "config/groups/ficus-ecology.synthesis.json"
+  ],
+  "identity": {
+    "colour": "blue",
+    "display_name": "blue\u2740",
+    "flower": "amaranth",
+    "symbol": "\u2740",
+    "visual_family": "cool"
+  },
+  "pack": "config/packs/ficus-ecology.json",
+  "pack_id": "ficus-ecology",
+  "profiles": [
+    "config/model-profiles/ficus-ecology.router-q2.json",
+    "config/model-profiles/ficus-ecology.helper-q2.json",
+    "config/model-profiles/ficus-ecology.classifier-q2.json",
+    "config/model-profiles/ficus-ecology.sparrow-q2.json",
+    "config/model-profiles/ficus-ecology.summarizer-q2.json",
+    "config/model-profiles/ficus-ecology.drafter-q2.json",
+    "config/model-profiles/ficus-ecology.critic-q3.json",
+    "config/model-profiles/ficus-ecology.falcon-q3.json",
+    "config/model-profiles/ficus-ecology.memory-q3.json",
+    "config/model-profiles/ficus-ecology.repair-q3.json",
+    "config/model-profiles/ficus-ecology.sky-q3.json",
+    "config/model-profiles/ficus-ecology.composer-q4.json",
+    "config/model-profiles/ficus-ecology.coder-builder-q4.json",
+    "config/model-profiles/ficus-ecology.judge-q4.json",
+    "config/model-profiles/ficus-ecology.orchid-q4.json",
+    "config/model-profiles/ficus-ecology.reasoner-q4.json",
+    "config/model-profiles/ficus-ecology.writer-q4.json",
+    "config/model-profiles/ficus-ecology.mor-q6.json",
+    "config/model-profiles/ficus-ecology.sleeping-giant-q8.json"
+  ],
+  "schema": "leafos.pack-manifest.v1"
+}

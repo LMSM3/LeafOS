@@ -1,0 +1,35 @@
+{
+  "entries": [
+    {
+      "display_name": "red\u273f",
+      "dominant_role": "brain",
+      "fingerprint": "b9326c0873ab91d3d6b2dcce1750ec25a6e6d2b1cbf42c5510d825b55386c2be",
+      "identity": {
+        "colour": "red",
+        "display_name": "red\u273f",
+        "flower": "rose",
+        "symbol": "\u273f",
+        "visual_family": "warm"
+      },
+      "manifest_path": "C:\\R\\LeafOS0.2.3\\ProjectLeaf\\leafos_taskpack\\packs\\generated\\penstemon-atlas-b9326c.json",
+      "pack_id": "penstemon-atlas-b9326c",
+      "reserved_at": "2026-07-31T08:59:45.466230Z"
+    },
+    {
+      "display_name": "purple\u2740",
+      "dominant_role": "brain",
+      "fingerprint": "4e96d9bf5f62ac90d48a00ad63c21ea7cc5ae59aece715ec520dbb3ce06f1af9",
+      "identity": {
+        "colour": "purple",
+        "display_name": "purple\u2740",
+        "flower": "violet",
+        "symbol": "\u2740",
+        "visual_family": "cool"
+      },
+      "manifest_path": "C:\\R\\LeafOS0.2.3\\ProjectLeaf\\leafos_taskpack\\packs\\generated\\penstemon-crown-4e96d9.json",
+      "pack_id": "penstemon-crown-4e96d9",
+      "reserved_at": "2026-07-31T09:07:49.840124Z"
+    }
+  ],
+  "schema": "leafos.pack-registry/v1"
+}

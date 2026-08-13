@@ -1,0 +1,20 @@
+{
+  "schema": "leafos.model-profile.v1",
+  "profile_id": "brain-primary-27b-nvfp4-mtp",
+  "model_repo": "Brian6145/Qwen3.6-27B-Claude-Opus-Sonnet-Distilled-NVFP4-MTP",
+  "role": "brain",
+  "lanes": [
+    "slot.brain.plan",
+    "slot.brain.deep",
+    "slot.brain.repair",
+    "slot.brain.gate_design"
+  ],
+  "contracts": ["json_taskpack", "agent_graph_json", "repair_plan_json"],
+  "runtime": ["vLLM", "SGLang"],
+  "status": "experimental_primary",
+  "notes": [
+    "Use when NVFP4/MTP deployment is stable.",
+    "Do not use for direct patches.",
+    "Parser must reject prose-only planning."
+  ]
+}

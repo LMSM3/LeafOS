@@ -1,0 +1,15 @@
+{
+  "schema": "leafos.model-profile.v1",
+  "profile_id": "brain-primary-14b-gguf",
+  "model_repo": "tvall43/Qwen3.5-14B-A3B-Claude-4.6-Opus-Reasoning-Distilled-reap-gguf",
+  "role": "brain",
+  "lanes": ["slot.brain.plan", "slot.brain.repair", "slot.review.architecture"],
+  "contracts": ["json_taskpack", "agent_graph_json", "review_json"],
+  "runtime": ["llama.cpp", "LM Studio", "compatible GGUF runner"],
+  "status": "stable_primary_candidate",
+  "notes": [
+    "Use as default conservative planner.",
+    "Good fallback if the 27B NVFP4 stack is not practical.",
+    "Do not route direct file mutation through this profile."
+  ]
+}

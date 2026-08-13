@@ -1,0 +1,39 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://leafos.local/schemas/leafos.midend-resource.v1.schema.json",
+  "title": "LeafOS Midend Resource Representation",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["leafos_object", "version", "resource", "projection", "capabilities", "evidence_refs"],
+  "properties": {
+    "leafos_object": {"const": "leafos.midend_resource"},
+    "version": {"const": 1},
+    "resource": {"$ref": "#/$defs/resource"},
+    "projection": {"type": "object"},
+    "capabilities": {"type": "array", "items": {"type": "object"}},
+    "evidence_refs": {"type": "array", "uniqueItems": true, "items": {"type": "string", "pattern": "^evidence://"}},
+    "freshness": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["generated_at", "degraded"],
+      "properties": {
+        "generated_at": {"type": "string", "format": "date-time"},
+        "source_cursor": {"type": ["string", "null"]},
+        "degraded": {"type": "boolean"},
+        "reason": {"type": ["string", "null"]}
+      }
+    }
+  },
+  "$defs": {
+    "resource": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "id", "version"],
+      "properties": {
+        "type": {"enum": ["project", "run", "task", "report", "profile", "install_plan", "session"]},
+        "id": {"type": "string", "pattern": "^[A-Za-z][A-Za-z0-9._-]{2,127}$"},
+        "version": {"type": "integer", "minimum": 0}
+      }
+    }
+  }
+}

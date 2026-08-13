@@ -1,0 +1,18 @@
+{
+  "schema": "leafos.model-profile.v1",
+  "profile_id": "ficus-ecology.critic-q3",
+  "base_catalog_key": "gemma4-opus-assistant",
+  "title": "Fable Ecology Critic (Q3_K_M)",
+  "role": "critic",
+  "lanes": ["slot.critic.review", "slot.critic.safety", "slot.critic.style"],
+  "contracts": ["critique_output"],
+  "runtime": ["llama.cpp"],
+  "recommended_quant": "Q3_K_M",
+  "quality_quant": "Q4_K_M",
+  "low_memory_quant": "Q2_K",
+  "emergency_quant": "Q2_K",
+  "activation": "on_demand",
+  "escalation_from": ["ficus-ecology.drafter-q2", "ficus-ecology.coder-builder-q4"],
+  "escalation_to": ["ficus-ecology.judge-q4", "ficus-ecology.reasoner-q4"],
+  "notes": ["Scores drafts for coherence, policy risk, and style fit. Does not rewrite, only flags and rates."]
+}

@@ -1,0 +1,19 @@
+{
+  "schema": "leafos.model-group/v1",
+  "id": "blue.helper",
+  "slot": "helpertext.primary",
+  "enabled": true,
+  "policy": {
+    "parallel_load": false,
+    "preferred_quantization": ["Q5_K_M", "Q4_K_M", "Q8_0", "F16"],
+    "max_vram_gib": 0.0,
+    "max_ram_gib": 8.0,
+    "allow_remote": false
+  },
+  "members": [
+    { "id": "blue-helpertext-primary", "weight": 100 },
+    { "id": "blue-helpertext-balanced", "weight": 80 },
+    { "id": "blue-helpertext-fast", "weight": 70 },
+    { "id": "blue-helpertext-reference", "weight": 50 }
+  ]
+}

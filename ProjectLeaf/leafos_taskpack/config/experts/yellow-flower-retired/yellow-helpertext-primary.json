@@ -1,0 +1,43 @@
+{
+  "schema": "leafos.expert.v1",
+  "source_repo": "GnLOLot/MiniCPM5-1B-Claude-Opus-Fable5-Thinking-GGUF",
+  "revision": "main",
+  "parameters_b": 1,
+  "provider": "llama.cpp",
+  "placement": "local",
+  "stack_segment": "local_gpu",
+  "endpoint_ref": "local-helpertext",
+  "quantization": "Q8_0",
+  "estimated_memory_gib": 2.0,
+  "context_tokens": 8192,
+  "capabilities": [
+    "write.fast"
+  ],
+  "fallback_chain": [
+    "yellow-helpertext-bedrock"
+  ],
+  "enabled": false,
+  "purpose": "rewrite command output and generate short user-facing text",
+  "notes": "Placeholder until artifact is downloaded and revision pinned.",
+  "install_state": {
+    "status": "not_downloaded",
+    "local_path": null,
+    "blob_sha256": null,
+    "verified": false,
+    "download_attempts": 0
+  },
+  "runtime_params": {
+    "flash_attention": true,
+    "mmap": true,
+    "mlock": false,
+    "n_gpu_layers": -1,
+    "seed": 42
+  },
+  "validation": {
+    "launch_test_passed": false,
+    "checksum_ok": false,
+    "benchmark_tag": null
+  },
+  "id": "yellow-helpertext-primary",
+  "model_ref": "minicpm5-1b-fable"
+}

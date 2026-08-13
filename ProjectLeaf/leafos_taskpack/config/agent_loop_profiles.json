@@ -1,0 +1,56 @@
+{
+  "leafos_object": "agent_loop_profiles",
+  "version": 1,
+  "profiles": {
+    "local-coding": {
+      "description": "Work-order-driven local coding with a required llama.cpp proposal lane and CPU-authoritative execution policy.",
+      "provider_mode": "required",
+      "stack_entry": "local-stack:local-coding",
+      "safety_policy": "work-order-v2",
+      "max_minutes": 64,
+      "max_attempts": 2,
+      "task_timeout_seconds": 300,
+      "first_checkpoint_due_minutes": 30
+    },
+    "repository": {
+      "description": "General repository loop requiring the configured local llama.cpp stack for model-planned tasks.",
+      "provider_mode": "required",
+      "stack_entry": "local-stack:repository",
+      "safety_policy": "local-bounded",
+      "max_minutes": 64,
+      "max_attempts": 1,
+      "task_timeout_seconds": 180,
+      "first_checkpoint_due_minutes": 30
+    },
+    "local-games": {
+      "description": "Local game-workspace loop with a bounded CPU validation policy.",
+      "provider_mode": "off",
+      "stack_entry": "local-stack:auto",
+      "safety_policy": "local-bounded",
+      "max_minutes": 64,
+      "max_attempts": 1,
+      "task_timeout_seconds": 120,
+      "first_checkpoint_due_minutes": 30
+    },
+    "cpu-only": {
+      "description": "No provider startup; all validation uses local CPU commands.",
+      "provider_mode": "off",
+      "stack_entry": "local-stack:cpu-only",
+      "safety_policy": "local-bounded",
+      "max_minutes": 8,
+      "max_attempts": 1,
+      "task_timeout_seconds": 120,
+      "first_checkpoint_due_minutes": 30
+    },
+    "provider-auto": {
+      "description": "Use the local llama.cpp stack when configured, otherwise use the bounded CPU validation policy.",
+      "provider_mode": "auto",
+      "stack_entry": "local-stack:provider-auto",
+      "safety_policy": "local-bounded",
+      "max_minutes": 64,
+      "max_attempts": 1,
+      "task_timeout_seconds": 180,
+      "first_checkpoint_due_minutes": 30
+    }
+  }
+}

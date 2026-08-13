@@ -1,0 +1,123 @@
+FlowerOS SIMPLE INSTALL + CURRENT USAGE
+=======================================
+
+This is the short Windows-first guide for the resident project stack.
+Nothing here downloads model weights unless an apply command is run with --yes.
+
+
+1. OPEN THE TASK PACK
+---------------------
+
+PowerShell:
+
+  Set-Location C:\R\LeafOS0.2.2\ProjectLeaf\leafos_taskpack
+  .\bin\flower.ps1 home
+  .\bin\flower.ps1 doctor
+  .\bin\flower.ps1 versions
+
+FlowerOS is the user-facing command and window surface. LeafOS remains the
+execution and evidence engine. The FlowerOS entrypoint forwards to that engine;
+it does not duplicate schedulers, providers, queues, or state.
+
+
+2. CHECK THE LOCAL PROVIDER
+---------------------------
+
+  .\bin\flower.ps1 provider-stack check
+  .\bin\flower.ps1 provider-stack status --json
+
+The check validates the configured llama.cpp executable, GGUF model, Vulkan
+route, endpoint, and lifecycle settings. It does not download weights.
+
+
+3. INSTALL MODELS ONLY WHEN NEEDED
+----------------------------------
+
+  .\bin\leafctl.ps1 models-install catalog
+  .\bin\leafctl.ps1 models-install plan --profile runtime-default --out leaf-runtime-plan.json
+  .\bin\leafctl.ps1 models-install resolve leaf-runtime-plan.json
+
+Review the resolved plan. The download boundary is:
+
+  .\bin\leafctl.ps1 models-install apply leaf-runtime-plan.resolved.json --yes
+
+Within LeafOS documentation, stack means every downloaded and locally
+available model in this instance. A runtime or provider route selects one
+stack entry for a role.
+
+
+4. OPEN A LIVE PROJECT
+----------------------
+
+  .\bin\flower.ps1 live C:\R\MyProject
+
+No objective is required. LeafOS inspects the directory, creates or reattaches
+a durable run, starts the resident supervisor, and opens the TUI.
+
+Start a minimal generic project:
+
+  .\bin\flower.ps1 live C:\R\MyNewProject --new --template generic --yes --budget 64
+
+
+5. GIVE LIGHTWEIGHT INSTRUCTIONS
+--------------------------------
+
+Inside the TUI:
+
+  :improve
+  :improve add deterministic replay
+  :again
+  :make the current output easier to inspect
+
+Commands are optional. Plain text becomes a bounded typed task. Model output
+is proposal-only; CPU policy validates paths, commands, approval, execution,
+tests, checkpoint, and report.
+
+
+6. CONTROL THE RESIDENT STACK
+-----------------------------
+
+  :mode quiet
+  :mode auto
+  :targets cpu 80 gpu 90
+  :budget 64m
+  :pause
+  :resume
+  :drain
+
+Press q to close only the TUI. Drain finishes accepted work. Stop requires a
+confirmed typed-control flow.
+
+
+7. VERIFY
+---------
+
+  .\bin\leafctl.ps1 test visual --plain
+  .\bin\leafctl.ps1 test visual --match provider --live-stack --plain
+  .\bin\leafctl.ps1 resident start --contract-only --iterations 3
+
+The current discovery suite contains 199 tests.
+explicitly real-provider evidence; fixtures and contract mode are labeled and
+do not make that claim.
+
+
+8. OPTIONAL OLDER SURFACES
+--------------------------
+
+  oneshot          creates a portable handoff bundle; it does not run a loop
+  dashboard        displays the optional SSH node subsystem
+  node/nodes/task  distributes explicit work over SSH or local transport
+  agent-task/...   retains the finite 0.2 task-plan pipeline
+
+See docs\DOCUMENTATION_MAP.md for the current reading order.
+
+
+SAFETY RULES
+------------
+
+- Plan downloads before applying them.
+- Keep provider output proposal-only.
+- Never bypass declared paths, approval, or validation.
+- Treat CPU/GPU targets as adaptive useful-work targets, not load quotas.
+- Do not expose or store private model chain-of-thought.
+- Do not claim the 8-minute or 64-minute soak passed without a retained passing summary.

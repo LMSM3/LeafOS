@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+ROOT_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
+
+if command -v python3 >/dev/null 2>&1; then
+	exec python3 "$ROOT_DIR/core/python/leaf_web_model_pipe.py" "$@"
+elif command -v python >/dev/null 2>&1; then
+	exec python "$ROOT_DIR/core/python/leaf_web_model_pipe.py" "$@"
+else
+	printf 'leaf-web-model: Python 3 is required\n' >&2
+	exit 127
+fi

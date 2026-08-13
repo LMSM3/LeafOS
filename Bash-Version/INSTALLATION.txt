@@ -1,0 +1,57 @@
+LeafOS Bash Version Installation
+
+A.) Install / readiness check
+
+1. Open Bash.
+
+2. Go to:
+
+   C:\path\to\LeafOS\Bash-Version
+
+   Or the equivalent path inside WSL/MSYS/Git Bash.
+
+3. Run:
+
+   bash install.sh
+
+B.) Usage
+
+Status:
+
+   bash leaf.sh status
+
+Runtime selection:
+
+   bash leaf.sh runtime select
+
+One-shot handoff bundle:
+
+   bash oneshot.sh --oneshot .. ./LeafOS-OneShot
+
+Model planning:
+
+   bash real-models.sh
+
+Model resolve:
+
+   bash real-models.sh --resolve
+
+Model download/resume:
+
+   bash real-models.sh --resolve --apply --yes
+
+Full real installation automation:
+
+   bash install-real.sh
+   bash install-real.sh --yes
+
+Safety:
+
+- Planning is offline.
+- Resolve reads metadata only.
+- Apply is the model download boundary.
+- Apply requires --yes.
+- Existing local GGUF caches are detected before a new location is used.
+- Runtime role rule:
+  Fable/Gemma4-Coder is coding-only.
+  Opus or another main-model-pool model owns main and scheduler duties.

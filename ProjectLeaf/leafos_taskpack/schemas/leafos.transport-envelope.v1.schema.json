@@ -1,0 +1,62 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://leafos.local/schemas/leafos.transport-envelope.v1.schema.json",
+  "title": "LeafOS USB/LAN Transport Envelope",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "leafos_object",
+    "version",
+    "direction",
+    "message_id",
+    "sequence",
+    "sender_id",
+    "target_id",
+    "target_run",
+    "payload_type",
+    "created_utc",
+    "expires_utc",
+    "payload_sha256",
+    "payload"
+  ],
+  "properties": {
+    "leafos_object": {"const": "leafos.transport.envelope"},
+    "version": {"const": 1},
+    "direction": {"enum": ["inbound", "outbound"]},
+    "message_id": {"type": "string", "pattern": "^msg-[A-Za-z0-9._-]{3,96}$"},
+    "sequence": {"type": "integer", "minimum": 1},
+    "sender_id": {"type": "string", "minLength": 1, "maxLength": 256},
+    "target_id": {"type": "string", "minLength": 1, "maxLength": 256},
+    "target_run": {"type": "string", "minLength": 1, "maxLength": 256},
+    "payload_type": {"type": "string"},
+    "created_utc": {"type": "string", "format": "date-time"},
+    "expires_utc": {"type": ["string", "null"], "format": "date-time"},
+    "payload_sha256": {"type": "string", "pattern": "^sha256:[a-f0-9]{64}$"},
+    "payload": {"type": "object"}
+  },
+  "oneOf": [
+    {
+      "properties": {
+        "direction": {"const": "inbound"},
+        "payload_type": {
+          "enum": [
+            "monitor.snapshot",
+            "task.submit",
+            "task.approve",
+            "run.pause",
+            "run.resume",
+            "run.drain",
+            "run.stop",
+            "report.get"
+          ]
+        }
+      }
+    },
+    {
+      "properties": {
+        "direction": {"const": "outbound"},
+        "payload_type": {"enum": ["transport.ack", "transport.reject"]}
+      }
+    }
+  ]
+}

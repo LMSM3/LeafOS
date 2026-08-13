@@ -1,0 +1,18 @@
+{
+  "schema": "leafos.model-profile.v1",
+  "profile_id": "viola-nocturne.experimental-fable-vision",
+  "base_catalog_key": "viola-fablevibes-14b-a3b",
+  "title": "Viola Nocturne Experimental Fable Vision (Q4_K_M)",
+  "role": "experimental",
+  "lanes": ["slot.vision.inspect", "slot.vision.describe", "slot.vision.ground"],
+  "contracts": ["vision_output"],
+  "runtime": ["llama.cpp"],
+  "recommended_quant": "Q4_K_M",
+  "quality_quant": "Q4_K_M",
+  "low_memory_quant": "Q3_K_M",
+  "emergency_quant": "Q2_K",
+  "activation": "dormant",
+  "escalation_from": [],
+  "escalation_to": [],
+  "notes": ["Dormant experimental vision-capable lane. Requires manual activation."]
+}

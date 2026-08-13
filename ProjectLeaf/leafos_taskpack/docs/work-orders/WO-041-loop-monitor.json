@@ -1,0 +1,68 @@
+{
+  "leafos_object": "leafos.work_order",
+  "version": 2,
+  "work_order_id": "WO-041",
+  "title": "Hands-Off Loop Monitor",
+  "status": "done",
+  "target": "C:\\R\\LeafOS0.2.2",
+  "objective": "Implement one read-only loop monitor with interactive terminal rendering, non-interactive JSONL output, reconnect cursors, and stale-heartbeat detection.",
+  "allowed_paths": [
+    "ProjectLeaf/leafos_taskpack/bin/leafctl",
+    "ProjectLeaf/leafos_taskpack/bin/leafctl.ps1",
+    "ProjectLeaf/leafos_taskpack/core/python/leaf_loop_inlet.py",
+    "ProjectLeaf/leafos_taskpack/docs",
+    "ProjectLeaf/leafos_taskpack/schemas",
+    "ProjectLeaf/leafos_taskpack/tests",
+    "ProjectLeaf/leafos_taskpack/README.md"
+  ],
+  "denied_paths": [
+    ".git",
+    ".env",
+    "secrets",
+    "credentials",
+    "id_rsa",
+    "id_ed25519"
+  ],
+  "constraints": [
+    "Monitoring is read-only against the run directory.",
+    "Interactive and non-interactive output use the same Python monitor authority.",
+    "A cursor file may be written only outside the run directory when explicitly requested.",
+    "Do not add task, control, scheduler, queue, journal, checkpoint, or TUI authority.",
+    "Do not persist private model chain-of-thought."
+  ],
+  "commands": {
+    "tests": [
+      ["python", "ProjectLeaf/leafos_taskpack/tests/test_loop_inlet.py"],
+      ["python", "ProjectLeaf/leafos_taskpack/tests/test_leafctl_dispatch.py"]
+    ]
+  },
+  "acceptance": [
+    "Monitor auto-detects TTY mode and supports explicit interactive/noninteractive overrides.",
+    "JSON and JSONL output conform to the loop monitor snapshot contract.",
+    "Reconnect cursors and stale-heartbeat detection are deterministic.",
+    "Bash and PowerShell leafctl surfaces reach the same monitor implementation.",
+    "Focused tests pass without requiring a live provider or worker."
+  ],
+  "verification": {
+    "date": "2026-07-24",
+    "evidence_kind": "real_local_dated_run",
+    "tests": {
+      "test_loop_inlet.py": 14,
+      "test_leafctl_dispatch.py": 8,
+      "test_work_order_loop.py": 10,
+      "test_live_project.py": 19,
+      "test_model_profiles.py": 4
+    },
+    "contracts": [
+      "python compilation passed",
+      "loop monitor schema JSON parsed",
+      "WO-041 JSON parsed",
+      "Bash and PowerShell monitor help routes passed",
+      "active monitor JSON snapshot returned blocked state, cursor 39, and exit code 2"
+    ]
+  },
+  "approval_mode": "not_required",
+  "allow_mutation": true,
+  "max_attempts": 2,
+  "timeout_seconds": 600
+}

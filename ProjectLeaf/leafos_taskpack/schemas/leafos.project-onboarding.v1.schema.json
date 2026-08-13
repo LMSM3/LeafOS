@@ -1,0 +1,53 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://leafos.local/schemas/leafos.project-onboarding.v1.schema.json",
+  "title": "LeafOS Project Onboarding Request",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["leafos_object", "version", "mode", "target"],
+  "properties": {
+    "leafos_object": {"const": "leafos.project_onboarding_request"},
+    "version": {"const": 1},
+    "mode": {"enum": ["new", "existing"]},
+    "target": {"type": "string", "minLength": 1, "maxLength": 1024},
+    "workspace_root": {"type": "string", "maxLength": 1024, "default": ""},
+    "project_name": {"type": "string", "maxLength": 80, "default": ""},
+    "template": {"enum": ["auto", "generic"], "default": "auto"},
+    "readme": {"type": "string", "maxLength": 65536, "default": ""},
+    "skeleton": {"type": "string", "maxLength": 65536, "default": ""},
+    "objective": {"type": "string", "maxLength": 2000, "default": ""},
+    "provider": {"enum": ["required", "auto", "off"], "default": "required"},
+    "approved": {"type": "boolean", "default": false},
+    "resident": {"type": "boolean", "default": true},
+    "resident_mode": {"enum": ["auto", "quiet", "full"], "default": "auto"},
+    "budget_minutes": {"type": ["integer", "null"], "minimum": 1, "maximum": 10080, "default": null},
+    "spawn": {"type": "boolean", "default": true},
+    "sandbox_profile": {"const": "project-only", "default": "project-only"},
+    "model_optimizations": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "kv_cache": {"enum": ["inherit", "investigate", "enable", "disable"], "default": "inherit"}
+      },
+      "default": {"kv_cache": "inherit"}
+    }
+  },
+  "allOf": [
+    {
+      "if": {"properties": {"mode": {"const": "new"}}, "required": ["mode"]},
+      "then": {
+        "required": ["readme", "skeleton"],
+        "properties": {
+          "readme": {"type": "string", "minLength": 1, "maxLength": 65536, "pattern": "[\\s\\S]*\\S[\\s\\S]*"},
+          "skeleton": {"type": "string", "minLength": 1, "maxLength": 65536, "pattern": "[\\s\\S]*\\S[\\s\\S]*"}
+        }
+      },
+      "else": {
+        "properties": {
+          "readme": {"type": "string", "maxLength": 0},
+          "skeleton": {"type": "string", "maxLength": 0}
+        }
+      }
+    }
+  ]
+}

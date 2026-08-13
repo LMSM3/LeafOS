@@ -1,0 +1,13 @@
+{
+  "protocol": "leafos.orchestration.v0.3",
+  "goal": "invalid command injection",
+  "actions": [
+    {
+      "id": "bad",
+      "skill": "shell.run",
+      "input": {"command": "echo should never run"},
+      "depends_on": []
+    }
+  ],
+  "completion": {"required_actions": ["bad"]}
+}

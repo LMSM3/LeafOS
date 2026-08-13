@@ -1,0 +1,45 @@
+{
+  "schema": "leafos.expert.v1",
+  "source_repo": "DavidAU/Qwen3.6-27B-Fable-Fusion-711-Uncensored-Heretic-NM-DAU-NEO-MAX-MTP-GGUF",
+  "revision": "main",
+  "parameters_b": 27,
+  "provider": "llama.cpp",
+  "placement": "local",
+  "stack_segment": "local_cpu",
+  "endpoint_ref": "local-critic",
+  "quantization": "Q8_0",
+  "estimated_memory_gib": 27.0,
+  "context_tokens": 32768,
+  "capabilities": [
+    "proposal.review",
+    "qa",
+    "judge.local"
+  ],
+  "fallback_chain": [
+    "yellow-critic-primary"
+  ],
+  "enabled": false,
+  "purpose": "final adversarial review and risky promotion inspection",
+  "notes": "Placeholder until artifact is downloaded and revision pinned.",
+  "install_state": {
+    "status": "not_downloaded",
+    "local_path": null,
+    "blob_sha256": null,
+    "verified": false,
+    "download_attempts": 0
+  },
+  "runtime_params": {
+    "flash_attention": true,
+    "mmap": true,
+    "mlock": false,
+    "n_gpu_layers": 0,
+    "seed": 42
+  },
+  "validation": {
+    "launch_test_passed": false,
+    "checksum_ok": false,
+    "benchmark_tag": null
+  },
+  "id": "yellow-critic-bedrock",
+  "model_ref": "qwen3.6-27b-fable"
+}

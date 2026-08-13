@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "surface": "PowerShell-Version",
+  "entrypoint": "leaf.ps1",
+  "source_taskpack": "../ProjectLeaf/leafos_taskpack",
+  "source_model_installer": "../ProjectLeaf/leaf_model_installer",
+  "default_runtime_profile": "runtime-default",
+  "real_installer": "install-real.ps1",
+  "real_models": "real-models.ps1",
+  "download_doctor": "download-doctor.ps1",
+  "web_state_command": "leaf.ps1 web-state",
+  "models_compat": "models.ps1",
+  "runtime_role_policy": {
+    "coding_model": "gemma4-coder",
+    "coding_catalog_key": "gemma4-coder",
+    "default_coding_language": "python",
+    "default_coding_tier": "builder",
+    "coding_scope": "coding_only",
+    "assistant_model": "gemma4-it-opus",
+    "assistant_catalog_key": "gemma4-opus-assistant",
+    "default_scheduler_model": "gemma4-it-opus",
+    "scheduler_catalog_key": "gemma4-opus-assistant",
+    "scheduler_fallback_models": ["qwen35-opus-reasoning"],
+    "legacy_optional_models": ["qwopus35-coder-mtp"],
+    "forbidden_main_or_scheduler": ["gemma4-coder"]
+  },
+  "safe_default": "no downloads without explicit apply yes"
+}

@@ -1,0 +1,13 @@
+{
+  "ccis_object": "ccis.contract_registry",
+  "schema_version": 1,
+  "contracts": [
+    {"object": "ccis.task_envelope", "path": "task-envelope.schema.json", "role": "immutable task objective, scope, budget, validators, and authority"},
+    {"object": "ccis.candidate", "path": "candidate.schema.json", "role": "isolated proposed repository change"},
+    {"object": "ccis.evaluation", "path": "evaluation.schema.json", "role": "four-question gate and validator record"},
+    {"object": "ccis.decision", "path": "decision.schema.json", "role": "constitutional outcome without automatic merge"},
+    {"object": "ccis.transition", "path": "transition.schema.json", "role": "hash-bound state transition and rollback record"},
+    {"object": "ccis.event", "path": "event.schema.json", "role": "authoritative append-only hash-chain event"},
+    {"object": "ccis.evidence_bundle", "path": "evidence-bundle.schema.json", "role": "required transition proof manifest"}
+  ]
+}

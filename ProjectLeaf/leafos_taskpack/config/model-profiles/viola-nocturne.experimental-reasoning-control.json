@@ -1,0 +1,21 @@
+{
+  "schema": "leafos.model-profile.v1",
+  "profile_id": "viola-nocturne.experimental-reasoning-control",
+  "base_catalog_key": "viola-opus-sonnet-27b-v2",
+  "title": "Viola Nocturne Experimental Reasoning Control (Q4_K_M)",
+  "role": "experimental",
+  "lanes": ["slot.reason.control", "slot.reason.compare", "slot.reason.ablate"],
+  "contracts": ["reasoning_output"],
+  "runtime": ["llama.cpp"],
+  "recommended_quant": "Q4_K_M",
+  "quality_quant": "Q6_K",
+  "low_memory_quant": "Q2_K",
+  "emergency_quant": "Q2_K",
+  "activation": "dormant",
+  "escalation_from": ["viola-nocturne.reasoner-q4", "viola-nocturne.judge-q6"],
+  "escalation_to": [],
+  "notes": [
+    "Non-Fable control reasoning model for comparing Fable training impact.",
+    "Dormant by default; requires manual activation and explicit heavyweight confirmation."
+  ]
+}

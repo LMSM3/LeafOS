@@ -1,0 +1,15 @@
+{
+  "schema": "leafos.model-group.v1",
+  "group_id": "viola-nocturne.reasoning",
+  "name": "Viola Nocturne Reasoning Layer",
+  "priority": 2,
+  "mode": "on_demand",
+  "profiles": [
+    "viola-nocturne.reasoner-q4",
+    "viola-nocturne.deep-reasoner-q4",
+    "viola-nocturne.critic-q4",
+    "viola-nocturne.judge-q6"
+  ],
+  "default": false,
+  "comment": "Reasoning, critique, and judgement lanes from Fable 5 Distill 35B-A3B."
+}

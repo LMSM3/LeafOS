@@ -1,0 +1,67 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://leafos.local/schemas/leafos.reasoning-artifact.v1.schema.json",
+  "title": "LeafOS reasoning artifact v1",
+  "description": "A bounded, inspectable reasoning artifact that LeafOS explicitly requests from a producer after a planning step. This is NOT a claim of verbatim private chain-of-thought. It is always epistemic_class=record when embedded in a leafos.memory.event.v1 'reflection' event, and it can never self-promote to evidence or committed_fact.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "run_id", "task_id", "created_at", "producer", "decision_summary", "assumptions", "alternatives", "evidence_refs", "constraint_refs", "uncertainties", "unresolved_questions", "proposed_next_action", "token_accounting"],
+  "properties": {
+    "schema": { "const": "leafos.reasoning-artifact.v1" },
+    "run_id": { "type": "string", "minLength": 1, "maxLength": 128 },
+    "task_id": { "type": "string", "minLength": 1, "maxLength": 128 },
+    "created_at": { "type": "string", "format": "date-time" },
+    "producer": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["provider", "model", "mode"],
+      "properties": {
+        "provider": { "type": "string", "minLength": 1 },
+        "model": { "type": "string", "minLength": 1 },
+        "mode": { "enum": ["requested_summary", "provider_reasoning_summary"] }
+      }
+    },
+    "decision_summary": { "type": "string", "minLength": 1, "maxLength": 4096 },
+    "assumptions": { "type": "array", "items": { "type": "string", "maxLength": 1024 } },
+    "alternatives": { "type": "array", "items": { "type": "string", "maxLength": 1024 } },
+    "evidence_refs": { "type": "array", "items": { "type": "string", "maxLength": 256 } },
+    "constraint_refs": { "type": "array", "items": { "type": "string", "maxLength": 256 } },
+    "uncertainties": { "type": "array", "items": { "type": "string", "maxLength": 1024 } },
+    "unresolved_questions": { "type": "array", "items": { "type": "string", "maxLength": 1024 } },
+    "proposed_next_action": { "type": ["string", "null"], "maxLength": 1024 },
+    "token_accounting": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["context_limit", "input_tokens", "memory_tokens", "reasoning_budget_requested", "output_tokens"],
+      "properties": {
+        "context_limit": { "type": "integer", "minimum": 1 },
+        "input_tokens": { "type": "integer", "minimum": 0 },
+        "memory_tokens": { "type": "integer", "minimum": 0 },
+        "reasoning_budget_requested": { "type": ["integer", "string"], "minimum": 0 },
+        "output_tokens": { "type": "integer", "minimum": 0 }
+      }
+    },
+    "phase_timeline": {
+      "type": "object",
+      "additionalProperties": true,
+      "required": ["schema", "run_id", "phases", "events"],
+      "properties": {
+        "schema": { "const": "leafos.thinking-loop.v1" },
+        "run_id": { "type": "string", "minLength": 1 },
+        "phases": { "type": "array" },
+        "events": { "type": "array" }
+      }
+    },
+    "auxiliary_blob": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["sha256", "media_type", "byte_length", "preview"],
+      "properties": {
+        "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+        "media_type": { "type": "string", "minLength": 1 },
+        "byte_length": { "type": "integer", "minimum": 0 },
+        "preview": { "type": "string", "maxLength": 512 }
+      }
+    }
+  }
+}

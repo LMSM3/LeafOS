@@ -1,0 +1,33 @@
+{
+  "schema": "leafos.fast-three-stack-overnight.v1",
+  "run_id": "fast-three-stack-overnight",
+  "source_sandbox": "sandbox/overnight-01/work",
+  "output_root": "sandbox/fast-three-stack-overnight",
+  "stop_on_failure": true,
+  "modules": [
+    {
+      "id": "game-chess",
+      "relative_path": "game-chess",
+      "configure_command": ["cmake", "-S", ".", "-B", "build"],
+      "build_command": ["cmake", "--build", "build"],
+      "test_command": ["ctest", "--test-dir", "build", "--output-on-failure"],
+      "simulation_command": ["build/chess_sim", "--seed", "42"]
+    },
+    {
+      "id": "game-catan",
+      "relative_path": "game-catan",
+      "configure_command": ["cmake", "-S", ".", "-B", "build"],
+      "build_command": ["cmake", "--build", "build"],
+      "test_command": ["ctest", "--test-dir", "build", "--output-on-failure"],
+      "simulation_command": ["build/catan_sim", "--seed", "42"]
+    },
+    {
+      "id": "game-ticket-to-ride",
+      "relative_path": "game-ticket-to-ride",
+      "configure_command": ["cmake", "-S", ".", "-B", "build"],
+      "build_command": ["cmake", "--build", "build"],
+      "test_command": ["ctest", "--test-dir", "build", "--output-on-failure"],
+      "simulation_command": ["build/route_claim_sim", "--seed", "42"]
+    }
+  ]
+}

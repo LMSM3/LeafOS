@@ -1,0 +1,124 @@
+{
+  "schema": "leafos.medium-moe-policy.v1",
+  "policy_id": "medium-moe-local-2026-07",
+  "status": "active",
+  "decision": {
+    "preferred_architecture": "moe",
+    "total_parameter_band_billion": {
+      "minimum": 47,
+      "maximum": 156
+    },
+    "selection_basis": "operator_experiment_and_theory",
+    "automatic_promotion": false,
+    "deprecated_model_ids": ["GLM-5.2"],
+    "deprecated_profile_ids": ["glm52-q4-overnight"],
+    "incumbent_route": "config/vulkan-provider-stack.json"
+  },
+  "reference_host": {
+    "gpu_name": "NVIDIA GeForce RTX 4070",
+    "gpu_vram_gb": 12,
+    "system_ram_gb": 48,
+    "compute_backend": "vulkan",
+    "resource_policy": "config/resident-stack-policy.json"
+  },
+  "placement": {
+    "runtime": "llama.cpp",
+    "model_format": "GGUF",
+    "weights_source": "local_stack_only",
+    "mmap_required": true,
+    "ssd_semantics": "os_page_cache_backing_store",
+    "leafos_managed_ssd_tiering": false,
+    "gpu_offload_selection": "measured_per_candidate",
+    "kv_cache_variants": ["f16", "q8_0"],
+    "expert_pinning_assumed": false
+  },
+  "qualification": {
+    "durations_minutes": [4, 8, 64],
+    "promotion_after_minutes": 64,
+    "required_scenarios": ["cold_cache", "warm_cache", "resident_foreground"],
+    "required_runs": [
+      {
+        "duration_minutes": 4,
+        "mode": "leafos",
+        "scenario": "cold_cache",
+        "purpose": "startup_and_initial_survival"
+      },
+      {
+        "duration_minutes": 8,
+        "mode": "leafos",
+        "scenario": "warm_cache",
+        "purpose": "steady_state_cache_behavior"
+      },
+      {
+        "duration_minutes": 64,
+        "mode": "leafos",
+        "scenario": "resident_foreground",
+        "purpose": "shared_workstation_stability_and_productivity"
+      }
+    ],
+    "required_metrics": [
+      "evidence_kind",
+      "candidate_model_id",
+      "duration_minutes",
+      "scenario",
+      "model_load_seconds",
+      "time_to_first_token_seconds",
+      "prompt_tokens_per_second",
+      "generation_tokens_per_second",
+      "gpu_process_alive_for_run",
+      "provider_restarts",
+      "gpu_utilization_average_percent",
+      "gpu_vram_used_peak_percent",
+      "cpu_utilization_average_percent",
+      "ram_used_peak_percent",
+      "foreground_responsiveness_p95_ms",
+      "nvme_read_megabytes_per_second",
+      "major_page_faults",
+      "minor_page_faults",
+      "validated_patches",
+      "accepted_changes",
+      "rejected_changes",
+      "baseline_validation_passed",
+      "oom_events",
+      "availability"
+    ],
+    "hard_gates": {
+      "provider_must_survive_run": true,
+      "no_out_of_memory": true,
+      "baseline_validation_must_pass": true,
+      "unknown_metrics_require_reason": true,
+      "resource_limits_source": "config/resident-stack-policy.json"
+    },
+    "ranking_metrics": [
+      "validated_useful_changes_per_hour",
+      "generation_tokens_per_second",
+      "time_to_first_token_seconds",
+      "foreground_responsiveness_p95_ms",
+      "provider_restarts"
+    ],
+    "throughput_threshold_policy": "candidate_specific_before_run",
+    "operator_approval_required": true
+  },
+  "provenance": [
+    {
+      "kind": "operator_decision",
+      "source": "2026-07-21 development conversation",
+      "claim": "Deprecate GLM-5.2 locally and prefer medium MoE candidates in the 47-156B total-parameter band."
+    },
+    {
+      "kind": "measured_repository_evidence",
+      "source": "reports/brain-selection-20260717/results.json",
+      "claim": "A 14B A3B MoE baseline showed a large full-Vulkan-offload advantage; it does not establish 47-156B host fit."
+    },
+    {
+      "kind": "measured_repository_evidence",
+      "source": "docs/RESIDENT_STACK_USAGE.md",
+      "claim": "The current Q3 resident route preserved headroom where larger tested routes reached RAM pressure."
+    },
+    {
+      "kind": "historical_proposal",
+      "source": "docs/GLM52_OVERNIGHT_RUNBOOK.md",
+      "claim": "The former GLM-5.2 SSD and expert-placement design was a proposed test configuration, not measured throughput or managed SSD tiering."
+    }
+  ]
+}

@@ -1,0 +1,85 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://leafos.local/schemas/leafos.resource-policy.v1.schema.json",
+  "title": "LeafOS Resident Stack Resource Policy",
+  "type": "object",
+  "required": ["leafos_object", "version", "profiles", "activity", "limits", "tuning", "budgets"],
+  "properties": {
+    "leafos_object": {"const": "leafos.resource_policy"},
+    "version": {"const": 1},
+    "profiles": {
+      "type": "object",
+      "required": ["auto-idle", "auto-interactive", "quiet", "full"],
+      "additionalProperties": false,
+      "properties": {
+        "auto-idle": {"$ref": "#/$defs/profile"},
+        "auto-interactive": {"$ref": "#/$defs/profile"},
+        "quiet": {"$ref": "#/$defs/profile"},
+        "full": {"$ref": "#/$defs/profile"}
+      }
+    },
+    "activity": {"$ref": "#/$defs/activity"},
+    "limits": {"$ref": "#/$defs/limits"},
+    "tuning": {"$ref": "#/$defs/tuning"},
+    "budgets": {"$ref": "#/$defs/budgets"}
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "percent": {"type": "number", "minimum": 1, "maximum": 100},
+    "profile": {
+      "type": "object",
+      "required": ["cpu_target_percent", "gpu_target_percent", "max_cpu_slots"],
+      "properties": {
+        "cpu_target_percent": {"$ref": "#/$defs/percent"},
+        "gpu_target_percent": {"$ref": "#/$defs/percent"},
+        "max_cpu_slots": {"type": "integer", "minimum": 1, "maximum": 64}
+      },
+      "additionalProperties": false
+    },
+    "activity": {
+      "type": "object",
+      "required": ["interactive_input_seconds", "idle_ramp_seconds", "responsiveness_soft_ms", "responsiveness_hard_ms"],
+      "properties": {
+        "interactive_input_seconds": {"type": "number", "minimum": 0.1, "maximum": 300},
+        "idle_ramp_seconds": {"type": "number", "minimum": 0, "maximum": 600},
+        "responsiveness_soft_ms": {"type": "number", "minimum": 10, "maximum": 5000},
+        "responsiveness_hard_ms": {"type": "number", "minimum": 10, "maximum": 10000}
+      },
+      "additionalProperties": false
+    },
+    "limits": {
+      "type": "object",
+      "required": ["ram_used_percent", "vram_used_percent", "gpu_temperature_soft_c", "gpu_temperature_hard_c"],
+      "properties": {
+        "ram_used_percent": {"type": "number", "minimum": 50, "maximum": 100},
+        "vram_used_percent": {"type": "number", "minimum": 50, "maximum": 100},
+        "gpu_temperature_soft_c": {"type": "number", "minimum": 30, "maximum": 120},
+        "gpu_temperature_hard_c": {"type": "number", "minimum": 30, "maximum": 120}
+      },
+      "additionalProperties": false
+    },
+    "tuning": {
+      "type": "object",
+      "required": ["ewma_alpha", "hysteresis_percent", "cooldown_seconds", "provider_delay_step_seconds", "provider_delay_max_seconds"],
+      "properties": {
+        "ewma_alpha": {"type": "number", "exclusiveMinimum": 0, "maximum": 1},
+        "hysteresis_percent": {"type": "number", "minimum": 0, "maximum": 50},
+        "cooldown_seconds": {"type": "number", "minimum": 0, "maximum": 300},
+        "provider_delay_step_seconds": {"type": "number", "minimum": 0, "maximum": 30},
+        "provider_delay_max_seconds": {"type": "number", "minimum": 0, "maximum": 300}
+      },
+      "additionalProperties": false
+    },
+    "budgets": {
+      "type": "object",
+      "required": ["unattended_minutes", "max_iterations", "max_failures", "max_changed_files"],
+      "properties": {
+        "unattended_minutes": {"type": "integer", "minimum": 1, "maximum": 10080},
+        "max_iterations": {"type": "integer", "minimum": 1, "maximum": 10000},
+        "max_failures": {"type": "integer", "minimum": 1, "maximum": 1000},
+        "max_changed_files": {"type": "integer", "minimum": 1, "maximum": 100000}
+      },
+      "additionalProperties": false
+    }
+  }
+}

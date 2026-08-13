@@ -1,0 +1,64 @@
+{
+  "deprecated": true,
+  "status": "deprecated_historical_profile",
+  "deprecated_at": "2026-07-21",
+  "deprecation_reason": "GLM-5.2 exceeds the practical local hardware envelope.",
+  "replacement_policy": "config/medium_moe_policy.json",
+  "replacement_candidate_template": "config/medium_moe_candidate.template.json",
+  "schema_version": 1,
+  "profile": "glm52-q4-overnight",
+  "runtime": {
+    "backend": "llama.cpp",
+    "executable": "llama-bench",
+    "model_path": "",
+    "benchmark_command": []
+  },
+  "model": {
+    "name": "GLM-5.2",
+    "quantization": "Q4",
+    "stored_weights_gb": 467,
+    "routed_experts": 256,
+    "active_experts": 8
+  },
+  "placement": {
+    "ram_hot_cache_gb": 48,
+    "gpu_name": "RTX 4070",
+    "gpu_vram_budget_gb": 12,
+    "gpu_offload": "selective",
+    "storage": "fast_nvme_mmap"
+  },
+  "benchmark": {
+    "duration_hours": 7,
+    "modes": ["raw", "floweros", "leafos"],
+    "generation_rate_gates": [
+      {"minimum_tokens_per_second": 0.0, "label": "operationally_useless"},
+      {"minimum_tokens_per_second": 0.10, "label": "experimental_persistence"},
+      {"minimum_tokens_per_second": 0.30, "label": "minimum_success"},
+      {"minimum_tokens_per_second": 0.40, "label": "practical_overnight_target"},
+      {"minimum_tokens_per_second": 0.66, "label": "floweros_optimization_success"},
+      {"minimum_tokens_per_second": 1.0, "label": "exceptional"}
+    ]
+  },
+  "required_metrics": [
+    "model_load_seconds",
+    "time_to_first_token_seconds",
+    "prompt_tokens_per_second",
+    "generation_tokens_per_second",
+    "cold_cache_generation_tokens_per_second",
+    "warm_cache_generation_tokens_per_second",
+    "nvme_read_megabytes_per_second",
+    "nvme_read_latency_milliseconds",
+    "major_page_faults",
+    "minor_page_faults",
+    "ram_page_cache_residency_percent",
+    "gpu_utilization_percent",
+    "gpu_vram_used_gb",
+    "cpu_utilization_percent",
+    "cpu_temperature_celsius",
+    "tokens_per_watt_hour",
+    "validated_patches",
+    "accepted_changes",
+    "rejected_changes",
+    "recovered_after_interruption"
+  ]
+}

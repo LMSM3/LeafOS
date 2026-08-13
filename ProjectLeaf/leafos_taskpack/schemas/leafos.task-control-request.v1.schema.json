@@ -1,0 +1,48 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://leafos.local/schemas/leafos.task-control-request.v1.schema.json",
+  "title": "LeafOS Task Control Request",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["leafos_object", "version", "action"],
+  "properties": {
+    "leafos_object": {"const": "leafos.task_control_request"},
+    "version": {"const": 1},
+    "request_id": {"type": "string", "pattern": "^[A-Za-z][A-Za-z0-9._-]{2,63}$"},
+    "action": {"enum": ["submit", "prioritize", "retry", "cancel", "approve"]},
+    "task_id": {"type": "string", "pattern": "^[A-Za-z][A-Za-z0-9._-]{2,63}$"},
+    "priority": {"type": "integer", "minimum": 0, "maximum": 9},
+    "task": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["objective", "allowed_paths", "acceptance"],
+      "properties": {
+        "task_id": {"type": "string", "pattern": "^[A-Za-z][A-Za-z0-9._-]{2,63}$"},
+        "objective": {"type": "string", "minLength": 1, "maxLength": 2000},
+        "allowed_paths": {"type": "array", "minItems": 1, "maxItems": 64, "items": {"type": "string", "minLength": 1}},
+        "denied_paths": {"type": "array", "maxItems": 64, "items": {"type": "string", "minLength": 1}},
+        "constraints": {"type": "array", "maxItems": 32, "items": {"type": "string"}},
+        "commands": {"type": "object", "additionalProperties": {"type": "array", "items": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}}}},
+        "acceptance": {"type": "array", "minItems": 1, "maxItems": 32, "items": {"type": "string", "minLength": 1}},
+        "allow_mutation": {"type": "boolean"},
+        "approval_mode": {"enum": ["required", "automatic"]},
+        "priority": {"type": "integer", "minimum": 0, "maximum": 9},
+        "max_attempts": {"type": "integer", "minimum": 1, "maximum": 5},
+        "timeout_seconds": {"type": "integer", "minimum": 1, "maximum": 3600},
+        "stack_role": {"enum": ["auto", "brain", "coder", "helper", "cpu"]},
+        "dependencies": {"type": "array", "maxItems": 32, "uniqueItems": true, "items": {"type": "string"}}
+      }
+    }
+  },
+  "allOf": [
+    {
+      "if": {"properties": {"action": {"const": "submit"}}, "required": ["action"]},
+      "then": {"required": ["task"]},
+      "else": {"required": ["task_id"]}
+    },
+    {
+      "if": {"properties": {"action": {"const": "prioritize"}}, "required": ["action"]},
+      "then": {"required": ["priority"]}
+    }
+  ]
+}

@@ -1,0 +1,56 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://leafos.local/ccis/contracts/candidate.v1.schema.json",
+  "title": "CCIS Candidate",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["ccis_object", "schema_version", "candidate_id", "task_id", "revision", "created_at", "base_revision", "workspace_mode", "working_tree_applied", "status", "changes", "artifact"],
+  "properties": {
+    "ccis_object": {"const": "ccis.candidate"},
+    "schema_version": {"const": 1},
+    "candidate_id": {"$ref": "#/$defs/id"},
+    "task_id": {"$ref": "#/$defs/id"},
+    "parent_candidate_id": {"oneOf": [{"$ref": "#/$defs/id"}, {"type": "null"}]},
+    "revision": {"type": "integer", "minimum": 0},
+    "created_at": {"type": "string", "format": "date-time"},
+    "created_by": {"type": "string", "minLength": 1},
+    "base_revision": {"type": "string", "minLength": 1},
+    "workspace_mode": {"const": "isolated"},
+    "working_tree_applied": {"const": false},
+    "status": {"enum": ["DRAFT", "READY", "WITHDRAWN"]},
+    "declared_invariants": {"type": "array", "items": {"type": "string", "minLength": 1}},
+    "changes": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 1024,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["path", "operation", "before_sha256", "after_sha256"],
+        "properties": {
+          "path": {"type": "string", "minLength": 1},
+          "operation": {"enum": ["add", "modify", "delete", "rename"]},
+          "previous_path": {"type": ["string", "null"]},
+          "before_sha256": {"$ref": "#/$defs/nullable_hash"},
+          "after_sha256": {"$ref": "#/$defs/nullable_hash"}
+        }
+      }
+    },
+    "artifact": {"$ref": "#/$defs/artifact"}
+  },
+  "$defs": {
+    "id": {"type": "string", "pattern": "^[A-Za-z][A-Za-z0-9._-]{2,127}$"},
+    "hash": {"type": "string", "pattern": "^sha256:[a-f0-9]{64}$"},
+    "nullable_hash": {"oneOf": [{"$ref": "#/$defs/hash"}, {"type": "null"}]},
+    "artifact": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "sha256", "media_type"],
+      "properties": {
+        "path": {"type": "string", "minLength": 1},
+        "sha256": {"$ref": "#/$defs/hash"},
+        "media_type": {"enum": ["text/x-diff", "application/json", "application/x-tar"]}
+      }
+    }
+  }
+}

@@ -1,0 +1,38 @@
+{
+  "work_order_id": "WO-033",
+  "title": "Verify native LeafOS TUI",
+  "target": "C:\\R\\LeafOS0.2.2\\ProjectLeaf\\leafos_taskpack",
+  "objective": "Build and verify the ncursesw LeafOS TUI, normalized snapshot parser, native bridge, and fail-closed control mailbox without modifying source files during this verification run.",
+  "scope": [
+    "core/tui",
+    "core/ui/tui",
+    "tests/test_tui_native.py",
+    "tests/test_tui_skeleton.py"
+  ],
+  "constraints": [
+    "Do not propose apply_patch or write_file steps.",
+    "Use only the exact declared test command.",
+    "Do not bypass the inlet for control actions."
+  ],
+  "allowed_paths": [
+    "core/tui",
+    "core/ui/tui",
+    "tests/test_tui_native.py",
+    "tests/test_tui_skeleton.py"
+  ],
+  "denied_paths": [".git", ".env", "secrets"],
+  "commands": {
+    "tests": [["python", "-m", "unittest", "tests.test_tui_native", "tests.test_tui_skeleton"]]
+  },
+  "acceptance": [
+    "The native C renderer builds without compiler warnings.",
+    "The native parser consumes a normalized snapshot and rejects malformed JSON.",
+    "All seven pages remain reachable through the native input router.",
+    "Only named control actions can reach the inlet bridge.",
+    "The focused native and fallback TUI tests pass."
+  ],
+  "approval_mode": "required",
+  "allow_mutation": false,
+  "max_attempts": 2,
+  "timeout_seconds": 300
+}

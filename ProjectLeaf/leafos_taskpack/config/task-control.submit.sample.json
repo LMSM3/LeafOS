@@ -1,0 +1,31 @@
+{
+  "leafos_object": "leafos.task_control_request",
+  "version": 1,
+  "request_id": "req-example-001",
+  "action": "submit",
+  "task": {
+    "objective": "Inspect the typed task-control implementation and make only changes required to keep its focused tests passing.",
+    "allowed_paths": [
+      "core/python",
+      "core/ui/tui",
+      "core/tui",
+      "tests"
+    ],
+    "denied_paths": [".git", ".env", "secrets"],
+    "constraints": [
+      "Use the existing plan-v2 allowlisted executor.",
+      "Do not persist private chain-of-thought."
+    ],
+    "commands": {
+      "tests": [["python", "-m", "unittest", "tests.test_task_controls"]]
+    },
+    "acceptance": ["The typed task-control tests pass."],
+    "allow_mutation": true,
+    "approval_mode": "required",
+    "priority": 2,
+    "max_attempts": 2,
+    "timeout_seconds": 300,
+    "stack_role": "coder",
+    "dependencies": []
+  }
+}

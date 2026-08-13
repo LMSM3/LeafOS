@@ -1,0 +1,37 @@
+#!/usr/bin/env bash
+# Delegate model acquisition to the canonical leaf_model_installer package.
+set -euo pipefail
+
+ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+PYTHON="${LEAF_MODEL_INSTALLER_PYTHON:-}"
+
+if [[ -n "$PYTHON" ]]; then
+  exec "$PYTHON" -m leaf_models.install_cli "$@"
+fi
+
+for candidate in python3 python; do
+  if command -v "$candidate" >/dev/null 2>&1 \
+      && "$candidate" -c 'import leaf_models.install_cli' >/dev/null 2>&1; then
+    exec "$candidate" -m leaf_models.install_cli "$@"
+  fi
+done
+
+DEV_INSTALLER="$(cd "$ROOT_DIR/.." && pwd)/leaf_model_installer"
+if [[ -f "$DEV_INSTALLER/leaf_models/install_cli.py" ]]; then
+  if [[ -x "$DEV_INSTALLER/.venv/bin/python" ]]; then
+    exec "$DEV_INSTALLER/.venv/bin/python" -m leaf_models.install_cli "$@"
+  fi
+  if [[ -x "$DEV_INSTALLER/.venv/Scripts/python.exe" ]]; then
+    exec "$DEV_INSTALLER/.venv/Scripts/python.exe" -m leaf_models.install_cli "$@"
+  fi
+  for candidate in python3 python; do
+    if command -v "$candidate" >/dev/null 2>&1; then
+      export PYTHONPATH="$DEV_INSTALLER${PYTHONPATH:+:$PYTHONPATH}"
+      exec "$candidate" -m leaf_models.install_cli "$@"
+    fi
+  done
+fi
+
+printf 'LeafOS model installer is not available.\n' >&2
+printf 'Install it with leaf_model_installer/install.sh or install.ps1 first.\n' >&2
+exit 2

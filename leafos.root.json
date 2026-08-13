@@ -1,0 +1,77 @@
+{
+  "schema_version": 2,
+  "project": "LeafOS",
+  "version": "0.2.3",
+  "root_layout": "two-surface",
+  "root_contract": "markdowns/ROOT_CONTRACT.md",
+  "documentation": {
+    "primary_reference": "LEAFOS-CONTINUAL-BLOOM-PRIMARY-REFERENCE.md",
+    "primary_reference_tex": "LEAFOS-CONTINUAL-BLOOM-PRIMARY-REFERENCE.formatless.tex",
+    "product_map": "markdowns/README.md",
+    "usage": "markdowns/USAGE.md",
+    "installation": "markdowns/INSTALLATION.md",
+    "root_contract": "markdowns/ROOT_CONTRACT.md"
+  },
+  "surfaces": {
+    "powershell": {
+      "directory": "PowerShell-Version",
+      "entrypoint": "leaf.ps1",
+      "installer": "install.ps1",
+      "real_installer": "install-real.ps1",
+      "oneshot": "oneshot.ps1",
+      "models": "real-models.ps1",
+      "models_compat": "models.ps1"
+    },
+    "bash": {
+      "directory": "Bash-Version",
+      "entrypoint": "leaf.sh",
+      "installer": "install.sh",
+      "real_installer": "install-real.sh",
+      "oneshot": "oneshot.sh",
+      "models": "real-models.sh",
+      "models_compat": "models.sh"
+    }
+  },
+  "source_tree": "ProjectLeaf",
+  "program": {
+    "powershell": "program.ps1",
+    "bash": "program.sh",
+    "implementation": "ProjectLeaf/leafos_taskpack/core/python/leaf_program.py",
+    "immutable_brand_manifest": "assets/brand/immutable/manifest.json"
+  },
+  "change_loop": {
+    "ccis_cli": "ccis/cli.py",
+    "scientific_loop": "loop/scientific_change_loop.py",
+    "typed_task_registry": "ccis/contracts/allocation/task-type-registry.json",
+    "series_index": "ProjectLeaf/leafos_taskpack/docs/work-orders/TYPED-LOOP-QUALITY-SERIES-INDEX.md",
+    "next_work_order": "ProjectLeaf/leafos_taskpack/docs/work-orders/WO-053-llamacpp-capability-preflight.md"
+  },
+  "configuration_authorities": {
+    "root": "leafos.root.json",
+    "runtime": "ProjectLeaf/leafos_taskpack/config/runtime.json",
+    "providers": "ProjectLeaf/leafos_taskpack/config/providers.conf",
+    "models": "ProjectLeaf/leaf_model_installer",
+    "durable_instances": "ProjectLeaf/leafos_taskpack/config/runtime.json#durable_instances",
+    "loop_kernel": "ProjectLeaf/leafos_taskpack/core/python/leaf_loop_kernel.py",
+    "capability_registry": "ProjectLeaf/leafos_taskpack/config/capability-registry.json",
+    "durable_bridge": "ProjectLeaf/leafos_taskpack/core/python/leaf_durable_bridge.py",
+    "shared_state_view": "ProjectLeaf/leafos_taskpack/core/python/leaf_shared_state.py",
+    "authority_enforcer": "ProjectLeaf/leafos_taskpack/core/python/leaf_authority.py",
+    "continual_bloom_runtime": "ProjectLeaf/leafos_taskpack/core/python/leaf_continual_bloom.py"
+  },
+  "default_runtime_profile": "runtime-default",
+  "runtime_role_policy": {
+    "coding_model": "gemma4-coder",
+    "coding_scope": "coding_only",
+    "main_and_scheduler_pool": "main_models",
+    "default_scheduler_model": "gemma4-it-opus"
+  },
+  "model_storage_order": [
+    "explicit argument",
+    "LEAF_MODEL_DIR",
+    "ProjectLeaf/leaf_model_installer/models when GGUF files already exist",
+    "~/.leaf/models"
+  ],
+  "download_boundary": "apply",
+  "safe_default": "no downloads without explicit apply yes"
+}
