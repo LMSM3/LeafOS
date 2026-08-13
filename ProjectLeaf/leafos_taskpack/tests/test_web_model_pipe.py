@@ -73,9 +73,10 @@ class WebModelPipeTests(unittest.TestCase):
         self.assertFalse(report["network_probe_performed"])
         self.assertFalse(report["credential_requested"])
         configured = json.loads(config_path.read_text(encoding="utf-8"))
-        self.assertEqual("https://api.openai.com/v1/chat/completions", configured["endpoint"])
-        self.assertEqual(["api.openai.com"], configured["allowed_hosts"])
-        self.assertEqual("gpt-4o", configured["model"])
+        self.assertEqual("", configured["endpoint"])
+        self.assertEqual([], configured["allowed_hosts"])
+        self.assertEqual("", configured["model"])
+        self.assertEqual([], configured["allowed_models"])
         self.assertEqual(
             "C:/FlowerOS/bin/flower-credential-broker.ps1",
             configured["auth"]["broker_command"][-1],

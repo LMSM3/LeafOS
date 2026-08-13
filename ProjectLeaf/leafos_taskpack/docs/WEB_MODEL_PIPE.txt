@@ -8,11 +8,10 @@ provider transport, not a scheduler.  The existing LeafOS queue, admission,
 CPU validation, and evidence authorities remain in charge.  Model output is
 always labelled "proposal-only".
 
-The pipe is deliberately disabled in config/web-model.json.  It is bound to the
-repository's existing OpenAI-compatible route (api.openai.com, gpt-4o) and the
-FlowerOS broker at C:\FlowerOS\bin\flower-credential-broker.ps1.  That route is
-configuration evidence only: current account/model availability is UNVERIFIED,
-and both sides stay disabled until a Flower login/vault issuer is configured.
+The pipe is deliberately disabled in config/web-model.json.  Endpoint, host,
+model, and allowed-model fields remain blank until the backend code and route
+are supplied.  Only the FlowerOS broker entrypoint is named.  Both sides stay
+disabled until a Flower login/vault issuer and provider backend are provided.
 
 INSTALL / LOGIN AUDIT (2026-08-13)
 
