@@ -1,0 +1,235 @@
+<section id="leafos-phase-d-runtime" aria-labelledby="leafos-runtime-heading">
+  <style>
+    #leafos-phase-d-runtime {
+      --lf-bg: var(--background, Canvas);
+      --lf-fg: var(--foreground, CanvasText);
+      --lf-muted-fg: var(--muted-foreground, GrayText);
+      --lf-border: var(--border, color-mix(in srgb, CanvasText 24%, Canvas));
+      --lf-primary: var(--viz-series-1, var(--blue, LinkText));
+      --lf-secondary: var(--viz-series-2, var(--green, AccentColor));
+      --lf-tertiary: var(--viz-series-3, var(--purple, VisitedText));
+      --lf-review: var(--viz-series-4, var(--orange, AccentColor));
+      --lf-ready: var(--green, AccentColor);
+      box-sizing: border-box;
+      width: 100%;
+      padding: clamp(.75rem, 2.5vw, 1.5rem);
+      overflow: hidden;
+      color: var(--lf-fg);
+      background: var(--lf-bg);
+      color-scheme: light dark;
+      font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+      font-size: var(--font-size-base, 16px);
+    }
+    #leafos-phase-d-runtime *, #leafos-phase-d-runtime *::before, #leafos-phase-d-runtime *::after { box-sizing: border-box; }
+    #leafos-phase-d-runtime h2,
+    #leafos-phase-d-runtime h3,
+    #leafos-phase-d-runtime p,
+    #leafos-phase-d-runtime dl,
+    #leafos-phase-d-runtime dd { margin: 0; }
+    #leafos-phase-d-runtime h2 { font-size: calc(var(--font-size-base, 16px) * 1.35); font-weight: 500; }
+    #leafos-phase-d-runtime h3,
+    #leafos-phase-d-runtime strong,
+    #leafos-phase-d-runtime dt { font-weight: 500; }
+    #leafos-phase-d-runtime .leaf-kicker,
+    #leafos-phase-d-runtime .leaf-subtitle,
+    #leafos-phase-d-runtime .phase-step span,
+    #leafos-phase-d-runtime .stage-marker p,
+    #leafos-phase-d-runtime .leaf-node p,
+    #leafos-phase-d-runtime .proof-note { color: var(--lf-muted-fg); }
+    #leafos-phase-d-runtime .leaf-header { display: grid; gap: .35rem; padding-bottom: 1rem; border-bottom: 1px solid var(--lf-border); }
+    #leafos-phase-d-runtime .leaf-kicker { letter-spacing: .06em; text-transform: uppercase; }
+    #leafos-phase-d-runtime .phase-track {
+      display: grid;
+      grid-template-columns: repeat(6, minmax(0, 1fr));
+      gap: .4rem;
+      margin-top: 1rem;
+    }
+    #leafos-phase-d-runtime .phase-step {
+      min-width: 0;
+      padding: .55rem .45rem .65rem;
+      border-top: 3px solid var(--lf-border);
+      overflow-wrap: anywhere;
+    }
+    #leafos-phase-d-runtime .phase-step[data-state="done"] { border-top-color: var(--lf-ready); }
+    #leafos-phase-d-runtime .phase-step[data-state="current"] { border-top-color: var(--lf-review); }
+    #leafos-phase-d-runtime .phase-step strong,
+    #leafos-phase-d-runtime .phase-step span { display: block; }
+    #leafos-phase-d-runtime .runtime-map { margin-top: 1.25rem; }
+    #leafos-phase-d-runtime .runtime-stage {
+      display: grid;
+      grid-template-columns: minmax(9rem, 12rem) minmax(0, 1fr);
+      gap: 1rem;
+      align-items: start;
+    }
+    #leafos-phase-d-runtime .stage-marker { padding-top: .2rem; }
+    #leafos-phase-d-runtime .stage-index {
+      display: inline-grid;
+      place-items: center;
+      width: 2rem;
+      aspect-ratio: 1;
+      margin-bottom: .55rem;
+      border-radius: 50%;
+      color: var(--stage-color);
+      background: color-mix(in srgb, var(--stage-color) 12%, var(--lf-bg));
+      border: 1px solid currentColor;
+      font-weight: 500;
+    }
+    #leafos-phase-d-runtime .stage-marker h3 { margin-bottom: .25rem; }
+    #leafos-phase-d-runtime .node-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: .7rem;
+    }
+    #leafos-phase-d-runtime .leaf-node {
+      position: relative;
+      min-width: 0;
+      padding: .8rem .9rem .85rem 1.1rem;
+      border: 1px solid color-mix(in srgb, var(--lf-border) 70%, transparent);
+      border-radius: .6rem;
+      background: color-mix(in srgb, var(--stage-color) 9%, var(--lf-bg));
+      overflow-wrap: anywhere;
+    }
+    #leafos-phase-d-runtime .leaf-node::before {
+      position: absolute;
+      inset: .65rem auto .65rem 0;
+      width: .25rem;
+      border-radius: 0 .2rem .2rem 0;
+      background: var(--stage-color);
+      content: "";
+    }
+    #leafos-phase-d-runtime .leaf-node strong,
+    #leafos-phase-d-runtime .leaf-node p { display: block; }
+    #leafos-phase-d-runtime .leaf-node p { margin-top: .3rem; }
+    #leafos-phase-d-runtime .stage-connector {
+      display: grid;
+      grid-template-columns: minmax(9rem, 12rem) minmax(0, 1fr);
+      min-height: 2.8rem;
+      color: var(--lf-border);
+    }
+    #leafos-phase-d-runtime .stage-connector svg { display: block; width: 2rem; height: 2.8rem; margin: 0 auto; overflow: visible; }
+    #leafos-phase-d-runtime .stage-connector path,
+    #leafos-phase-d-runtime .stage-connector polygon { fill: currentColor; }
+    #leafos-phase-d-runtime .stage-authority { --stage-color: var(--lf-primary); }
+    #leafos-phase-d-runtime .stage-execution { --stage-color: var(--lf-secondary); }
+    #leafos-phase-d-runtime .stage-runtime { --stage-color: var(--lf-tertiary); }
+    #leafos-phase-d-runtime .stage-review { --stage-color: var(--lf-review); }
+    #leafos-phase-d-runtime .stage-recovery { --stage-color: var(--lf-ready); }
+    #leafos-phase-d-runtime .proof {
+      margin-top: 1.25rem;
+      padding: 1rem 0 0;
+      border-top: 1px solid var(--lf-border);
+    }
+    #leafos-phase-d-runtime .proof h3 { margin-bottom: .8rem; }
+    #leafos-phase-d-runtime .proof-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: .8rem;
+    }
+    #leafos-phase-d-runtime .proof-grid > div { min-width: 0; padding-left: .75rem; border-left: 3px solid var(--lf-ready); }
+    #leafos-phase-d-runtime .proof-grid dt { color: var(--lf-muted-fg); }
+    #leafos-phase-d-runtime .proof-grid dd { margin-top: .25rem; overflow-wrap: anywhere; }
+    #leafos-phase-d-runtime .proof-note { margin-top: .9rem; }
+    @media (max-width: 760px) {
+      #leafos-phase-d-runtime .phase-track { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+      #leafos-phase-d-runtime .runtime-stage { grid-template-columns: 1fr; gap: .7rem; }
+      #leafos-phase-d-runtime .stage-marker { display: grid; grid-template-columns: auto 1fr; column-gap: .65rem; align-items: center; }
+      #leafos-phase-d-runtime .stage-marker .stage-index { grid-row: 1 / span 2; margin: 0; }
+      #leafos-phase-d-runtime .stage-marker h3 { align-self: end; }
+      #leafos-phase-d-runtime .stage-marker p { align-self: start; }
+      #leafos-phase-d-runtime .stage-connector { grid-template-columns: 1fr; }
+      #leafos-phase-d-runtime .proof-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+    @media (max-width: 480px) {
+      #leafos-phase-d-runtime .phase-track,
+      #leafos-phase-d-runtime .node-grid,
+      #leafos-phase-d-runtime .proof-grid { grid-template-columns: 1fr; }
+      #leafos-phase-d-runtime .phase-step { padding-block: .4rem .5rem; }
+    }
+  </style>
+
+  <header class="leaf-header">
+    <p class="leaf-kicker">LeafOS 1.0 release path · Phase E active</p>
+    <h2 id="leafos-runtime-heading">Recoverable local-model control</h2>
+    <p class="leaf-subtitle">Five live fault classes are verified; version stays at 0.2.4 while the six-hour soak and interface freeze remain open.</p>
+  </header>
+
+  <div class="phase-track" role="list" aria-label="Implementation phases">
+    <div class="phase-step" data-state="done" role="listitem"><strong>A · complete</strong><span>Persistent graph</span></div>
+    <div class="phase-step" data-state="done" role="listitem"><strong>B · complete</strong><span>Tools + verification</span></div>
+    <div class="phase-step" data-state="done" role="listitem"><strong>C · complete</strong><span>Bounded scheduler</span></div>
+    <div class="phase-step" data-state="done" role="listitem"><strong>D · complete</strong><span>Immutable epochs</span></div>
+    <div class="phase-step" data-state="current" role="listitem"><strong>E · active</strong><span>Soak + recovery</span></div>
+    <div class="phase-step" role="listitem"><strong>F · planned</strong><span>Interface freeze</span></div>
+  </div>
+
+  <div class="runtime-map" aria-label="LeafOS structured runtime flow">
+    <section class="runtime-stage stage-authority" aria-labelledby="stage-authority-title">
+      <div class="stage-marker"><span class="stage-index">1</span><h3 id="stage-authority-title">Project truth</h3><p>Authority and evidence enter through explicit surfaces.</p></div>
+      <div class="node-grid">
+        <div class="leaf-node"><strong>Primary operator</strong><p>Goal, constraints, contradiction disputes, and explicit acceptance.</p></div>
+        <div class="leaf-node"><strong>Persistent graph</strong><p>Tasks, dependencies, evidence, decisions, conflicts, and integrity seals.</p></div>
+        <div class="leaf-node"><strong>Controlled tools</strong><p>Inspect, literal search, tests, artifact capture, and bounded output.</p></div>
+        <div class="leaf-node"><strong>Append-only journal</strong><p>Observed state remains reconstructable across supervisor restarts.</p></div>
+      </div>
+    </section>
+
+    <div class="stage-connector" aria-hidden="true"><span></span><svg viewBox="0 0 32 44" focusable="false"><path d="M15 0h2v31h-2z"></path><polygon points="8,29 24,29 16,42"></polygon></svg></div>
+
+    <section class="runtime-stage stage-execution" aria-labelledby="stage-execution-title">
+      <div class="stage-marker"><span class="stage-index">2</span><h3 id="stage-execution-title">Bounded execution</h3><p>🌿 leafctl owns one obvious control path.</p></div>
+      <div class="node-grid">
+        <div class="leaf-node"><strong>Persisted supervisor</strong><p>Scheduler PID, heartbeat, lease recovery, cancel, and clean shutdown.</p></div>
+        <div class="leaf-node"><strong>Priority queue</strong><p>Interactive → critical → verifier → speculative → compression.</p></div>
+        <div class="leaf-node"><strong>Workers + verifier</strong><p>Two to four worker processes and one independent verdict lane.</p></div>
+        <div class="leaf-node"><strong>Resource gate</strong><p>CPU, RAM, GPU/VRAM, disk, thermal, foreground policy, and queue limits.</p></div>
+      </div>
+    </section>
+
+    <div class="stage-connector" aria-hidden="true"><span></span><svg viewBox="0 0 32 44" focusable="false"><path d="M15 0h2v31h-2z"></path><polygon points="8,29 24,29 16,42"></polygon></svg></div>
+
+    <section class="runtime-stage stage-runtime" aria-labelledby="stage-runtime-title">
+      <div class="stage-marker"><span class="stage-index">3</span><h3 id="stage-runtime-title">Real local runtime</h3><p>Only installed and validated model lanes can report usable.</p></div>
+      <div class="node-grid">
+        <div class="leaf-node"><strong>Fast / interactive</strong><p>Viola 14B Q2_K · installed GGUF.</p></div>
+        <div class="leaf-node"><strong>Reasoning / critical</strong><p>Viola 27B Q4_K_M · installed GGUF.</p></div>
+        <div class="leaf-node"><strong>Independent verifier</strong><p>Viola 14B Q3_K_M · distinct installed lane.</p></div>
+        <div class="leaf-node"><strong>Observed host</strong><p>llama.cpp · Vulkan · RTX 4070 · ten usable GGUF files.</p></div>
+      </div>
+    </section>
+
+    <div class="stage-connector" aria-hidden="true"><span></span><svg viewBox="0 0 32 44" focusable="false"><path d="M15 0h2v31h-2z"></path><polygon points="8,29 24,29 16,42"></polygon></svg></div>
+
+    <section class="runtime-stage stage-review" aria-labelledby="stage-review-title">
+      <div class="stage-marker"><span class="stage-index">4</span><h3 id="stage-review-title">Immutable review</h3><p>Reduction happens before summary, never instead of evidence.</p></div>
+      <div class="node-grid">
+        <div class="leaf-node"><strong>Epoch trigger</strong><p>Thirty-minute default or explicit manual review; due state is persisted.</p></div>
+        <div class="leaf-node"><strong>Evidence index</strong><p>Hash, source, task, identifiers, failures, and immutable manifest links.</p></div>
+        <div class="leaf-node"><strong>Contradiction gate</strong><p>Deduplicate repeated text while keeping disputes, failures, and unknowns visible.</p></div>
+        <div class="leaf-node"><strong>Context packet v2</strong><p>Stable text + JSON, objective, accepted decisions, evidence links, and next action.</p></div>
+      </div>
+    </section>
+
+    <div class="stage-connector" aria-hidden="true"><span></span><svg viewBox="0 0 32 44" focusable="false"><path d="M15 0h2v31h-2z"></path><polygon points="8,29 24,29 16,42"></polygon></svg></div>
+
+    <section class="runtime-stage stage-recovery" aria-labelledby="stage-recovery-title">
+      <div class="stage-marker"><span class="stage-index">5</span><h3 id="stage-recovery-title">Durable recovery</h3><p>Phase E proves restart behavior without inventing successful state.</p></div>
+      <div class="node-grid">
+        <div class="leaf-node"><strong>Boot-scoped leases</strong><p>Persisted PIDs are trusted only inside the host session that created them.</p></div>
+        <div class="leaf-node"><strong>Owned model processes</strong><p>Every llama.cpp PID is bound to its worker or verifier lease and killed with its process tree.</p></div>
+        <div class="leaf-node"><strong>Immutable checkpoints</strong><p>Objective, graph, scheduler, epoch state, acceptance links, and append-only stream prefixes are sealed.</p></div>
+        <div class="leaf-node"><strong>Six-hour telemetry</strong><p>Resource and scheduler latency samples persist across controller restart; the live duration gate is running.</p></div>
+      </div>
+    </section>
+  </div>
+
+  <section class="proof" aria-labelledby="proof-title">
+    <h3 id="proof-title">Phase E · measured recovery evidence</h3>
+    <dl class="proof-grid">
+      <div><dt>Contract suite</dt><dd>76 tests + real GGUF gate</dd></div>
+      <div><dt>Fault proof</dt><dd>5 required classes verified</dd></div>
+      <div><dt>Shutdown</dt><dd>0 owned worker/model PIDs left</dd></div>
+      <div><dt>Duration gate</dt><dd>6-hour soak running · ≥2 epochs required</dd></div>
+    </dl>
+    <p class="proof-note">Controller restart, worker kill, real model-load failure, bounded tool failure, and interrupted generation each have persisted proof. Verdant Quant Lab remains the README-and-seed mixed workload; Phase E is not closed until the soak completes.</p>
+  </section>
+</section>

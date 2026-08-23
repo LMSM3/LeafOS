@@ -1,0 +1,10 @@
+{
+  "verdict": "accept",
+  "confidence": "low",
+  "claims": [
+    {
+      "text": "The seven top-level report keys are exactly: assets, backtest, factor_models, metadata, portfolios, simulation, and portfolio_risk.",
+      "evidence_ids": ["evidence-000014"]
+    }
+  ]
+}

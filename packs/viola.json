@@ -1,0 +1,13 @@
+{
+  "schema": "leafos.pack.v1",
+  "id": "viola",
+  "name": "Viola",
+  "default_lane": "fast",
+  "lanes": {
+    "fast": "qwen3-6-14b-a3b-fablevibes-q2-k-16a93402",
+    "general": "qwen3-6-27b-claude-opus-sonnet-distilledv2-mtp-q4-k--f70cd8a3",
+    "reasoning": "qwen3-6-27b-claude-opus-deepseek-distilled-imatrix-m-aa87e750",
+    "verifier": "qwen3-6-14b-a3b-fablevibes-q3-k-m-228cc891",
+    "writer": "qwen3-6-27b-fable-fus-711-unheretic-nm-dau-neo-max-n-ea7489b3"
+  }
+}

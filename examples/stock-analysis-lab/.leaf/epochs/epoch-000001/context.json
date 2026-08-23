@@ -1,0 +1,826 @@
+{
+  "schema": "leafos.context-packet.v2",
+  "epoch": "epoch-000001",
+  "generated_at": "2026-08-20T08:09:05.614194+00:00",
+  "objective": "Build and validate the large modular mathematical Python stock-analysis program defined by README.md and SEED.md using only the checked-in deterministic seed.",
+  "project": {
+    "id": "project-b75cf5c1d852fd4f",
+    "name": "stock-analysis-lab",
+    "root": "C:\\FlowerOS\\L\\examples\\stock-analysis-lab"
+  },
+  "current_state": {
+    "phase": "1.0.0-phase-d",
+    "mode": "epoch-swarm",
+    "tasks": {
+      "verifying": 5,
+      "failed": 2,
+      "accepted": 1
+    }
+  },
+  "last_decisions": [
+    {
+      "id": "decision-000003",
+      "kind": "acceptance",
+      "task_id": "task-000008",
+      "evidence_ids": [
+        "evidence-000022",
+        "evidence-000020"
+      ],
+      "observed_at": "2026-08-20T08:09:05.313285+00:00"
+    }
+  ],
+  "active_tasks": [
+    {
+      "id": "task-000001",
+      "status": "verifying",
+      "lane": "fast",
+      "dependencies": [],
+      "evidence": [
+        "evidence-000001"
+      ],
+      "confidence": "conflicted"
+    },
+    {
+      "id": "task-000003",
+      "status": "verifying",
+      "lane": "fast",
+      "dependencies": [],
+      "evidence": [
+        "evidence-000003",
+        "evidence-000004",
+        "evidence-000005",
+        "evidence-000006"
+      ],
+      "confidence": "conflicted"
+    },
+    {
+      "id": "task-000005",
+      "status": "verifying",
+      "lane": "verifier",
+      "dependencies": [],
+      "evidence": [
+        "evidence-000008",
+        "evidence-000009",
+        "evidence-000010"
+      ],
+      "confidence": "rejected"
+    },
+    {
+      "id": "task-000006",
+      "status": "verifying",
+      "lane": "verifier",
+      "dependencies": [],
+      "evidence": [
+        "evidence-000011",
+        "evidence-000012",
+        "evidence-000013"
+      ],
+      "confidence": "unverified"
+    },
+    {
+      "id": "task-000007",
+      "status": "verifying",
+      "lane": "verifier",
+      "dependencies": [],
+      "evidence": [
+        "evidence-000014",
+        "evidence-000015",
+        "evidence-000016",
+        "evidence-000017",
+        "evidence-000018"
+      ],
+      "confidence": "unverified"
+    }
+  ],
+  "new_evidence": [
+    {
+      "id": "evidence-000001",
+      "task_id": "task-000001",
+      "kind": "local-model-inference",
+      "exit_code": 0,
+      "confidence": "unverified",
+      "verdict": null,
+      "artifacts": [
+        {
+          "path": ".leaf/tasks/task-000001/worker-output.txt",
+          "sha256": "502da911cd73ac6376501e67e4ba9ef7d440319bff65700f28cc570a6e1aeda2",
+          "bytes": 816
+        },
+        {
+          "path": ".leaf/tasks/task-000001/worker-raw-stdout.txt",
+          "sha256": "391cb08b3909b100e4ef34d2f95ec545d5c32270e91719fa6d8aa8927844cbc7",
+          "bytes": 2331
+        },
+        {
+          "path": ".leaf/tasks/task-000001/worker-stderr.txt",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "bytes": 0
+        },
+        {
+          "path": ".leaf/tasks/task-000001/inputs/README.md",
+          "sha256": "96cf31cd3b7df51291073ec28f37d44d8933a343bf5e1663f70fb7bfe0be621f",
+          "bytes": 3207,
+          "role": "input-source"
+        },
+        {
+          "path": ".leaf/tasks/task-000001/inputs/SEED.md",
+          "sha256": "63b42ab125c342dd56ad727985d285ca21dd09b482d8b7070a05cb8549b95b9e",
+          "bytes": 884,
+          "role": "input-source"
+        },
+        {
+          "path": ".leaf/tasks/task-000001/inputs/seed/config.json",
+          "sha256": "20f2118a96328732049b40dfa23eb8b00af6a478c3727eeb35a693263ae2a4d7",
+          "bytes": 305,
+          "role": "input-source"
+        }
+      ]
+    },
+    {
+      "id": "evidence-000002",
+      "task_id": "task-000002",
+      "kind": "local-model-inference",
+      "exit_code": 127,
+      "confidence": "unverified",
+      "verdict": null,
+      "artifacts": [
+        {
+          "path": ".leaf/tasks/task-000002/worker-output.txt",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "bytes": 0
+        },
+        {
+          "path": ".leaf/tasks/task-000002/worker-raw-stdout.txt",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "bytes": 0
+        },
+        {
+          "path": ".leaf/tasks/task-000002/worker-stderr.txt",
+          "sha256": "a3ea39412dccab160344eb98f77fa3943ac0e9a6358f44a43fb93fe46386e66b",
+          "bytes": 52
+        },
+        {
+          "path": ".leaf/tasks/task-000002/inputs/README.md",
+          "sha256": "96cf31cd3b7df51291073ec28f37d44d8933a343bf5e1663f70fb7bfe0be621f",
+          "bytes": 3207,
+          "role": "input-source"
+        },
+        {
+          "path": ".leaf/tasks/task-000002/inputs/stocklab/analysis.py",
+          "sha256": "ed025c45356d715509f672441ebb1e05137858b2c69757cef754fe915ed22d0a",
+          "bytes": 5927,
+          "role": "input-source"
+        },
+        {
+          "path": ".leaf/tasks/task-000002/inputs/stocklab/linalg.py",
+          "sha256": "ab497640597b4eee65d41209af5593d6c99348d3f2412685f405d10016f1ad11",
+          "bytes": 5957,
+          "role": "input-source"
+        },
+        {
+          "path": ".leaf/tasks/task-000002/inputs/stocklab/portfolio.py",
+          "sha256": "82dc258d72a6b0a1ec6ef11ff909ea14bfd5333224379ff356cb07a66d13f22a",
+          "bytes": 4933,
+          "role": "input-source"
+        },
+        {
+          "path": ".leaf/tasks/task-000002/inputs/stocklab/risk.py",
+          "sha256": "8ae7e54157f15276581836c79ad30a117316456745b3fc12a4ecda6b93c4e166",
+          "bytes": 3363,
+          "role": "input-source"
+        },
+        {
+          "path": ".leaf/tasks/task-000002/inputs/tests/test_integration.py",
+          "sha256": "5e2910b02ef8905eeaaa53e7b9efae536bb6faef780209ef90f31c8f29f19cb2",
+          "bytes": 2068,
+          "role": "input-source"
+        },
+        {
+          "path": ".leaf/tasks/task-000002/inputs/reports/seed-analysis.json",
+          "sha256": "b5379e61a856aaba7e39a1a222d492a881e81236b549652b77c9306a4613693b",
+          "bytes": 14855,
+          "role": "input-source"
+        }
+      ]
+    },
+    {
+      "id": "evidence-000003",
+      "task_id": "task-000003",
+      "kind": "local-model-inference",
+      "exit_code": 0,
+      "confidence": "unverified",
+      "verdict": null,
+      "artifacts": [
+        {
+          "path": ".leaf/tasks/task-000003/worker-output.txt",
+          "sha256": "a98064bd70360fbe853081295d008323a0eaffbcbea6ab4d6a60603a0b9dee0d",
+          "bytes": 408
+        },
+        {
+          "path": ".leaf/tasks/task-000003/worker-raw-stdout.txt",
+          "sha256": "41186019ef1398ab608554aa04673a0c1e1767de71937f3dec967b6ea7914435",
+          "bytes": 1923
+        },
+        {
+          "path": ".leaf/tasks/task-000003/worker-stderr.txt",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "bytes": 0
+        },
+        {
+          "path": ".leaf/tasks/task-000003/inputs/README.md",
+          "sha256": "96cf31cd3b7df51291073ec28f37d44d8933a343bf5e1663f70fb7bfe0be621f",
+          "bytes": 3207,
+          "role": "input-source"
+        },
+        {
+          "path": ".leaf/tasks/task-000003/inputs/stocklab/analysis.py",
+          "sha256": "ed025c45356d715509f672441ebb1e05137858b2c69757cef754fe915ed22d0a",
+          "bytes": 5927,
+          "role": "input-source"
+        },
+        {
+          "path": ".leaf/tasks/task-000003/inputs/tests/test_integration.py",
+          "sha256": "5e2910b02ef8905eeaaa53e7b9efae536bb6faef780209ef90f31c8f29f19cb2",
+          "bytes": 2068,
+          "role": "input-source"
+        }
+      ]
+    },
+    {
+      "id": "evidence-000004",
+      "task_id": "task-000003",
+      "kind": "tool-execution",
+      "exit_code": 0,
+      "confidence": "observed",
+      "verdict": null,
+      "artifacts": [
+        {
+          "path": ".leaf/tasks/task-000003/tools/attempt-001-test/stdout.txt",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "bytes": 0,
+          "role": "tool-stdout"
+        },
+        {
+          "path": ".leaf/tasks/task-000003/tools/attempt-001-test/stderr.txt",
+          "sha256": "2010535d1bfe4610bcd622e1538d4dc8b81b75c14fa0c8554d41d7d7f8bf1deb",
+          "bytes": 398,
+          "role": "tool-stderr"
+        }
+      ]
+    },
+    {
+      "id": "evidence-000005",
+      "task_id": "task-000003",
+      "kind": "tool-execution",
+      "exit_code": 0,
+      "confidence": "observed",
+      "verdict": null,
+      "artifacts": [
+        {
+          "path": ".leaf/tasks/task-000003/tools/attempt-002-artifact/stdout.txt",
+          "sha256": "574d69abbb7ac6feb9a086077352238dfbfcf5a5d03e6668e4f6e4fe4cfcb30b",
+          "bytes": 50,
+          "role": "tool-stdout"
+        },
+        {
+          "path": ".leaf/tasks/task-000003/tools/attempt-002-artifact/stderr.txt",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "bytes": 0,
+          "role": "tool-stderr"
+        },
+        {
+          "path": ".leaf/tasks/task-000003/tools/attempt-002-artifact/artifact/reports/seed-analysis.json",
+          "sha256": "b5379e61a856aaba7e39a1a222d492a881e81236b549652b77c9306a4613693b",
+          "bytes": 14855,
+          "role": "captured-artifact"
+        }
+      ]
+    },
+    {
+      "id": "evidence-000006",
+      "task_id": "task-000003",
+      "kind": "verification",
+      "exit_code": 0,
+      "confidence": "high",
+      "verdict": "accept",
+      "artifacts": [
+        {
+          "path": ".leaf/tasks/task-000003/verifiers/attempt-001/verifier-output.txt",
+          "sha256": "2f9e0dc4e831dc0c13e54185a0b3f68e187f2a8a822c657dfb1eac4fe0e05e6a",
+          "bytes": 513,
+          "role": "verifier-output"
+        },
+        {
+          "path": ".leaf/tasks/task-000003/verifiers/attempt-001/verifier-raw-stdout.txt",
+          "sha256": "b88d00e0e62ea670ac451334da9888946caa517d3038d9fc0c5c07a06f45bab5",
+          "bytes": 2030,
+          "role": "verifier-raw-stdout"
+        },
+        {
+          "path": ".leaf/tasks/task-000003/verifiers/attempt-001/verifier-stderr.txt",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "bytes": 0,
+          "role": "verifier-stderr"
+        }
+      ]
+    },
+    {
+      "id": "evidence-000007",
+      "task_id": "task-000004",
+      "kind": "local-model-inference",
+      "exit_code": 1,
+      "confidence": "unverified",
+      "verdict": null,
+      "artifacts": [
+        {
+          "path": ".leaf/tasks/task-000004/worker-output.txt",
+          "sha256": "171f12f23d3a82024d4e97fca6115298f17712663c99dc421be1bf5c8ff5e1f6",
+          "bytes": 63
+        },
+        {
+          "path": ".leaf/tasks/task-000004/worker-raw-stdout.txt",
+          "sha256": "95291de759b9f89de0ed014e9db1743c4f7ebeffb882361b6b5395379f4828e3",
+          "bytes": 66
+        },
+        {
+          "path": ".leaf/tasks/task-000004/worker-stderr.txt",
+          "sha256": "9f37651a027144011871ae27ed1439017d2c313289e040592a42bf315766dbd4",
+          "bytes": 866
+        },
+        {
+          "path": ".leaf/tasks/task-000004/inputs/tests/test_integration.py",
+          "sha256": "5e2910b02ef8905eeaaa53e7b9efae536bb6faef780209ef90f31c8f29f19cb2",
+          "bytes": 2068,
+          "role": "input-source"
+        },
+        {
+          "path": ".leaf/tasks/task-000004/inputs/README.md",
+          "sha256": "96cf31cd3b7df51291073ec28f37d44d8933a343bf5e1663f70fb7bfe0be621f",
+          "bytes": 3207,
+          "role": "input-source"
+        }
+      ]
+    },
+    {
+      "id": "evidence-000008",
+      "task_id": "task-000005",
+      "kind": "local-model-inference",
+      "exit_code": 0,
+      "confidence": "unverified",
+      "verdict": null,
+      "artifacts": [
+        {
+          "path": ".leaf/tasks/task-000005/worker-output.txt",
+          "sha256": "5d9bff9577c5f26f5c6cff417ca3957e5bb894ebd8b53ae73581eae4fdb8a662",
+          "bytes": 160
+        },
+        {
+          "path": ".leaf/tasks/task-000005/worker-raw-stdout.txt",
+          "sha256": "575e72d3bb58fbae46cfcf3120d471ccebf06fc198c794b4cfeb0e56e4985dd8",
+          "bytes": 1677
+        },
+        {
+          "path": ".leaf/tasks/task-000005/worker-stderr.txt",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "bytes": 0
+        },
+        {
+          "path": ".leaf/tasks/task-000005/inputs/tests/test_integration.py",
+          "sha256": "5e2910b02ef8905eeaaa53e7b9efae536bb6faef780209ef90f31c8f29f19cb2",
+          "bytes": 2068,
+          "role": "input-source"
+        }
+      ]
+    },
+    {
+      "id": "evidence-000009",
+      "task_id": "task-000005",
+      "kind": "tool-execution",
+      "exit_code": 0,
+      "confidence": "observed",
+      "verdict": null,
+      "artifacts": [
+        {
+          "path": ".leaf/tasks/task-000005/tools/attempt-001-test/stdout.txt",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "bytes": 0,
+          "role": "tool-stdout"
+        },
+        {
+          "path": ".leaf/tasks/task-000005/tools/attempt-001-test/stderr.txt",
+          "sha256": "eb32cab5515c166486f65eac9db4a09af6f48a4db1dc7f4854d858abb24b4a3f",
+          "bytes": 398,
+          "role": "tool-stderr"
+        }
+      ]
+    },
+    {
+      "id": "evidence-000010",
+      "task_id": "task-000005",
+      "kind": "verification",
+      "exit_code": 0,
+      "confidence": "high",
+      "verdict": "reject",
+      "artifacts": [
+        {
+          "path": ".leaf/tasks/task-000005/verifiers/attempt-001/verifier-output.txt",
+          "sha256": "598bb9f24c58642751d3f143a996fc3864e664b0066f6f545354f329dd3ff590",
+          "bytes": 248,
+          "role": "verifier-output"
+        },
+        {
+          "path": ".leaf/tasks/task-000005/verifiers/attempt-001/verifier-raw-stdout.txt",
+          "sha256": "e78b437f82d6962882293f9df766e5e546841507462561167fb0814129a89c18",
+          "bytes": 1763,
+          "role": "verifier-raw-stdout"
+        },
+        {
+          "path": ".leaf/tasks/task-000005/verifiers/attempt-001/verifier-stderr.txt",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "bytes": 0,
+          "role": "verifier-stderr"
+        }
+      ]
+    },
+    {
+      "id": "evidence-000011",
+      "task_id": "task-000006",
+      "kind": "local-model-inference",
+      "exit_code": 0,
+      "confidence": "unverified",
+      "verdict": null,
+      "artifacts": [
+        {
+          "path": ".leaf/tasks/task-000006/worker-output.txt",
+          "sha256": "43942b6191f59d96fcf19606424591c352a36da3ab45276d99761fba61bb2604",
+          "bytes": 488
+        },
+        {
+          "path": ".leaf/tasks/task-000006/worker-raw-stdout.txt",
+          "sha256": "27e602f6dc95f4fb9ff3d0ccd6451d8cbd65ae01256d84ae4007d28951f7ff32",
+          "bytes": 2005
+        },
+        {
+          "path": ".leaf/tasks/task-000006/worker-stderr.txt",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "bytes": 0
+        },
+        {
+          "path": ".leaf/tasks/task-000006/inputs/tests/test_integration.py",
+          "sha256": "5e2910b02ef8905eeaaa53e7b9efae536bb6faef780209ef90f31c8f29f19cb2",
+          "bytes": 2068,
+          "role": "input-source"
+        }
+      ]
+    },
+    {
+      "id": "evidence-000012",
+      "task_id": "task-000006",
+      "kind": "tool-execution",
+      "exit_code": 0,
+      "confidence": "observed",
+      "verdict": null,
+      "artifacts": [
+        {
+          "path": ".leaf/tasks/task-000006/tools/attempt-001-inspect/stdout.txt",
+          "sha256": "5e2910b02ef8905eeaaa53e7b9efae536bb6faef780209ef90f31c8f29f19cb2",
+          "bytes": 2068,
+          "role": "tool-stdout"
+        },
+        {
+          "path": ".leaf/tasks/task-000006/tools/attempt-001-inspect/stderr.txt",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "bytes": 0,
+          "role": "tool-stderr"
+        }
+      ]
+    },
+    {
+      "id": "evidence-000013",
+      "task_id": "task-000006",
+      "kind": "tool-execution",
+      "exit_code": 0,
+      "confidence": "observed",
+      "verdict": null,
+      "artifacts": [
+        {
+          "path": ".leaf/tasks/task-000006/tools/attempt-002-test/stdout.txt",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "bytes": 0,
+          "role": "tool-stdout"
+        },
+        {
+          "path": ".leaf/tasks/task-000006/tools/attempt-002-test/stderr.txt",
+          "sha256": "ddb91a9a6be70dc5af5e3a2fa2faddef7a6b88ef9bb9e6eab18e90c452269fdc",
+          "bytes": 398,
+          "role": "tool-stderr"
+        }
+      ]
+    },
+    {
+      "id": "evidence-000014",
+      "task_id": "task-000007",
+      "kind": "local-model-inference",
+      "exit_code": 0,
+      "confidence": "unverified",
+      "verdict": null,
+      "artifacts": [
+        {
+          "path": ".leaf/tasks/task-000007/worker-output.txt",
+          "sha256": "3ab83f55414ef634929817f6a8eab234f2b939f026ccaf1db0901318d77a8bfe",
+          "bytes": 164
+        },
+        {
+          "path": ".leaf/tasks/task-000007/worker-raw-stdout.txt",
+          "sha256": "6f456656ae771fe445fdae1294e5fb7dfddf164d0c2a87da70e8ad662fc7f886",
+          "bytes": 1681
+        },
+        {
+          "path": ".leaf/tasks/task-000007/worker-stderr.txt",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "bytes": 0
+        },
+        {
+          "path": ".leaf/tasks/task-000007/inputs/tests/test_integration.py",
+          "sha256": "5e2910b02ef8905eeaaa53e7b9efae536bb6faef780209ef90f31c8f29f19cb2",
+          "bytes": 2068,
+          "role": "input-source"
+        }
+      ]
+    },
+    {
+      "id": "evidence-000015",
+      "task_id": "task-000007",
+      "kind": "tool-execution",
+      "exit_code": 0,
+      "confidence": "observed",
+      "verdict": null,
+      "artifacts": [
+        {
+          "path": ".leaf/tasks/task-000007/tools/attempt-001-inspect/stdout.txt",
+          "sha256": "5e2910b02ef8905eeaaa53e7b9efae536bb6faef780209ef90f31c8f29f19cb2",
+          "bytes": 2068,
+          "role": "tool-stdout"
+        },
+        {
+          "path": ".leaf/tasks/task-000007/tools/attempt-001-inspect/stderr.txt",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "bytes": 0,
+          "role": "tool-stderr"
+        }
+      ]
+    },
+    {
+      "id": "evidence-000016",
+      "task_id": "task-000007",
+      "kind": "tool-execution",
+      "exit_code": 0,
+      "confidence": "observed",
+      "verdict": null,
+      "artifacts": [
+        {
+          "path": ".leaf/tasks/task-000007/tools/attempt-002-test/stdout.txt",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "bytes": 0,
+          "role": "tool-stdout"
+        },
+        {
+          "path": ".leaf/tasks/task-000007/tools/attempt-002-test/stderr.txt",
+          "sha256": "2010535d1bfe4610bcd622e1538d4dc8b81b75c14fa0c8554d41d7d7f8bf1deb",
+          "bytes": 398,
+          "role": "tool-stderr"
+        }
+      ]
+    },
+    {
+      "id": "evidence-000017",
+      "task_id": "task-000007",
+      "kind": "verification",
+      "exit_code": 0,
+      "confidence": "unverified",
+      "verdict": "invalid",
+      "artifacts": [
+        {
+          "path": ".leaf/tasks/task-000007/verifiers/attempt-001/verifier-output.txt",
+          "sha256": "d726f6f5ed46f89b29019b0e55542acd567e5df3c711e8e7ebaefb0f36fa2ff7",
+          "bytes": 270,
+          "role": "verifier-output"
+        },
+        {
+          "path": ".leaf/tasks/task-000007/verifiers/attempt-001/verifier-raw-stdout.txt",
+          "sha256": "1e9c716619b93dd0f166fc4babdd00761ff7cdbb459afd91913e0fcbee52e8b3",
+          "bytes": 1785,
+          "role": "verifier-raw-stdout"
+        },
+        {
+          "path": ".leaf/tasks/task-000007/verifiers/attempt-001/verifier-stderr.txt",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "bytes": 0,
+          "role": "verifier-stderr"
+        }
+      ]
+    },
+    {
+      "id": "evidence-000018",
+      "task_id": "task-000007",
+      "kind": "verification",
+      "exit_code": 0,
+      "confidence": "unverified",
+      "verdict": "invalid",
+      "artifacts": [
+        {
+          "path": ".leaf/tasks/task-000007/verifiers/attempt-002/verifier-output.txt",
+          "sha256": "025bb4d40e17fb4f6b2777060426f15945c93ddeaeb2593f32de062de8ec44da",
+          "bytes": 267,
+          "role": "verifier-output"
+        },
+        {
+          "path": ".leaf/tasks/task-000007/verifiers/attempt-002/verifier-raw-stdout.txt",
+          "sha256": "d51100f0ee3065d4d66a558da99cc27ac1a4d5122436b29e2af720f1ee970559",
+          "bytes": 1782,
+          "role": "verifier-raw-stdout"
+        },
+        {
+          "path": ".leaf/tasks/task-000007/verifiers/attempt-002/verifier-stderr.txt",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "bytes": 0,
+          "role": "verifier-stderr"
+        }
+      ]
+    },
+    {
+      "id": "evidence-000019",
+      "task_id": "task-000008",
+      "kind": "local-model-inference",
+      "exit_code": 0,
+      "confidence": "unverified",
+      "verdict": null,
+      "artifacts": [
+        {
+          "path": ".leaf/tasks/task-000008/worker-output.txt",
+          "sha256": "b28a642232fb101f166c4323c8ec001eca79e66d6e3e7a0fc315553b44d73626",
+          "bytes": 331
+        },
+        {
+          "path": ".leaf/tasks/task-000008/worker-raw-stdout.txt",
+          "sha256": "716ef60b15727ad8f19b4c77b2f928a9c8ce80b8d843b227ca147c981ac97a26",
+          "bytes": 1846
+        },
+        {
+          "path": ".leaf/tasks/task-000008/worker-stderr.txt",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "bytes": 0
+        },
+        {
+          "path": ".leaf/tasks/task-000008/inputs/tests/test_integration.py",
+          "sha256": "5e2910b02ef8905eeaaa53e7b9efae536bb6faef780209ef90f31c8f29f19cb2",
+          "bytes": 2068,
+          "role": "input-source"
+        }
+      ]
+    },
+    {
+      "id": "evidence-000020",
+      "task_id": "task-000008",
+      "kind": "tool-execution",
+      "exit_code": 0,
+      "confidence": "observed",
+      "verdict": null,
+      "artifacts": [
+        {
+          "path": ".leaf/tasks/task-000008/tools/attempt-001-inspect/stdout.txt",
+          "sha256": "5e2910b02ef8905eeaaa53e7b9efae536bb6faef780209ef90f31c8f29f19cb2",
+          "bytes": 2068,
+          "role": "tool-stdout"
+        },
+        {
+          "path": ".leaf/tasks/task-000008/tools/attempt-001-inspect/stderr.txt",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "bytes": 0,
+          "role": "tool-stderr"
+        }
+      ]
+    },
+    {
+      "id": "evidence-000021",
+      "task_id": "task-000008",
+      "kind": "tool-execution",
+      "exit_code": 0,
+      "confidence": "observed",
+      "verdict": null,
+      "artifacts": [
+        {
+          "path": ".leaf/tasks/task-000008/tools/attempt-002-test/stdout.txt",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "bytes": 0,
+          "role": "tool-stdout"
+        },
+        {
+          "path": ".leaf/tasks/task-000008/tools/attempt-002-test/stderr.txt",
+          "sha256": "311c79393174d672c4fb996310df7887eedaed36b9926acb924873fdc16e3183",
+          "bytes": 398,
+          "role": "tool-stderr"
+        }
+      ]
+    },
+    {
+      "id": "evidence-000022",
+      "task_id": "task-000008",
+      "kind": "verification",
+      "exit_code": 0,
+      "confidence": "high",
+      "verdict": "accept",
+      "artifacts": [
+        {
+          "path": ".leaf/tasks/task-000008/verifiers/attempt-001/verifier-output.txt",
+          "sha256": "ab2282880ffe7040bcbbcdc9750643ee823becac6c970388b26a05f6e60d4366",
+          "bytes": 318,
+          "role": "verifier-output"
+        },
+        {
+          "path": ".leaf/tasks/task-000008/verifiers/attempt-001/verifier-raw-stdout.txt",
+          "sha256": "05083112ba0455b5c4113816642100ef8ffbf7db356f2d6925d970ac3937d315",
+          "bytes": 1835,
+          "role": "verifier-raw-stdout"
+        },
+        {
+          "path": ".leaf/tasks/task-000008/verifiers/attempt-001/verifier-stderr.txt",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "bytes": 0,
+          "role": "verifier-stderr"
+        }
+      ]
+    }
+  ],
+  "unresolved_failures": [
+    {
+      "id": "task-000002",
+      "goal": "Evaluate whether the implemented stock-analysis engine satisfies the README contract using cited project sources",
+      "error": "llama.cpp exited with code 127",
+      "evidence": [
+        "evidence-000002"
+      ]
+    },
+    {
+      "id": "task-000004",
+      "goal": "Read tests/test_integration.py and report only the seven top-level report keys it asserts, citing that path; do not infer any ticker API",
+      "error": "llama.cpp exited with code 1",
+      "evidence": [
+        "evidence-000007"
+      ]
+    }
+  ],
+  "unknown_or_conflicting": [
+    {
+      "kind": "contradiction",
+      "count": 2,
+      "records": [
+        {
+          "task_id": "task-000001",
+          "id": "task-000001-contradiction-001",
+          "evidence_ids": [
+            "evidence-000001"
+          ],
+          "reason": "The worker invented a BaseLayer hierarchy absent from README.md and SEED.md; preserve the output as untrusted evidence but do not treat it as implementation authority.",
+          "producer": "leafos:primary-agent",
+          "observed_at": "2026-08-20T08:05:24.977347+00:00"
+        },
+        {
+          "task_id": "task-000003",
+          "id": "task-000003-contradiction-001",
+          "evidence_ids": [
+            "evidence-000003",
+            "evidence-000006"
+          ],
+          "reason": "Both model outputs describe an analyze_stock ticker-alias API absent from the supplied README, stocklab/analysis.py, and passing integration test; their accept prose is semantically false.",
+          "producer": "leafos:primary-agent",
+          "observed_at": "2026-08-20T08:06:30.419768+00:00"
+        }
+      ]
+    },
+    {
+      "kind": "unaccepted-worker-output",
+      "count": 5
+    }
+  ],
+  "next_recommended_actions": [
+    "Inspect conflicting verifier evidence; do not accept the task while contradictions remain."
+  ],
+  "provenance": {
+    "objective_integrity": "sha256:07548a6457894790e6b0934f3b9c403b291a1ca77466b60820f393e4a0f0b3ea",
+    "taskgraph_integrity": "sha256:b80d2284ff100417c9d126ac00bf638e76ab4b1886524ed1a267938d393ed085",
+    "epoch": "epoch-000001"
+  },
+  "accounting": {
+    "raw_input_bytes": 120399,
+    "raw_input_token_estimate": 30100,
+    "packet_bytes": 19728,
+    "packet_token_estimate": 4932,
+    "packet_to_raw_ratio": 0.163855,
+    "target_ratio": 0.2,
+    "evidence_floor_bytes": 17974,
+    "allowed_packet_bytes": 24080,
+    "limit_basis": "20-percent"
+  },
+  "integrity": "sha256:9c106f27fe7854308ab303c22ce1d2a177b2362f7b758eb410b123118a284c9c"
+}

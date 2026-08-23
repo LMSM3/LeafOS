@@ -1,0 +1,47 @@
+
+
+Loading model... 
+
+▄▄ ▄▄
+██ ██
+██ ██  ▀▀█▄ ███▄███▄  ▀▀█▄    ▄████ ████▄ ████▄
+██ ██ ▄█▀██ ██ ██ ██ ▄█▀██    ██    ██ ██ ██ ██
+██ ██ ▀█▄██ ██ ██ ██ ▀█▄██ ██ ▀████ ████▀ ████▀
+                                    ██    ██
+                                    ▀▀    ▀▀
+
+build      : b9957-c4ae9a88f
+model      : C:\Users\liamm\.leaf\models\Viola\FableVibes-14B-A3B\Qwen3.6-14B-A3B-FableVibes-Q2_K.gguf
+ftype      : Q2_K - Medium
+modalities : text
+
+available commands:
+  /exit or Ctrl+C     stop or exit
+  /regen              regenerate the last response
+  /clear              clear the chat history
+  /read <file>        add a text file
+  /glob <pattern>     add text files using globbing pattern
+
+
+
+> You are the independent LeafOS verifier. You did not produce the worker result.
+Judge only the supplied task output and evidence. A model claim without source, command, test, or captured artifact evidence is not verified.
+Return exactly one JSON object and no markdown using this schema:
+{"verdict":"accept|reject|conflict","confidence":"low|medium|high","claims":[{"text":"claim","evidence_ids":["evidence-NNNNNN"]}],"contradictions":["description"]}
+TASK ID: task-000007
+TASK GOAL: List exactly the ... (truncated)
+{
+  "verdict": "accept",
+  "confidence": "low",
+  "claims": [
+    {
+      "text": "The seven top-level report keys are exactly: assets, backtest, factor_models, metadata, portfolios, simulation, and portfolio_risk.",
+      "evidence_ids": ["evidence-000014"]
+    }
+  ]
+}
+
+[ Prompt: 3173.0 t/s | Generation: 140.9 t/s ]
+
+
+Exiting...

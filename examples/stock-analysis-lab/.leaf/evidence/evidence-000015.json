@@ -1,0 +1,37 @@
+{
+  "schema": "leafos.evidence.v1",
+  "id": "evidence-000015",
+  "task_id": "task-000007",
+  "producer": "leafos:controller",
+  "kind": "tool-execution",
+  "source": {
+    "tool": "inspect",
+    "mutation_policy": "read-only"
+  },
+  "command": {
+    "tool": "inspect",
+    "path": "tests/test_integration.py"
+  },
+  "attempt": 1,
+  "exit_code": 0,
+  "artifacts": [
+    {
+      "role": "tool-stdout",
+      "path": ".leaf/tasks/task-000007/tools/attempt-001-inspect/stdout.txt",
+      "sha256": "5e2910b02ef8905eeaaa53e7b9efae536bb6faef780209ef90f31c8f29f19cb2",
+      "bytes": 2068
+    },
+    {
+      "role": "tool-stderr",
+      "path": ".leaf/tasks/task-000007/tools/attempt-001-inspect/stderr.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    }
+  ],
+  "started_at": "2026-08-20T08:08:11.879907+00:00",
+  "observed_at": "2026-08-20T08:08:11.880147+00:00",
+  "confidence": "observed",
+  "claims": [],
+  "next_action": null,
+  "integrity": "sha256:dd2904a0483ee5e31e11af7cf186345e2a349ab779c605e562b085bf7c7b8087"
+}

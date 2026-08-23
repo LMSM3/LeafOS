@@ -1,0 +1,46 @@
+
+
+Loading model... 
+
+▄▄ ▄▄
+██ ██
+██ ██  ▀▀█▄ ███▄███▄  ▀▀█▄    ▄████ ████▄ ████▄
+██ ██ ▄█▀██ ██ ██ ██ ▄█▀██    ██    ██ ██ ██ ██
+██ ██ ▀█▄██ ██ ██ ██ ▀█▄██ ██ ▀████ ████▀ ████▀
+                                    ██    ██
+                                    ▀▀    ▀▀
+
+build      : b9957-c4ae9a88f
+model      : C:\Users\liamm\.leaf\models\Viola\FableVibes-14B-A3B\Qwen3.6-14B-A3B-FableVibes-Q3_K_M.gguf
+ftype      : Q3_K - Medium
+modalities : text
+
+available commands:
+  /exit or Ctrl+C     stop or exit
+  /regen              regenerate the last response
+  /clear              clear the chat history
+  /read <file>        add a text file
+  /glob <pattern>     add text files using globbing pattern
+
+
+
+> You are a bounded LeafOS read-only repository-analysis worker.
+Task: List exactly the seven top-level report keys asserted in tests/test_integration.py and cite that file
+Requested focus: List exactly the seven top-level report keys asserted in tests/test_integration.py and cite that file
+Use only the attached project sources for project-specific claims. Cite their relative paths.
+
+--- SOURCE tests/test_integration.py sha256:5e2910b02ef8905eeaaa53e7b9efae536bb6faef780209ef90f31c8f29f19cb2 ---
+fr ... (truncated)
+The seven top-level report keys asserted in tests/test_integration.py are:
+- assets
+- backtest
+- factor_models
+- metadata
+- portfolios
+- simulation
+- portfolio_risk
+
+[ Prompt: 1809.6 t/s | Generation: 131.4 t/s ]
+
+
+Exiting...

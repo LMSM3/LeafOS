@@ -1,0 +1,53 @@
+{
+  "schema": "leafos.epoch-decisions.v1",
+  "epoch": "epoch-000001",
+  "observed_at": "2026-08-20T08:09:05.606677+00:00",
+  "decisions": [
+    {
+      "schema": "leafos.decision.v1",
+      "kind": "contradiction",
+      "id": "task-000001-contradiction-001",
+      "task_id": "task-000001",
+      "evidence_ids": [
+        "evidence-000001"
+      ],
+      "reason": "The worker invented a BaseLayer hierarchy absent from README.md and SEED.md; preserve the output as untrusted evidence but do not treat it as implementation authority.",
+      "producer": "leafos:primary-agent",
+      "observed_at": "2026-08-20T08:05:24.977347+00:00"
+    },
+    {
+      "schema": "leafos.decision.v1",
+      "kind": "contradiction",
+      "id": "task-000003-contradiction-001",
+      "task_id": "task-000003",
+      "evidence_ids": [
+        "evidence-000003",
+        "evidence-000006"
+      ],
+      "reason": "Both model outputs describe an analyze_stock ticker-alias API absent from the supplied README, stocklab/analysis.py, and passing integration test; their accept prose is semantically false.",
+      "producer": "leafos:primary-agent",
+      "observed_at": "2026-08-20T08:06:30.419768+00:00"
+    },
+    {
+      "schema": "leafos.decision.v1",
+      "id": "decision-000003",
+      "kind": "acceptance",
+      "task_id": "task-000008",
+      "reason": "The worker named the exact seven asserted report keys; independent verifier evidence-000022 resolved the claim to controller inspect evidence-000020, and integration tests evidence-000021 passed.",
+      "verifier_evidence": [
+        "evidence-000022"
+      ],
+      "claims": [
+        {
+          "text": "The seven top-level keys in test_integration.py are metadata, assets, portfolio_risk, factor_models, portfolios, simulation, and backtest.",
+          "evidence_ids": [
+            "evidence-000020"
+          ]
+        }
+      ],
+      "producer": "leafos:controller",
+      "observed_at": "2026-08-20T08:09:05.313285+00:00"
+    }
+  ],
+  "integrity": "sha256:53c7dc29011646ad6a026c1e62260a495de6a1ee5e2c9a00ee8a2a1487468db2"
+}

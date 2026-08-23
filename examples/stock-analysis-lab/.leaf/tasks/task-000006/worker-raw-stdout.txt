@@ -1,0 +1,45 @@
+
+
+Loading model... 
+
+▄▄ ▄▄
+██ ██
+██ ██  ▀▀█▄ ███▄███▄  ▀▀█▄    ▄████ ████▄ ████▄
+██ ██ ▄█▀██ ██ ██ ██ ▄█▀██    ██    ██ ██ ██ ██
+██ ██ ▀█▄██ ██ ██ ██ ▀█▄██ ██ ▀████ ████▀ ████▀
+                                    ██    ██
+                                    ▀▀    ▀▀
+
+build      : b9957-c4ae9a88f
+model      : C:\Users\liamm\.leaf\models\Viola\FableVibes-14B-A3B\Qwen3.6-14B-A3B-FableVibes-Q3_K_M.gguf
+ftype      : Q3_K - Medium
+modalities : text
+
+available commands:
+  /exit or Ctrl+C     stop or exit
+  /regen              regenerate the last response
+  /clear              clear the chat history
+  /read <file>        add a text file
+  /glob <pattern>     add text files using globbing pattern
+
+
+
+> You are a bounded LeafOS read-only repository-analysis worker.
+Task: Identify the seven report keys asserted by tests/test_integration.py and cite the source
+Requested focus: Identify the seven report keys asserted by tests/test_integration.py and cite the source
+Use only the attached project sources for project-specific claims. Cite their relative paths.
+
+--- SOURCE tests/test_integration.py sha256:5e2910b02ef8905eeaaa53e7b9efae536bb6faef780209ef90f31c8f29f19cb2 ---
+from __future__ import annot ... (truncated)
+The seven report keys asserted by `tests/test_integration.py` are:
+
+1. `metadata` — accessed as `first["metadata"]` and `parsed["metadata"]`; source `tests/test_integration.py`
+2. `assets` — member of `set(first)` in the first test; source `tests/test_integration.py`
+3. `portfolio_risk` — member of `set(first)` in the first test; source `tests/test_integration.py`
+4. `factor_models` — member of `set(first)` in the first test; source `tests/test_integration.py`
+5. `portfolios`
+
+[ Prompt: 1671.8 t/s | Generation: 132.6 t/s ]
+
+
+Exiting...

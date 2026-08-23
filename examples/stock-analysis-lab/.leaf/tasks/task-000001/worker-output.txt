@@ -1,0 +1,21 @@
+## Derive an implementation and verification map from the README and seed contract
+
+The implementation must be a self-contained LeafOS long-loop workload that uses deterministic random seeds, synthetic data, and only the `seed/` files. It must also support the required CLI with a stable JSON research report.
+
+**Implementation requirements:**
+
+1. Implement all the required capabilities.
+2. Implement the CLI using the CLI layer.
+3. Implement the backtest using the `CLI` layer.
+4. Implement the `CLI` layer.
+5. Implement the `CLI` layer as a subclass of `BaseLayer`.
+6. Implement the `BaseLayer` layer.
+7. Implement the `BaseLayer` layer.
+8. Implement the `BaseLayer` layer.
+9. Implement the `BaseLayer` layer.
+
+---
+
+## Verification
+
+The implementation must support the `discover -s tests -v` command. Tests should

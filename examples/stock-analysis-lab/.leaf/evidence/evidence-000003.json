@@ -1,0 +1,84 @@
+{
+  "schema": "leafos.evidence.v1",
+  "id": "evidence-000003",
+  "task_id": "task-000003",
+  "producer": "leafos:worker-pool",
+  "kind": "local-model-inference",
+  "source": {
+    "pack_lane": "fast",
+    "model_id": "qwen3-6-14b-a3b-fablevibes-q2-k-16a93402",
+    "model_path": "C:\\Users\\liamm\\.leaf\\models\\Viola\\FableVibes-14B-A3B\\Qwen3.6-14B-A3B-FableVibes-Q2_K.gguf",
+    "architecture": "qwen35moe",
+    "quant": "Q2_K"
+  },
+  "input_sources": [
+    {
+      "path": "README.md",
+      "sha256": "96cf31cd3b7df51291073ec28f37d44d8933a343bf5e1663f70fb7bfe0be621f",
+      "bytes": 3207,
+      "encoding": "utf-8",
+      "snapshot": ".leaf/tasks/task-000003/inputs/README.md"
+    },
+    {
+      "path": "stocklab/analysis.py",
+      "sha256": "ed025c45356d715509f672441ebb1e05137858b2c69757cef754fe915ed22d0a",
+      "bytes": 5927,
+      "encoding": "utf-8",
+      "snapshot": ".leaf/tasks/task-000003/inputs/stocklab/analysis.py"
+    },
+    {
+      "path": "tests/test_integration.py",
+      "sha256": "5e2910b02ef8905eeaaa53e7b9efae536bb6faef780209ef90f31c8f29f19cb2",
+      "bytes": 2068,
+      "encoding": "utf-8",
+      "snapshot": ".leaf/tasks/task-000003/inputs/tests/test_integration.py"
+    }
+  ],
+  "command": {
+    "backend": "llama.cpp",
+    "tokens": 256,
+    "context": 8192,
+    "timeout_seconds": 180
+  },
+  "exit_code": 0,
+  "artifacts": [
+    {
+      "path": ".leaf/tasks/task-000003/worker-output.txt",
+      "sha256": "a98064bd70360fbe853081295d008323a0eaffbcbea6ab4d6a60603a0b9dee0d",
+      "bytes": 408
+    },
+    {
+      "path": ".leaf/tasks/task-000003/worker-raw-stdout.txt",
+      "sha256": "41186019ef1398ab608554aa04673a0c1e1767de71937f3dec967b6ea7914435",
+      "bytes": 1923
+    },
+    {
+      "path": ".leaf/tasks/task-000003/worker-stderr.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "role": "input-source",
+      "path": ".leaf/tasks/task-000003/inputs/README.md",
+      "sha256": "96cf31cd3b7df51291073ec28f37d44d8933a343bf5e1663f70fb7bfe0be621f",
+      "bytes": 3207
+    },
+    {
+      "role": "input-source",
+      "path": ".leaf/tasks/task-000003/inputs/stocklab/analysis.py",
+      "sha256": "ed025c45356d715509f672441ebb1e05137858b2c69757cef754fe915ed22d0a",
+      "bytes": 5927
+    },
+    {
+      "role": "input-source",
+      "path": ".leaf/tasks/task-000003/inputs/tests/test_integration.py",
+      "sha256": "5e2910b02ef8905eeaaa53e7b9efae536bb6faef780209ef90f31c8f29f19cb2",
+      "bytes": 2068
+    }
+  ],
+  "started_at": "2026-08-20T08:05:41.425229+00:00",
+  "observed_at": "2026-08-20T08:05:48.467240+00:00",
+  "confidence": "unverified",
+  "claims": [],
+  "integrity": "sha256:9e7528ced8e4652ef17dd81b43afd6886a0f932bd5f1e1db07166d599e01f294"
+}

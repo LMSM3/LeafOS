@@ -1,0 +1,62 @@
+{
+  "schema": "leafos.evidence.v1",
+  "id": "evidence-000022",
+  "task_id": "task-000008",
+  "producer": "leafos:verifier",
+  "kind": "verification",
+  "source": {
+    "pack_lane": "verifier",
+    "model_id": "qwen3-6-14b-a3b-fablevibes-q3-k-m-228cc891",
+    "model_path": "C:\\Users\\liamm\\.leaf\\models\\Viola\\FableVibes-14B-A3B\\Qwen3.6-14B-A3B-FableVibes-Q3_K_M.gguf",
+    "architecture": "qwen35moe",
+    "quant": "Q3_K_M",
+    "evidence_ids": [
+      "evidence-000019",
+      "evidence-000020",
+      "evidence-000021"
+    ]
+  },
+  "command": {
+    "backend": "llama.cpp",
+    "tokens": 384,
+    "context": 4096,
+    "timeout_seconds": 180
+  },
+  "attempt": 1,
+  "exit_code": 0,
+  "artifacts": [
+    {
+      "role": "verifier-output",
+      "path": ".leaf/tasks/task-000008/verifiers/attempt-001/verifier-output.txt",
+      "sha256": "ab2282880ffe7040bcbbcdc9750643ee823becac6c970388b26a05f6e60d4366",
+      "bytes": 318
+    },
+    {
+      "role": "verifier-raw-stdout",
+      "path": ".leaf/tasks/task-000008/verifiers/attempt-001/verifier-raw-stdout.txt",
+      "sha256": "05083112ba0455b5c4113816642100ef8ffbf7db356f2d6925d970ac3937d315",
+      "bytes": 1835
+    },
+    {
+      "role": "verifier-stderr",
+      "path": ".leaf/tasks/task-000008/verifiers/attempt-001/verifier-stderr.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    }
+  ],
+  "started_at": "2026-08-20T08:08:53.447639+00:00",
+  "observed_at": "2026-08-20T08:09:00.080555+00:00",
+  "confidence": "high",
+  "verdict": "accept",
+  "claims": [
+    {
+      "text": "The seven top-level keys in test_integration.py are metadata, assets, portfolio_risk, factor_models, portfolios, simulation, and backtest.",
+      "evidence_ids": [
+        "evidence-000020"
+      ]
+    }
+  ],
+  "contradictions": [],
+  "parse_error": null,
+  "integrity": "sha256:16fefffd1ed054cef313b2c0c4ea5b6dccfe83d538fa18363fc3199d01b43404"
+}

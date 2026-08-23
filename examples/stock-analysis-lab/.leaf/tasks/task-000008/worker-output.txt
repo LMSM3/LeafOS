@@ -1,0 +1,11 @@
+The seven top-level keys in `test_integration.py` are:
+1. metadata
+2. assets
+3. portfolio_risk
+4. factor_models
+5. portfolios
+6. simulation
+7. backtest
+
+Source: `tests/test_integration.py` (relative path: `tests/test_integration.py`).
+The keys are asserted on line 30 via `self.assertEqual` and on line 41 via `self.assertGreater`.

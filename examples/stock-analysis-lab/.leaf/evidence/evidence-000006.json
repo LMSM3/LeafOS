@@ -1,0 +1,63 @@
+{
+  "schema": "leafos.evidence.v1",
+  "id": "evidence-000006",
+  "task_id": "task-000003",
+  "producer": "leafos:verifier",
+  "kind": "verification",
+  "source": {
+    "pack_lane": "verifier",
+    "model_id": "qwen3-6-14b-a3b-fablevibes-q3-k-m-228cc891",
+    "model_path": "C:\\Users\\liamm\\.leaf\\models\\Viola\\FableVibes-14B-A3B\\Qwen3.6-14B-A3B-FableVibes-Q3_K_M.gguf",
+    "architecture": "qwen35moe",
+    "quant": "Q3_K_M",
+    "evidence_ids": [
+      "evidence-000003",
+      "evidence-000004",
+      "evidence-000005"
+    ]
+  },
+  "command": {
+    "backend": "llama.cpp",
+    "tokens": 256,
+    "context": 4096,
+    "timeout_seconds": 180
+  },
+  "attempt": 1,
+  "exit_code": 0,
+  "artifacts": [
+    {
+      "role": "verifier-output",
+      "path": ".leaf/tasks/task-000003/verifiers/attempt-001/verifier-output.txt",
+      "sha256": "2f9e0dc4e831dc0c13e54185a0b3f68e187f2a8a822c657dfb1eac4fe0e05e6a",
+      "bytes": 513
+    },
+    {
+      "role": "verifier-raw-stdout",
+      "path": ".leaf/tasks/task-000003/verifiers/attempt-001/verifier-raw-stdout.txt",
+      "sha256": "b88d00e0e62ea670ac451334da9888946caa517d3038d9fc0c5c07a06f45bab5",
+      "bytes": 2030
+    },
+    {
+      "role": "verifier-stderr",
+      "path": ".leaf/tasks/task-000003/verifiers/attempt-001/verifier-stderr.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    }
+  ],
+  "started_at": "2026-08-20T08:06:03.217870+00:00",
+  "observed_at": "2026-08-20T08:06:10.477701+00:00",
+  "confidence": "high",
+  "verdict": "accept",
+  "claims": [
+    {
+      "text": "The implemented stock-analysis engine (stocklab/analysis.py) satisfies the contract specified in the README: it supports `analyze_stock` (ticker, date, days, output_type) and correctly handles ticker aliases like `'AAPL'` and `'Apple'`, producing `{'ticker': 'Apple', 'price': 4000.0, 'open_count': 1000}`.",
+      "evidence_ids": [
+        "evidence-000003",
+        "evidence-000004"
+      ]
+    }
+  ],
+  "contradictions": [],
+  "parse_error": null,
+  "integrity": "sha256:0a5afc430e79c0a66c0f4bda4b986ef8bc0bdaf9c46f003dd1e4560140383f26"
+}

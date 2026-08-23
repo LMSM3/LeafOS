@@ -1,0 +1,55 @@
+
+
+Loading model... 
+
+▄▄ ▄▄
+██ ██
+██ ██  ▀▀█▄ ███▄███▄  ▀▀█▄    ▄████ ████▄ ████▄
+██ ██ ▄█▀██ ██ ██ ██ ▄█▀██    ██    ██ ██ ██ ██
+██ ██ ▀█▄██ ██ ██ ██ ▀█▄██ ██ ▀████ ████▀ ████▀
+                                    ██    ██
+                                    ▀▀    ▀▀
+
+build      : b9957-c4ae9a88f
+model      : C:\Users\liamm\.leaf\models\Viola\FableVibes-14B-A3B\Qwen3.6-14B-A3B-FableVibes-Q2_K.gguf
+ftype      : Q2_K - Medium
+modalities : text
+
+available commands:
+  /exit or Ctrl+C     stop or exit
+  /regen              regenerate the last response
+  /clear              clear the chat history
+  /read <file>        add a text file
+  /glob <pattern>     add text files using globbing pattern
+
+
+
+> You are a bounded LeafOS read-only repository-analysis worker.
+Task: Evaluate whether the implemented stock-analysis engine satisfies the README contract using cited project sources
+Requested focus: Evaluate whether the implemented stock-analysis engine satisfies the README contract using cited project sources
+Use only the attached project sources for project-specific claims. Cite their relative paths.
+
+--- SOURCE README.md sha256:96cf31cd3b7df51291073ec28f37d44d8933a343bf5e1663f70fb7bfe0be621f  ... (truncated)
+```
+Traceback (most recent call last):
+  File "<string>", line 28, in run_test
+    self.assertEqual(
+    AssertionError: 1000.0 != 4000.0
+    - 400.0 == 4000.0
+    - 100.0 == 400.0
+    - 400.0 == 4000.0
+    - 400.0 == 4000.0
+    - 400.0 == 4000.0
+    - 400.0 == 4000.0
+    - 400.0 == 4000.0
+    - 400.0 == 4000.0
+    - 400.0 == 4000.0
+    - 400.0 == 4000.0
+    - 400.0 == 4000.0
+    - 400.0 == 4000.0
+    - 4
+
+[ Prompt: 3106.4 t/s | Generation: 138.3 t/s ]
+
+
+Exiting...

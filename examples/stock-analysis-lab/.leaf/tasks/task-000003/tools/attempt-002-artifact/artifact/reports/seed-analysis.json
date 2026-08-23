@@ -1,0 +1,498 @@
+{
+  "assets": {
+    "ALPHA": {
+      "capm": {
+        "alpha_annualized": 0.020291966159042343,
+        "beta": 1.0006357258399121,
+        "r_squared": 0.9988627472635602,
+        "residual_volatility_annualized": 0.0038410192285899987
+      },
+      "drawdown": {
+        "longest_duration": 1,
+        "maximum_drawdown": -0.006988934187536544,
+        "peak_index": 7,
+        "terminal_wealth": 1.1583999999999999,
+        "trough_index": 8
+      },
+      "first_price": 100.0,
+      "last_price": 115.84,
+      "log_return_mean": 0.0036759935662328677,
+      "loss_risk": {
+        "confidence": 0.95,
+        "cornish_fisher_var": 0.008586623443107708,
+        "gaussian_var": 0.008093932682857517,
+        "historical_expected_shortfall": 0.006503219828998041,
+        "historical_var": 0.006001042925512712
+      },
+      "simple_performance": {
+        "annual_return": 1.5252760378948826,
+        "annual_volatility": 0.1138984951293285,
+        "excess_kurtosis": -1.4750538618454798,
+        "mean_periodic": 0.0037077782229257283,
+        "omega_zero": 3.1489965676642004,
+        "sharpe": 8.029576736362486,
+        "skewness": -0.13811063216771757,
+        "sortino": 18.819046160094253
+      }
+    },
+    "BETA": {
+      "capm": {
+        "alpha_annualized": -0.6271619992233349,
+        "beta": 2.0633147794826714,
+        "r_squared": 0.9926626596061084,
+        "residual_volatility_annualized": 0.020180358151673138
+      },
+      "drawdown": {
+        "longest_duration": 1,
+        "maximum_drawdown": -0.01795547043332535,
+        "peak_index": 7,
+        "terminal_wealth": 1.2111249999999998,
+        "trough_index": 8
+      },
+      "first_price": 80.0,
+      "last_price": 96.89,
+      "log_return_mean": 0.004788741993075779,
+      "loss_risk": {
+        "confidence": 0.95,
+        "cornish_fisher_var": 0.020471741557905897,
+        "gaussian_var": 0.019503836010506204,
+        "historical_expected_shortfall": 0.017004381498195942,
+        "historical_var": 0.016047085457058685
+      },
+      "simple_performance": {
+        "annual_return": 2.34264691366141,
+        "annual_volatility": 0.2355914558690425,
+        "excess_kurtosis": -1.41188258866348,
+        "mean_periodic": 0.004907217453211527,
+        "omega_zero": 2.109451458992488,
+        "sharpe": 5.164938551530326,
+        "skewness": -0.13032243488853537,
+        "sortino": 9.709737762132573
+      }
+    },
+    "DELTA": {
+      "capm": {
+        "alpha_annualized": 0.6449325154425886,
+        "beta": 1.3107365232557964,
+        "r_squared": 0.9910085308477171,
+        "residual_volatility_annualized": 0.014203223582370996
+      },
+      "drawdown": {
+        "longest_duration": 1,
+        "maximum_drawdown": -0.0060145615701171495,
+        "peak_index": 7,
+        "terminal_wealth": 1.3346666666666662,
+        "trough_index": 8
+      },
+      "first_price": 60.0,
+      "last_price": 80.08,
+      "log_return_mean": 0.007217039319621597,
+      "loss_risk": {
+        "confidence": 0.95,
+        "cornish_fisher_var": 0.008735896156548616,
+        "gaussian_var": 0.008233988570604055,
+        "historical_expected_shortfall": 0.005530466818882862,
+        "historical_var": 0.005024189679146302
+      },
+      "simple_performance": {
+        "annual_return": 5.163802700216571,
+        "annual_volatility": 0.14978612798913563,
+        "excess_kurtosis": -1.4821028620689762,
+        "mean_periodic": 0.007286256698810759,
+        "omega_zero": 6.026652333119608,
+        "sharpe": 12.126178218933084,
+        "skewness": -0.08235568298040716,
+        "sortino": 44.373137806540015
+      }
+    },
+    "GAMMA": {
+      "capm": {
+        "alpha_annualized": 0.6581507177404684,
+        "beta": -0.038638564586196106,
+        "r_squared": 0.032561769020379994,
+        "residual_volatility_annualized": 0.023959265552735597
+      },
+      "drawdown": {
+        "longest_duration": 1,
+        "maximum_drawdown": -0.001974333662388972,
+        "peak_index": 6,
+        "terminal_wealth": 1.107333333333334,
+        "trough_index": 7
+      },
+      "first_price": 120.0,
+      "last_price": 132.88,
+      "log_return_mean": 0.0025488680630748393,
+      "loss_risk": {
+        "confidence": 0.95,
+        "cornish_fisher_var": 0.00048068428610296325,
+        "gaussian_var": 0.0,
+        "historical_expected_shortfall": 0.0014846792690054178,
+        "historical_var": 0.0009828772157873477
+      },
+      "simple_performance": {
+        "annual_return": 0.9008758466810425,
+        "annual_volatility": 0.024359135890865462,
+        "excess_kurtosis": 1.8807158275281703,
+        "mean_periodic": 0.0025532657520988765,
+        "omega_zero": 21.77779259545368,
+        "sharpe": 25.601054443915604,
+        "skewness": -1.4395690424319492,
+        "sortino": 95.40679327767813
+      }
+    }
+  },
+  "backtest": {
+    "drawdown": {
+      "longest_duration": 1,
+      "maximum_drawdown": -0.005842288557213804,
+      "peak_index": 0,
+      "terminal_wealth": 1.2427747351286018,
+      "trough_index": 1
+    },
+    "end_date": "2026-02-27",
+    "observations": 30,
+    "performance": {
+      "annual_return": 5.207207906994883,
+      "annual_volatility": 0.1547445283153987,
+      "excess_kurtosis": -1.5274897686128213,
+      "mean_periodic": 0.007316807139151494,
+      "omega_zero": 5.795413799849931,
+      "sharpe": 11.787376352127435,
+      "skewness": -0.06333315959337528,
+      "sortino": 42.85876852469908
+    },
+    "rebalance_count": 6,
+    "rebalances": [
+      {
+        "cost": 0.0018,
+        "date": "2026-01-19",
+        "turnover": 1.5,
+        "weights": {
+          "ALPHA": 0.0,
+          "BETA": 0.0,
+          "DELTA": 1.0,
+          "GAMMA": 0.0
+        }
+      },
+      {
+        "cost": 0.0,
+        "date": "2026-01-26",
+        "turnover": 0.0,
+        "weights": {
+          "ALPHA": 0.0,
+          "BETA": 0.0,
+          "DELTA": 1.0,
+          "GAMMA": 0.0
+        }
+      },
+      {
+        "cost": 0.0,
+        "date": "2026-02-02",
+        "turnover": 0.0,
+        "weights": {
+          "ALPHA": 0.0,
+          "BETA": 0.0,
+          "DELTA": 1.0,
+          "GAMMA": 0.0
+        }
+      },
+      {
+        "cost": 0.0,
+        "date": "2026-02-09",
+        "turnover": 0.0,
+        "weights": {
+          "ALPHA": 0.0,
+          "BETA": 0.0,
+          "DELTA": 1.0,
+          "GAMMA": 0.0
+        }
+      },
+      {
+        "cost": 0.0,
+        "date": "2026-02-16",
+        "turnover": 0.0,
+        "weights": {
+          "ALPHA": 0.0,
+          "BETA": 0.0,
+          "DELTA": 1.0,
+          "GAMMA": 0.0
+        }
+      },
+      {
+        "cost": 0.0,
+        "date": "2026-02-23",
+        "turnover": 0.0,
+        "weights": {
+          "ALPHA": 0.0,
+          "BETA": 0.0,
+          "DELTA": 1.0,
+          "GAMMA": 0.0
+        }
+      }
+    ],
+    "start_date": "2026-01-19",
+    "total_transaction_cost": 0.0018,
+    "total_turnover": 1.5
+  },
+  "factor_models": {
+    "ALPHA": {
+      "alpha_annualized": 0.02213182166129657,
+      "alpha_periodic": 8.782468913212924e-05,
+      "exposures": {
+        "MKT": 1.0413637157282858,
+        "MOM": -0.05910930739987844,
+        "SMB": -0.019047878835219377
+      },
+      "normal_equation_diagonal_ratio": 422163.58839050133,
+      "observations": 40,
+      "r_squared": 0.9989830019026951,
+      "residual_volatility_annualized": 0.0036322694354345795,
+      "ridge": 1e-06
+    },
+    "BETA": {
+      "alpha_annualized": -0.5731303843978772,
+      "alpha_periodic": -0.0022743269222137985,
+      "exposures": {
+        "MKT": 1.7180154760967146,
+        "MOM": 0.29054360033726756,
+        "SMB": 0.8247005284530227
+      },
+      "normal_equation_diagonal_ratio": 422163.58839050133,
+      "observations": 40,
+      "r_squared": 0.9939046896671272,
+      "residual_volatility_annualized": 0.01839320650994653,
+      "ridge": 1e-06
+    },
+    "DELTA": {
+      "alpha_annualized": 0.6926777341163783,
+      "alpha_periodic": 0.0027487211671284855,
+      "exposures": {
+        "MKT": 1.0643048017283343,
+        "MOM": 0.2065556706268454,
+        "SMB": 0.591602328386442
+      },
+      "normal_equation_diagonal_ratio": 422163.58839050133,
+      "observations": 40,
+      "r_squared": 0.9926092920974381,
+      "residual_volatility_annualized": 0.012876997561524745,
+      "ridge": 1e-06
+    },
+    "GAMMA": {
+      "alpha_annualized": 0.6873307458305434,
+      "alpha_periodic": 0.0027275029596450138,
+      "exposures": {
+        "MKT": 0.14179063435487793,
+        "MOM": -0.2646216251883766,
+        "SMB": -0.06381288825548226
+      },
+      "normal_equation_diagonal_ratio": 422163.58839050133,
+      "observations": 40,
+      "r_squared": 0.0676797912819006,
+      "residual_volatility_annualized": 0.023520385045845714,
+      "ridge": 1e-06
+    }
+  },
+  "metadata": {
+    "as_of_date": "2026-02-27",
+    "assets": [
+      "ALPHA",
+      "BETA",
+      "GAMMA",
+      "DELTA"
+    ],
+    "config": {
+      "confidence": 0.95,
+      "covariance_shrinkage": 0.2,
+      "lookback": 10,
+      "monte_carlo_paths": 600,
+      "monte_carlo_steps": 20,
+      "periods_per_year": 252,
+      "random_seed": 1701,
+      "rebalance_every": 5,
+      "ridge": 1e-06,
+      "risk_aversion": 6.0,
+      "risk_free_rate": 0.02,
+      "transaction_cost_bps": 12.0
+    },
+    "engine": "verdant-quant-lab",
+    "factors": [
+      "MKT",
+      "SMB",
+      "MOM"
+    ],
+    "input_sha256": {
+      "config": "20f2118a96328732049b40dfa23eb8b00af6a478c3727eeb35a693263ae2a4d7",
+      "factors": "66f8b7f20ff6ece65efd104d23fe9360f0f34d29460b61672998f819db5a523b",
+      "prices": "c3ea2d67d4e3473e3f4ee61d62a0f940528b1fd1489079354cb87c5dc9f2f199"
+    },
+    "observations": 41,
+    "purpose": "deterministic educational research; not financial advice",
+    "return_observations": 40,
+    "version": "0.1.0"
+  },
+  "portfolio_risk": {
+    "covariance": [
+      [
+        5.147963171716533e-05,
+        0.0001060221761855763,
+        -1.973723283572311e-06,
+        6.732474643891447e-05
+      ],
+      [
+        0.0001060221761855763,
+        0.00022025132570831349,
+        -4.118553323733159e-06,
+        0.0001393086770577186
+      ],
+      [
+        -1.973723283572311e-06,
+        -4.118553323733159e-06,
+        2.3546329418636897e-06,
+        -2.3965438958255957e-06
+      ],
+      [
+        6.732474643891447e-05,
+        0.0001393086770577186,
+        -2.3965438958255957e-06,
+        8.903128626181633e-05
+      ]
+    ],
+    "equal_weight": {
+      "annual_volatility": 0.11568964362561598,
+      "contribution_sum": 0.0072877625309302075,
+      "periodic_variance": 5.3111482707230266e-05,
+      "volatility_contributions": [
+        0.0016846572237039165,
+        0.0033217220536643907,
+        0.00011361935270098093,
+        0.0021677639008609194
+      ]
+    },
+    "equal_weight_loss_risk": {
+      "confidence": 0.95,
+      "cornish_fisher_var": 0.00860990899252018,
+      "gaussian_var": 0.008203110887381371,
+      "historical_expected_shortfall": 0.006369333475335318,
+      "historical_var": 0.00576756835164826
+    },
+    "equal_weight_performance": {
+      "annual_return": 2.1663104492251906,
+      "annual_volatility": 0.1236945607173178,
+      "excess_kurtosis": -1.4459216837594637,
+      "mean_periodic": 0.0046136295317617225,
+      "omega_zero": 3.807382601762601,
+      "sharpe": 9.23913897261467,
+      "skewness": -0.08144664530093365,
+      "sortino": 24.53965772782601
+    },
+    "shrinkage_covariance": [
+      [
+        5.933954920519022e-05,
+        8.481774094846105e-05,
+        -1.578978626857849e-06,
+        5.3859797151131576e-05
+      ],
+      [
+        8.481774094846105e-05,
+        0.00019435690439810875,
+        -3.294842658986527e-06,
+        0.0001114469416461749
+      ],
+      [
+        -1.578978626857849e-06,
+        -3.294842658986527e-06,
+        2.0039550184948896e-05,
+        -1.917235116660477e-06
+      ],
+      [
+        5.3859797151131576e-05,
+        0.0001114469416461749,
+        -1.917235116660477e-06,
+        8.938087284091101e-05
+      ]
+    ]
+  },
+  "portfolios": {
+    "equal_weight": {
+      "converged": true,
+      "expected_return_annualized": 1.1626346420039542,
+      "iterations": 0,
+      "name": "equal_weight",
+      "objective": 0.0,
+      "volatility_annualized": 0.11568964362561598,
+      "weights": {
+        "ALPHA": 0.25,
+        "BETA": 0.25,
+        "DELTA": 0.25,
+        "GAMMA": 0.25
+      }
+    },
+    "maximum_diversification": {
+      "converged": false,
+      "expected_return_annualized": 0.8749399211849981,
+      "iterations": 1600,
+      "name": "maximum_diversification",
+      "objective": 1.510593239126616,
+      "volatility_annualized": 0.06534977294101442,
+      "weights": {
+        "ALPHA": 0.17346729259200375,
+        "BETA": 0.06105691053220686,
+        "DELTA": 0.1214291127128755,
+        "GAMMA": 0.6440466841629139
+      }
+    },
+    "mean_variance": {
+      "converged": true,
+      "expected_return_annualized": 1.8361366881003112,
+      "iterations": 4,
+      "name": "mean_variance",
+      "objective": 0.007018114080288026,
+      "volatility_annualized": 0.15007991189999273,
+      "weights": {
+        "ALPHA": 0.0,
+        "BETA": 0.0,
+        "DELTA": 1.0,
+        "GAMMA": 0.0
+      }
+    },
+    "minimum_variance": {
+      "converged": true,
+      "expected_return_annualized": 0.8528004018070736,
+      "iterations": 1,
+      "name": "minimum_variance",
+      "objective": 1.532702998031317e-05,
+      "volatility_annualized": 0.06214830291358662,
+      "weights": {
+        "ALPHA": 0.25450125789869216,
+        "BETA": 0.0,
+        "DELTA": 0.11346692957199783,
+        "GAMMA": 0.6320318125293101
+      }
+    },
+    "risk_parity": {
+      "converged": true,
+      "expected_return_annualized": 0.9475157170706459,
+      "iterations": 31,
+      "name": "risk_parity",
+      "objective": 5.315324867532709e-15,
+      "volatility_annualized": 0.07406604586390321,
+      "weights": {
+        "ALPHA": 0.1949525673095328,
+        "BETA": 0.10404281069063559,
+        "DELTA": 0.1556585125668182,
+        "GAMMA": 0.5453461094330134
+      }
+    }
+  },
+  "simulation": {
+    "mean_terminal_return": 0.1573314895933147,
+    "median": 0.15397314168982223,
+    "p05": 0.08152550665487782,
+    "p95": 0.24399158188653083,
+    "paths": 600,
+    "probability_of_loss": 0.0,
+    "seed": 1701,
+    "steps": 20,
+    "terminal_volatility": 0.04980086107406294
+  }
+}

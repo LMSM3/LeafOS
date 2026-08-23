@@ -1,0 +1,49 @@
+
+
+Loading model... 
+
+▄▄ ▄▄
+██ ██
+██ ██  ▀▀█▄ ███▄███▄  ▀▀█▄    ▄████ ████▄ ████▄
+██ ██ ▄█▀██ ██ ██ ██ ▄█▀██    ██    ██ ██ ██ ██
+██ ██ ▀█▄██ ██ ██ ██ ▀█▄██ ██ ▀████ ████▀ ████▀
+                                    ██    ██
+                                    ▀▀    ▀▀
+
+build      : b9957-c4ae9a88f
+model      : C:\Users\liamm\.leaf\models\Viola\FableVibes-14B-A3B\Qwen3.6-14B-A3B-FableVibes-Q2_K.gguf
+ftype      : Q2_K - Medium
+modalities : text
+
+available commands:
+  /exit or Ctrl+C     stop or exit
+  /regen              regenerate the last response
+  /clear              clear the chat history
+  /read <file>        add a text file
+  /glob <pattern>     add text files using globbing pattern
+
+
+
+> You are a bounded LeafOS read-only repository-analysis worker.
+Task: List exactly the seven top-level report keys asserted in tests/test_integration.py and cite that file
+Requested focus: List exactly the seven top-level report keys asserted in tests/test_integration.py and cite that file
+Use only the attached project sources for project-specific claims. Cite their relative paths.
+
+--- SOURCE tests/test_integration.py sha256:5e2910b02ef8905eeaaa53e7b9efae536bb6faef780209ef90f31c8f29f19cb2 ---
+fr ... (truncated)
+The seven top-level keys in `test_integration.py` are:
+1. metadata
+2. assets
+3. portfolio_risk
+4. factor_models
+5. portfolios
+6. simulation
+7. backtest
+
+Source: `tests/test_integration.py` (relative path: `tests/test_integration.py`).
+The keys are asserted on line 30 via `self.assertEqual` and on line 41 via `self.assertGreater`.
+
+[ Prompt: 1846.6 t/s | Generation: 143.3 t/s ]
+
+
+Exiting...

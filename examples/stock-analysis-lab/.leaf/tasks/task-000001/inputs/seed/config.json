@@ -1,0 +1,14 @@
+{
+  "periods_per_year": 252,
+  "confidence": 0.95,
+  "risk_free_rate": 0.02,
+  "lookback": 10,
+  "rebalance_every": 5,
+  "transaction_cost_bps": 12,
+  "covariance_shrinkage": 0.20,
+  "ridge": 0.000001,
+  "risk_aversion": 6.0,
+  "monte_carlo_paths": 600,
+  "monte_carlo_steps": 20,
+  "random_seed": 1701
+}

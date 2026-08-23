@@ -1,0 +1,1 @@
+{ "verdict": "reject", "confidence": "high", "claims": [ { "text": "The seven top-level keys asserted in `tests/test_integration.py` are: metadata, assets, portfolio_risk, factor_models, portfolios, simulation, backtest" } ], "contradictions": [] }

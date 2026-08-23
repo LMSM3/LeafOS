@@ -1,0 +1,58 @@
+{
+  "schema": "leafos.evidence.v1",
+  "id": "evidence-000008",
+  "task_id": "task-000005",
+  "producer": "leafos:worker-pool",
+  "kind": "local-model-inference",
+  "source": {
+    "pack_lane": "verifier",
+    "model_id": "qwen3-6-14b-a3b-fablevibes-q3-k-m-228cc891",
+    "model_path": "C:\\Users\\liamm\\.leaf\\models\\Viola\\FableVibes-14B-A3B\\Qwen3.6-14B-A3B-FableVibes-Q3_K_M.gguf",
+    "architecture": "qwen35moe",
+    "quant": "Q3_K_M"
+  },
+  "input_sources": [
+    {
+      "path": "tests/test_integration.py",
+      "sha256": "5e2910b02ef8905eeaaa53e7b9efae536bb6faef780209ef90f31c8f29f19cb2",
+      "bytes": 2068,
+      "encoding": "utf-8",
+      "snapshot": ".leaf/tasks/task-000005/inputs/tests/test_integration.py"
+    }
+  ],
+  "command": {
+    "backend": "llama.cpp",
+    "tokens": 128,
+    "context": 4096,
+    "timeout_seconds": 180
+  },
+  "exit_code": 0,
+  "artifacts": [
+    {
+      "path": ".leaf/tasks/task-000005/worker-output.txt",
+      "sha256": "5d9bff9577c5f26f5c6cff417ca3957e5bb894ebd8b53ae73581eae4fdb8a662",
+      "bytes": 160
+    },
+    {
+      "path": ".leaf/tasks/task-000005/worker-raw-stdout.txt",
+      "sha256": "575e72d3bb58fbae46cfcf3120d471ccebf06fc198c794b4cfeb0e56e4985dd8",
+      "bytes": 1677
+    },
+    {
+      "path": ".leaf/tasks/task-000005/worker-stderr.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "role": "input-source",
+      "path": ".leaf/tasks/task-000005/inputs/tests/test_integration.py",
+      "sha256": "5e2910b02ef8905eeaaa53e7b9efae536bb6faef780209ef90f31c8f29f19cb2",
+      "bytes": 2068
+    }
+  ],
+  "started_at": "2026-08-20T08:06:57.787224+00:00",
+  "observed_at": "2026-08-20T08:07:05.980261+00:00",
+  "confidence": "unverified",
+  "claims": [],
+  "integrity": "sha256:aa099a549fc6554a5f6bd8697d414b182763ac6fc42a8407f0d1cc3d2715a844"
+}

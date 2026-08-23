@@ -1,0 +1,84 @@
+{
+  "schema": "leafos.evidence.v1",
+  "id": "evidence-000001",
+  "task_id": "task-000001",
+  "producer": "leafos:worker-pool",
+  "kind": "local-model-inference",
+  "source": {
+    "pack_lane": "fast",
+    "model_id": "qwen3-6-14b-a3b-fablevibes-q2-k-16a93402",
+    "model_path": "C:\\Users\\liamm\\.leaf\\models\\Viola\\FableVibes-14B-A3B\\Qwen3.6-14B-A3B-FableVibes-Q2_K.gguf",
+    "architecture": "qwen35moe",
+    "quant": "Q2_K"
+  },
+  "input_sources": [
+    {
+      "path": "README.md",
+      "sha256": "96cf31cd3b7df51291073ec28f37d44d8933a343bf5e1663f70fb7bfe0be621f",
+      "bytes": 3207,
+      "encoding": "utf-8",
+      "snapshot": ".leaf/tasks/task-000001/inputs/README.md"
+    },
+    {
+      "path": "SEED.md",
+      "sha256": "63b42ab125c342dd56ad727985d285ca21dd09b482d8b7070a05cb8549b95b9e",
+      "bytes": 884,
+      "encoding": "utf-8",
+      "snapshot": ".leaf/tasks/task-000001/inputs/SEED.md"
+    },
+    {
+      "path": "seed/config.json",
+      "sha256": "20f2118a96328732049b40dfa23eb8b00af6a478c3727eeb35a693263ae2a4d7",
+      "bytes": 305,
+      "encoding": "utf-8",
+      "snapshot": ".leaf/tasks/task-000001/inputs/seed/config.json"
+    }
+  ],
+  "command": {
+    "backend": "llama.cpp",
+    "tokens": 192,
+    "context": 4096,
+    "timeout_seconds": 180
+  },
+  "exit_code": 0,
+  "artifacts": [
+    {
+      "path": ".leaf/tasks/task-000001/worker-output.txt",
+      "sha256": "502da911cd73ac6376501e67e4ba9ef7d440319bff65700f28cc570a6e1aeda2",
+      "bytes": 816
+    },
+    {
+      "path": ".leaf/tasks/task-000001/worker-raw-stdout.txt",
+      "sha256": "391cb08b3909b100e4ef34d2f95ec545d5c32270e91719fa6d8aa8927844cbc7",
+      "bytes": 2331
+    },
+    {
+      "path": ".leaf/tasks/task-000001/worker-stderr.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "role": "input-source",
+      "path": ".leaf/tasks/task-000001/inputs/README.md",
+      "sha256": "96cf31cd3b7df51291073ec28f37d44d8933a343bf5e1663f70fb7bfe0be621f",
+      "bytes": 3207
+    },
+    {
+      "role": "input-source",
+      "path": ".leaf/tasks/task-000001/inputs/SEED.md",
+      "sha256": "63b42ab125c342dd56ad727985d285ca21dd09b482d8b7070a05cb8549b95b9e",
+      "bytes": 884
+    },
+    {
+      "role": "input-source",
+      "path": ".leaf/tasks/task-000001/inputs/seed/config.json",
+      "sha256": "20f2118a96328732049b40dfa23eb8b00af6a478c3727eeb35a693263ae2a4d7",
+      "bytes": 305
+    }
+  ],
+  "started_at": "2026-08-20T07:58:16.910057+00:00",
+  "observed_at": "2026-08-20T07:58:23.028180+00:00",
+  "confidence": "unverified",
+  "claims": [],
+  "integrity": "sha256:a36f2778af362f832ea9a133efae899c394be7d810a3cdf7b2df1f6cf28e851c"
+}

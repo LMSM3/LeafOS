@@ -1,0 +1,136 @@
+{
+  "schema": "leafos.evidence.v1",
+  "id": "evidence-000002",
+  "task_id": "task-000002",
+  "producer": "leafos:worker-pool",
+  "kind": "local-model-inference",
+  "source": {
+    "pack_lane": "fast",
+    "model_id": "qwen3-6-14b-a3b-fablevibes-q2-k-16a93402",
+    "model_path": "C:\\Users\\liamm\\.leaf\\models\\Viola\\FableVibes-14B-A3B\\Qwen3.6-14B-A3B-FableVibes-Q2_K.gguf",
+    "architecture": "qwen35moe",
+    "quant": "Q2_K"
+  },
+  "input_sources": [
+    {
+      "path": "README.md",
+      "sha256": "96cf31cd3b7df51291073ec28f37d44d8933a343bf5e1663f70fb7bfe0be621f",
+      "bytes": 3207,
+      "encoding": "utf-8",
+      "snapshot": ".leaf/tasks/task-000002/inputs/README.md"
+    },
+    {
+      "path": "stocklab/analysis.py",
+      "sha256": "ed025c45356d715509f672441ebb1e05137858b2c69757cef754fe915ed22d0a",
+      "bytes": 5927,
+      "encoding": "utf-8",
+      "snapshot": ".leaf/tasks/task-000002/inputs/stocklab/analysis.py"
+    },
+    {
+      "path": "stocklab/linalg.py",
+      "sha256": "ab497640597b4eee65d41209af5593d6c99348d3f2412685f405d10016f1ad11",
+      "bytes": 5957,
+      "encoding": "utf-8",
+      "snapshot": ".leaf/tasks/task-000002/inputs/stocklab/linalg.py"
+    },
+    {
+      "path": "stocklab/portfolio.py",
+      "sha256": "82dc258d72a6b0a1ec6ef11ff909ea14bfd5333224379ff356cb07a66d13f22a",
+      "bytes": 4933,
+      "encoding": "utf-8",
+      "snapshot": ".leaf/tasks/task-000002/inputs/stocklab/portfolio.py"
+    },
+    {
+      "path": "stocklab/risk.py",
+      "sha256": "8ae7e54157f15276581836c79ad30a117316456745b3fc12a4ecda6b93c4e166",
+      "bytes": 3363,
+      "encoding": "utf-8",
+      "snapshot": ".leaf/tasks/task-000002/inputs/stocklab/risk.py"
+    },
+    {
+      "path": "tests/test_integration.py",
+      "sha256": "5e2910b02ef8905eeaaa53e7b9efae536bb6faef780209ef90f31c8f29f19cb2",
+      "bytes": 2068,
+      "encoding": "utf-8",
+      "snapshot": ".leaf/tasks/task-000002/inputs/tests/test_integration.py"
+    },
+    {
+      "path": "reports/seed-analysis.json",
+      "sha256": "b5379e61a856aaba7e39a1a222d492a881e81236b549652b77c9306a4613693b",
+      "bytes": 14855,
+      "encoding": "utf-8",
+      "snapshot": ".leaf/tasks/task-000002/inputs/reports/seed-analysis.json"
+    }
+  ],
+  "command": {
+    "backend": "llama.cpp",
+    "tokens": 256,
+    "context": 32768,
+    "timeout_seconds": 180
+  },
+  "exit_code": 127,
+  "artifacts": [
+    {
+      "path": ".leaf/tasks/task-000002/worker-output.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": ".leaf/tasks/task-000002/worker-raw-stdout.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": ".leaf/tasks/task-000002/worker-stderr.txt",
+      "sha256": "a3ea39412dccab160344eb98f77fa3943ac0e9a6358f44a43fb93fe46386e66b",
+      "bytes": 52
+    },
+    {
+      "role": "input-source",
+      "path": ".leaf/tasks/task-000002/inputs/README.md",
+      "sha256": "96cf31cd3b7df51291073ec28f37d44d8933a343bf5e1663f70fb7bfe0be621f",
+      "bytes": 3207
+    },
+    {
+      "role": "input-source",
+      "path": ".leaf/tasks/task-000002/inputs/stocklab/analysis.py",
+      "sha256": "ed025c45356d715509f672441ebb1e05137858b2c69757cef754fe915ed22d0a",
+      "bytes": 5927
+    },
+    {
+      "role": "input-source",
+      "path": ".leaf/tasks/task-000002/inputs/stocklab/linalg.py",
+      "sha256": "ab497640597b4eee65d41209af5593d6c99348d3f2412685f405d10016f1ad11",
+      "bytes": 5957
+    },
+    {
+      "role": "input-source",
+      "path": ".leaf/tasks/task-000002/inputs/stocklab/portfolio.py",
+      "sha256": "82dc258d72a6b0a1ec6ef11ff909ea14bfd5333224379ff356cb07a66d13f22a",
+      "bytes": 4933
+    },
+    {
+      "role": "input-source",
+      "path": ".leaf/tasks/task-000002/inputs/stocklab/risk.py",
+      "sha256": "8ae7e54157f15276581836c79ad30a117316456745b3fc12a4ecda6b93c4e166",
+      "bytes": 3363
+    },
+    {
+      "role": "input-source",
+      "path": ".leaf/tasks/task-000002/inputs/tests/test_integration.py",
+      "sha256": "5e2910b02ef8905eeaaa53e7b9efae536bb6faef780209ef90f31c8f29f19cb2",
+      "bytes": 2068
+    },
+    {
+      "role": "input-source",
+      "path": ".leaf/tasks/task-000002/inputs/reports/seed-analysis.json",
+      "sha256": "b5379e61a856aaba7e39a1a222d492a881e81236b549652b77c9306a4613693b",
+      "bytes": 14855
+    }
+  ],
+  "started_at": "2026-08-20T08:05:31.048982+00:00",
+  "observed_at": "2026-08-20T08:05:31.051299+00:00",
+  "confidence": "unverified",
+  "claims": [],
+  "integrity": "sha256:be06093754f169c3d4f513c22de2cf8794ed5a50f78d0ff98fb6299cda45370c"
+}

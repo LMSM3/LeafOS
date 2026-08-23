@@ -1,0 +1,8 @@
+The seven top-level report keys asserted in tests/test_integration.py are:
+- assets
+- backtest
+- factor_models
+- metadata
+- portfolios
+- simulation
+- portfolio_risk

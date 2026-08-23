@@ -1,0 +1,59 @@
+{
+  "schema": "leafos.evidence.v1",
+  "id": "evidence-000010",
+  "task_id": "task-000005",
+  "producer": "leafos:verifier",
+  "kind": "verification",
+  "source": {
+    "pack_lane": "fast",
+    "model_id": "qwen3-6-14b-a3b-fablevibes-q2-k-16a93402",
+    "model_path": "C:\\Users\\liamm\\.leaf\\models\\Viola\\FableVibes-14B-A3B\\Qwen3.6-14B-A3B-FableVibes-Q2_K.gguf",
+    "architecture": "qwen35moe",
+    "quant": "Q2_K",
+    "evidence_ids": [
+      "evidence-000008",
+      "evidence-000009"
+    ]
+  },
+  "command": {
+    "backend": "llama.cpp",
+    "tokens": 160,
+    "context": 4096,
+    "timeout_seconds": 180
+  },
+  "attempt": 1,
+  "exit_code": 0,
+  "artifacts": [
+    {
+      "role": "verifier-output",
+      "path": ".leaf/tasks/task-000005/verifiers/attempt-001/verifier-output.txt",
+      "sha256": "598bb9f24c58642751d3f143a996fc3864e664b0066f6f545354f329dd3ff590",
+      "bytes": 248
+    },
+    {
+      "role": "verifier-raw-stdout",
+      "path": ".leaf/tasks/task-000005/verifiers/attempt-001/verifier-raw-stdout.txt",
+      "sha256": "e78b437f82d6962882293f9df766e5e546841507462561167fb0814129a89c18",
+      "bytes": 1763
+    },
+    {
+      "role": "verifier-stderr",
+      "path": ".leaf/tasks/task-000005/verifiers/attempt-001/verifier-stderr.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    }
+  ],
+  "started_at": "2026-08-20T08:07:16.518787+00:00",
+  "observed_at": "2026-08-20T08:07:23.503693+00:00",
+  "confidence": "high",
+  "verdict": "reject",
+  "claims": [
+    {
+      "text": "The seven top-level keys asserted in `tests/test_integration.py` are: metadata, assets, portfolio_risk, factor_models, portfolios, simulation, backtest",
+      "evidence_ids": []
+    }
+  ],
+  "contradictions": [],
+  "parse_error": null,
+  "integrity": "sha256:1b76413fb81d75ae2c8dd808fbb54b91902bd9a27d4b7d6efc055cac1d052e5b"
+}

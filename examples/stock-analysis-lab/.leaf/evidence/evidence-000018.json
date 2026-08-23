@@ -1,0 +1,56 @@
+{
+  "schema": "leafos.evidence.v1",
+  "id": "evidence-000018",
+  "task_id": "task-000007",
+  "producer": "leafos:verifier",
+  "kind": "verification",
+  "source": {
+    "pack_lane": "fast",
+    "model_id": "qwen3-6-14b-a3b-fablevibes-q2-k-16a93402",
+    "model_path": "C:\\Users\\liamm\\.leaf\\models\\Viola\\FableVibes-14B-A3B\\Qwen3.6-14B-A3B-FableVibes-Q2_K.gguf",
+    "architecture": "qwen35moe",
+    "quant": "Q2_K",
+    "evidence_ids": [
+      "evidence-000014",
+      "evidence-000015",
+      "evidence-000016",
+      "evidence-000017"
+    ]
+  },
+  "command": {
+    "backend": "llama.cpp",
+    "tokens": 512,
+    "context": 4096,
+    "timeout_seconds": 180
+  },
+  "attempt": 2,
+  "exit_code": 0,
+  "artifacts": [
+    {
+      "role": "verifier-output",
+      "path": ".leaf/tasks/task-000007/verifiers/attempt-002/verifier-output.txt",
+      "sha256": "025bb4d40e17fb4f6b2777060426f15945c93ddeaeb2593f32de062de8ec44da",
+      "bytes": 267
+    },
+    {
+      "role": "verifier-raw-stdout",
+      "path": ".leaf/tasks/task-000007/verifiers/attempt-002/verifier-raw-stdout.txt",
+      "sha256": "d51100f0ee3065d4d66a558da99cc27ac1a4d5122436b29e2af720f1ee970559",
+      "bytes": 1782
+    },
+    {
+      "role": "verifier-stderr",
+      "path": ".leaf/tasks/task-000007/verifiers/attempt-002/verifier-stderr.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    }
+  ],
+  "started_at": "2026-08-20T08:08:25.513676+00:00",
+  "observed_at": "2026-08-20T08:08:31.269587+00:00",
+  "confidence": "unverified",
+  "verdict": "invalid",
+  "claims": [],
+  "contradictions": [],
+  "parse_error": "verifier response did not contain a JSON object",
+  "integrity": "sha256:6a51726b9451fd8b23b536c05c2fc90c59289227694d1969cfaba51ea9f9b38f"
+}

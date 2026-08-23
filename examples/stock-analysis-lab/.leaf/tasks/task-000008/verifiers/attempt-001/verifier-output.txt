@@ -1,0 +1,13 @@
+{
+  "verdict": "accept",
+  "confidence": "high",
+  "claims": [
+    {
+      "text": "The seven top-level keys in test_integration.py are metadata, assets, portfolio_risk, factor_models, portfolios, simulation, and backtest.",
+      "evidence_ids": [
+        "evidence-000020"
+      ]
+    }
+  ],
+  "contradictions": []
+}

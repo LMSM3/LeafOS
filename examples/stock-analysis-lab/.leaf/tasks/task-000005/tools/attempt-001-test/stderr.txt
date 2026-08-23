@@ -1,0 +1,7 @@
+test_cli_writes_strict_json_report (tests.test_integration.IntegratedSeedTests.test_cli_writes_strict_json_report) ... ok
+test_seed_report_has_every_required_layer_and_is_deterministic (tests.test_integration.IntegratedSeedTests.test_seed_report_has_every_required_layer_and_is_deterministic) ... ok
+
+----------------------------------------------------------------------
+Ran 2 tests in 0.233s
+
+OK

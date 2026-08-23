@@ -1,0 +1,757 @@
+{
+  "schema": "leafos.epoch-evidence-index.v1",
+  "epoch": "epoch-000001",
+  "observed_at": "2026-08-20T08:09:05.606677+00:00",
+  "raw_occurrences": 70,
+  "unique_entries": 51,
+  "entries": [
+    {
+      "digest": "sha256:025bb4d40e17fb4f6b2777060426f15945c93ddeaeb2593f32de062de8ec44da",
+      "text": "{\"verdict\":\"accept\",\"confidence\":\"high\",\"claims\":[{\"text\":\"The seven top-level keys in the report are exactly: assets, backtest, factor_models, metadata, portfolios, simulation, portfolio_risk\",\"evidence_ids\":[\"evidence-000014\",\"evidence-000015\",\"evidence-000016\"]}]}",
+      "sources": [
+        "artifact"
+      ],
+      "evidence_ids": [
+        "evidence-000018"
+      ],
+      "task_ids": [
+        "task-000007"
+      ],
+      "occurrences": 1
+    },
+    {
+      "digest": "sha256:0326c77451de893869d9946e2a81bc7fa6b96b3d7b1601ecec45e10a30cb67ec",
+      "text": "``` Traceback (most recent call last): File \"<string>\", line 28, in run_test self.assertEqual( AssertionError: 1000.0 != 4000.0 - 400.0 == 4000.0 - 100.0 == 400.0 - 400.0 == 4000.0 - 400.0 == 4000.0 - 400.0 == 4000.0 - 400.0 == 4000.0 - 400.0 == 4000.0 - 400.0 == 4000.0 - 400.0 == 4000.0 - 400.0 == 4000.0 - 400.0 == 4000.0 - 400.0 == 4000.0 - 4",
+      "sources": [
+        "artifact"
+      ],
+      "evidence_ids": [
+        "evidence-000003"
+      ],
+      "task_ids": [
+        "task-000003"
+      ],
+      "occurrences": 1
+    },
+    {
+      "digest": "sha256:070df365d194ae56070953b3b3157cb6264022c33e28b67f004bce93c249a778",
+      "text": "from __future__ import annotations import math from stocklab.linalg import dot, matvec, quadratic from stocklab.statistics import excess_kurtosis, mean, normal_ppf, quantile, skewness, standard_deviation def value_at_risk(returns: list[float], confidence: float) -> dict[str, float]: tail_probability = 1.0 - confidence historical_cutoff = quantile(returns, tail_probability) historical = max(0.0, -historical_cutoff) tail = [-value for value in returns if value <= historical_cutoff] expected_shortfall = mean(tail) if tail else historical average = mean(returns) deviation = standard_deviation(returns) z = normal_ppf(tail_probability) gaussian = max(0.0, -(average + z * deviation)) skew = skewness(returns) kurtosis = excess_kurtosis(returns) adjusted = ( z + (z * z - 1.0) * skew / 6.0 + (z ** 3 - 3.0 * z) * kurtosis / 24.0 - (2.0 * z ** 3 - 5.0 * z) * skew * skew / 36.0 ) cornish_fisher = max(0.0, -(average + adjusted * deviation)) return { \"confidence\": confidence, \"historical_var\": historical, \"historical_expected_shortfall\": expected_shortfall, \"gaussian_var\": gaussian, \"cornish_fisher_var\": cornish_fisher, } def portfolio_risk(weights: list[float], covariance: list[list[float]], periods: int) -> dict[str, object]: marginal = matvec(covariance, weights) periodic_variance = max(0.0, dot(weights, marginal)) periodic_volatility = math.sqrt(periodic_variance) contributions = [ weight * value / periodic_volatility if periodic_volatility else 0.0 for weight, value in zip(weights, marginal) ] return { \"periodic_variance\": periodic_variance, \"annual_volatility\": periodic_volatility * math.sqrt(periods), \"volatility_contributions\": contributions, \"contribution_sum\": math.fsum(contributions), } def capm(asset_returns: list[float], market_returns: list[float], periods: int, risk_free_rate: float) -> dict[str, float]: if len(asset_returns) != len(market_returns) or len(asset_returns) < 2: raise ValueError(\"CAPM requires aligned asset and market observations\") market_mean = mean(market_returns) asset_mean = mean(asset_returns) covariance = math.fsum( (asset - asset_mean) * (market - market_mean) for asset, market in zip(asset_returns, market_returns) ) / (len(asset_returns) - 1) market_variance = standard_deviation(market_returns) ** 2 beta = covariance / market_variance if market_variance else 0.0 periodic_rf = (1.0 + risk_free_rate) ** (1.0 / periods) - 1.0 alpha_periodic = asset_mean - periodic_rf - beta * (market_mean - periodic_rf) residuals = [ asset - (alpha_periodic + periodic_rf + beta * (market - periodic_rf)) for asset, market in zip(asset_returns, market_returns) ] return { \"alpha_annualized\": alpha_periodic * periods, \"beta\": beta, \"residual_volatility_annualized\": standard_deviation(residuals) * math.sqrt(periods), \"r_squared\": 1.0 - quadratic(residuals, [[1.0 if i == j else 0.0 for j in range(len(residuals))] for i in range(len(residuals))]) / math.fsum((value - asset_mean) ** 2 for value in asset_returns) if any(value != asset_mean for value in asset_returns) else 0.0, }",
+      "sources": [
+        "artifact"
+      ],
+      "evidence_ids": [
+        "evidence-000002"
+      ],
+      "task_ids": [
+        "task-000002"
+      ],
+      "occurrences": 1
+    },
+    {
+      "digest": "sha256:113d83fa7e96fa64f6facd31959c21f94b99f20efddb02943e60b4c4193ee5f4",
+      "text": "{\"evidence_ids\": [\"evidence-000003\", \"evidence-000006\"], \"id\": \"task-000003-contradiction-001\", \"kind\": \"contradiction\", \"observed_at\": \"2026-08-20T08:06:30.419768+00:00\", \"producer\": \"leafos:primary-agent\", \"reason\": \"Both model outputs describe an analyze_stock ticker-alias API absent from the supplied README, stocklab/analysis.py, and passing integration test; their accept prose is semantically false.\", \"schema\": \"leafos.decision.v1\", \"task_id\": \"task-000003\"}",
+      "sources": [
+        "decision"
+      ],
+      "evidence_ids": [],
+      "task_ids": [
+        "task-000003"
+      ],
+      "occurrences": 1
+    },
+    {
+      "digest": "sha256:171f12f23d3a82024d4e97fca6115298f17712663c99dc421be1bf5c8ff5e1f6",
+      "text": "Loading model... Error: the server exited before becoming ready",
+      "sources": [
+        "artifact"
+      ],
+      "evidence_ids": [
+        "evidence-000007"
+      ],
+      "task_ids": [
+        "task-000004"
+      ],
+      "occurrences": 2
+    },
+    {
+      "digest": "sha256:1b9e572e032707b71ea96fa0058f7002707fdee9bcd3262e120a8c75e8b685dd",
+      "text": "The seven report keys asserted by `tests/test_integration.py` are: 1. `metadata` — accessed as `first[\"metadata\"]` and `parsed[\"metadata\"]`; source `tests/test_integration.py` 2. `assets` — member of `set(first)` in the first test; source `tests/test_integration.py` 3. `portfolio_risk` — member of `set(first)` in the first test; source `tests/test_integration.py` 4. `factor_models` — member of `set(first)` in the first test; source `tests/test_integration.py` 5. `portfolios`",
+      "sources": [
+        "artifact"
+      ],
+      "evidence_ids": [
+        "evidence-000011"
+      ],
+      "task_ids": [
+        "task-000006"
+      ],
+      "occurrences": 1
+    },
+    {
+      "digest": "sha256:1c0bd8ca6802cb6a6f7d585a6132ab852a7fc3d852de56b6fef9ab74ee8952b9",
+      "text": "from __future__ import annotations import math from typing import Iterable class LinearAlgebraError(ValueError): pass def dot(left: Iterable[float], right: Iterable[float]) -> float: a, b = list(left), list(right) if len(a) != len(b): raise LinearAlgebraError(\"dot-product dimensions do not match\") return math.fsum(x * y for x, y in zip(a, b)) def transpose(matrix: list[list[float]]) -> list[list[float]]: if not matrix: return [] width = len(matrix[0]) if width == 0 or any(len(row) != width for row in matrix): raise LinearAlgebraError(\"matrix must be non-empty and rectangular\") return [list(column) for column in zip(*matrix)] def matvec(matrix: list[list[float]], vector: list[float]) -> list[float]: return [dot(row, vector) for row in matrix] def matmul(left: list[list[float]], right: list[list[float]]) -> list[list[float]]: columns = transpose(right) if left and columns and len(left[0]) != len(columns[0]): raise LinearAlgebraError(\"matrix multiplication dimensions do not match\") return [[dot(row, column) for column in columns] for row in left] def solve(matrix: list[list[float]], vector: list[float], *, tolerance: float = 1e-12) -> list[float]: size = len(matrix) if size == 0 or len(vector) != size or any(len(row) != size for row in matrix): raise LinearAlgebraError(\"solve requires a non-empty square matrix\") augmented = [list(map(float, row)) + [float(value)] for row, value in zip(matrix, vector)] scale = max((abs(value) for row in matrix for value in row), default=1.0) threshold = tolerance * max(1.0, scale) for column in range(size): pivot = max(range(column, size), key=lambda row: abs(augmented[row][column])) if abs(augmented[pivot][column]) <= threshold: raise LinearAlgebraError(\"matrix is singular or numerically unstable\") augmented[column], augmented[pivot] = augmented[pivot], augmented[column] divisor = augmented[column][column] augmented[column] = [value / divisor for value in augmented[column]] for row in range(size): if row == column: continue factor = augmented[row][column] if factor: augmented[row] = [ current - factor * pivot_value for current, pivot_value in zip(augmented[row], augmented[column]) ] return [augmented[row][-1] for row in range(size)] def inverse(matrix: list[list[float]]) -> list[list[float]]: size = len(matrix) columns = [solve(matrix, [1.0 if row == column else 0.0 for row in range(size)]) for column in range(size)] return transpose(columns) def cholesky(matrix: list[list[float]], *, jitter: float = 1e-12, attempts: int = 8) -> list[list[float]]: size = len(matrix) if size == 0 or any(len(row) != size for row in matrix): raise LinearAlgebraError(\"Cholesky requires a non-empty square matrix\") if any(abs(matrix[row][column] - matrix[column][row]) > 1e-9 for row in range(size) for column in range(size)): raise LinearAlgebraError(\"Cholesky requires a symmetric matrix\") for attempt in range(attempts): added = 0.0 if attempt == 0 else jitter * (10 ** (attempt - 1)) lower = [[0.0] * size for _ in range(size)] valid = True for row in range(size): for column in range(row + 1): residual = matrix[row][column] + (added if row == column else 0.0) residual -= math.fsum(lower[row][k] * lower[column][k] for k in range(column)) if row == column: if residual <= 0.0: valid = False break lower[row][column] = math.sqrt(residual) else: lower[row][column] = residual / lower[column][column] if not valid: break if valid: return lower raise LinearAlgebraError(\"matrix is not positive definite after jitter\") def column_means(observations: list[list[float]]) -> list[float]: columns = transpose(observations) return [math.fsum(column) / len(column) for column in columns] def covariance_matrix(observations: list[list[float]]) -> list[list[float]]: if len(observations) < 2: raise LinearAlgebraError(\"covariance requires at least two observations\") means = column_means(observations) width = len(means) return [ [ math.fsum((row[i] - means[i]) * (row[j] - means[j]) for row in observations) / (len(observations) - 1) for j in range(width) ] for i in range(width) ] def shrink_covariance(covariance: list[list[float]], intensity: float) -> list[list[float]]: if not 0.0 <= intensity <= 1.0: raise LinearAlgebraError(\"shrinkage intensity must be between zero and one\") size = len(covariance) target = math.fsum(covariance[i][i] for i in range(size)) / size return [ [ (1.0 - intensity) * covariance[i][j] + intensity * (target if i == j else 0.0) for j in range(size) ] for i in range(size) ] def quadratic(vector: list[float], matrix: list[list[float]]) -> float: return dot(vector, matvec(matrix, vector)) def project_simplex(values: list[float]) -> list[float]: if not values: raise LinearAlgebraError(\"cannot project an empty vector\") ordered = sorted(values, reverse=True) cumulative = 0.0 rho = 0 for index, value in enumerate(ordered, start=1): cumulative += value if value - (cumulative - 1.0) / index > 0.0: rho = index threshold = (math.fsum(ordered[:rho]) - 1.0) / rho projected = [max(value - threshold, 0.0) for value in values] total = math.fsum(projected) return [value / total for value in projected]",
+      "sources": [
+        "artifact"
+      ],
+      "evidence_ids": [
+        "evidence-000002"
+      ],
+      "task_ids": [
+        "task-000002"
+      ],
+      "occurrences": 1
+    },
+    {
+      "digest": "sha256:25446d64931086bf1290309a516585e58b994d21916f1aa71d44e3912ed01817",
+      "text": "Derive an implementation and verification map from the README and seed contract",
+      "sources": [
+        "task-goal"
+      ],
+      "evidence_ids": [],
+      "task_ids": [
+        "task-000001"
+      ],
+      "occurrences": 1
+    },
+    {
+      "digest": "sha256:25fb628ffde57954f061c76580ee0eb72d90af9e66d009097f7b5d4b6f5133ad",
+      "text": "test_cli_writes_strict_json_report (tests.test_integration.IntegratedSeedTests.test_cli_writes_strict_json_report) ... ok test_seed_report_has_every_required_layer_and_is_deterministic (tests.test_integration.IntegratedSeedTests.test_seed_report_has_every_required_layer_and_is_deterministic) ... ok ---------------------------------------------------------------------- Ran 2 tests in 0.230s OK",
+      "sources": [
+        "artifact"
+      ],
+      "evidence_ids": [
+        "evidence-000021"
+      ],
+      "task_ids": [
+        "task-000008"
+      ],
+      "occurrences": 1
+    },
+    {
+      "digest": "sha256:28318d99ebaa74c0f90835411155f7d577d4f64aff5e4e15042c2257e82eca99",
+      "text": "Loading model... ▄▄ ▄▄ ██ ██ ██ ██ ▀▀█▄ ███▄███▄ ▀▀█▄ ▄████ ████▄ ████▄ ██ ██ ▄█▀██ ██ ██ ██ ▄█▀██ ██ ██ ██ ██ ██ ██ ██ ▀█▄██ ██ ██ ██ ▀█▄██ ██ ▀████ ████▀ ████▀ ██ ██ ▀▀ ▀▀ build : b9957-c4ae9a88f model : C:\\Users\\liamm\\.leaf\\models\\Viola\\FableVibes-14B-A3B\\Qwen3.6-14B-A3B-FableVibes-Q2_K.gguf ftype : Q2_K - Medium modalities : text available commands: /exit or Ctrl+C stop or exit /regen regenerate the last response /clear clear the chat history /read <file> add a text file /glob <pattern> add text files using globbing pattern > You are the independent LeafOS verifier. You did not produce the worker result. Judge only the supplied task output and evidence. A model claim without source, command, test, or captured artifact evidence is not verified. Return exactly one JSON object and no markdown using this schema: {\"verdict\":\"accept|reject|conflict\",\"confidence\":\"low|medium|high\",\"claims\":[{\"text\":\"claim\",\"evidence_ids\":[\"evidence-NNNNNN\"]}],\"contradictions\":[\"description\"]} TASK ID: task-000007 TASK GOAL: List exactly the ... (truncated) { \"verdict\": \"accept\", \"confidence\": \"low\", \"claims\": [ { \"text\": \"The seven top-level report keys are exactly: assets, backtest, factor_models, metadata, portfolios, simulation, and portfolio_risk.\", \"evidence_ids\": [\"evidence-000014\"] } ] } [ Prompt: 3173.0 t/s | Generation: 140.9 t/s ] Exiting...",
+      "sources": [
+        "artifact"
+      ],
+      "evidence_ids": [
+        "evidence-000017"
+      ],
+      "task_ids": [
+        "task-000007"
+      ],
+      "occurrences": 1
+    },
+    {
+      "digest": "sha256:2ab5fd08c126650ec3c8e1c48302db35f766cb10d307c823a1168e970c077b0f",
+      "text": "Identify the seven report keys asserted by tests/test_integration.py and cite the source",
+      "sources": [
+        "task-goal"
+      ],
+      "evidence_ids": [],
+      "task_ids": [
+        "task-000006"
+      ],
+      "occurrences": 1
+    },
+    {
+      "digest": "sha256:2cecb38a81ca8c5f55f7a3e08df9118e368814c6a51d5e82ccfcf5ac218ff387",
+      "text": "# Seed Contract Implement the README against the checked-in synthetic dataset. The four assets are intentionally different: ALPHA trends with the market, BETA is more volatile, GAMMA is defensive, and DELTA carries stronger momentum. The factors are synthetic decimal returns aligned to every price interval after the first observation. The canonical run uses: - 252 periods per year - 95% loss confidence - 0.02 annual risk-free rate - 10-day walk-forward lookback - rebalance every 5 observations - 12 basis points one-way transaction cost - covariance shrinkage 0.20 - regression ridge 0.000001 - mean-variance risk aversion 6.0 - 600 Monte Carlo paths over 20 future steps - deterministic random seed 1701 The sample is intentionally short enough to inspect and long enough to exercise every layer. Tests should use analytical micro-cases in addition to the integrated seed.",
+      "sources": [
+        "artifact"
+      ],
+      "evidence_ids": [
+        "evidence-000001"
+      ],
+      "task_ids": [
+        "task-000001"
+      ],
+      "occurrences": 1
+    },
+    {
+      "digest": "sha256:2d58e1c430d213d82643605836bbd8306573b92fe1d478994a4818701da18db0",
+      "text": "Loading model... ▄▄ ▄▄ ██ ██ ██ ██ ▀▀█▄ ███▄███▄ ▀▀█▄ ▄████ ████▄ ████▄ ██ ██ ▄█▀██ ██ ██ ██ ▄█▀██ ██ ██ ██ ██ ██ ██ ██ ▀█▄██ ██ ██ ██ ▀█▄██ ██ ▀████ ████▀ ████▀ ██ ██ ▀▀ ▀▀ build : b9957-c4ae9a88f model : C:\\Users\\liamm\\.leaf\\models\\Viola\\FableVibes-14B-A3B\\Qwen3.6-14B-A3B-FableVibes-Q3_K_M.gguf ftype : Q3_K - Medium modalities : text available commands: /exit or Ctrl+C stop or exit /regen regenerate the last response /clear clear the chat history /read <file> add a text file /glob <pattern> add text files using globbing pattern > You are a bounded LeafOS read-only repository-analysis worker. Task: List exactly the seven top-level report keys asserted in tests/test_integration.py and cite that file Requested focus: List exactly the seven top-level report keys asserted in tests/test_integration.py and cite that file Use only the attached project sources for project-specific claims. Cite their relative paths. --- SOURCE tests/test_integration.py sha256:5e2910b02ef8905eeaaa53e7b9efae536bb6faef780209ef90f31c8f29f19cb2 --- fr ... (truncated) The seven top-level report keys asserted in tests/test_integration.py are: - assets - backtest - factor_models - metadata - portfolios - simulation - portfolio_risk [ Prompt: 1809.6 t/s | Generation: 131.4 t/s ] Exiting...",
+      "sources": [
+        "artifact"
+      ],
+      "evidence_ids": [
+        "evidence-000014"
+      ],
+      "task_ids": [
+        "task-000007"
+      ],
+      "occurrences": 1
+    },
+    {
+      "digest": "sha256:30b64f28a4e5f61bc15ae4b1609b854e5239a8abf74aae326072a1a13d4a18d2",
+      "text": "Loading model... ▄▄ ▄▄ ██ ██ ██ ██ ▀▀█▄ ███▄███▄ ▀▀█▄ ▄████ ████▄ ████▄ ██ ██ ▄█▀██ ██ ██ ██ ▄█▀██ ██ ██ ██ ██ ██ ██ ██ ▀█▄██ ██ ██ ██ ▀█▄██ ██ ▀████ ████▀ ████▀ ██ ██ ▀▀ ▀▀ build : b9957-c4ae9a88f model : C:\\Users\\liamm\\.leaf\\models\\Viola\\FableVibes-14B-A3B\\Qwen3.6-14B-A3B-FableVibes-Q3_K_M.gguf ftype : Q3_K - Medium modalities : text available commands: /exit or Ctrl+C stop or exit /regen regenerate the last response /clear clear the chat history /read <file> add a text file /glob <pattern> add text files using globbing pattern > You are a bounded LeafOS read-only repository-analysis worker. Task: Read tests/test_integration.py and report only the seven top-level report keys it asserts, citing that path; do not infer any ticker API Requested focus: Read tests/test_integration.py and report only the seven top-level report keys it asserts, citing that path; do not infer any ticker API Use only the attached project sources for project-specific claims. Cite their relative paths. --- SOURCE tests/test_integration.py sha256:5 ... (truncated) The seven top-level keys asserted in `tests/test_integration.py` are: - metadata - assets - portfolio_risk - factor_models - portfolios - simulation - backtest [ Prompt: 1579.3 t/s | Generation: 126.1 t/s ] Exiting...",
+      "sources": [
+        "artifact"
+      ],
+      "evidence_ids": [
+        "evidence-000008"
+      ],
+      "task_ids": [
+        "task-000005"
+      ],
+      "occurrences": 1
+    },
+    {
+      "digest": "sha256:30ed392f41c940485e2f32085107608e71462574d713a2581aef3b5ab8ad1134",
+      "text": "Loading model... ▄▄ ▄▄ ██ ██ ██ ██ ▀▀█▄ ███▄███▄ ▀▀█▄ ▄████ ████▄ ████▄ ██ ██ ▄█▀██ ██ ██ ██ ▄█▀██ ██ ██ ██ ██ ██ ██ ██ ▀█▄██ ██ ██ ██ ▀█▄██ ██ ▀████ ████▀ ████▀ ██ ██ ▀▀ ▀▀ build : b9957-c4ae9a88f model : C:\\Users\\liamm\\.leaf\\models\\Viola\\FableVibes-14B-A3B\\Qwen3.6-14B-A3B-FableVibes-Q2_K.gguf ftype : Q2_K - Medium modalities : text available commands: /exit or Ctrl+C stop or exit /regen regenerate the last response /clear clear the chat history /read <file> add a text file /glob <pattern> add text files using globbing pattern > You are the independent LeafOS verifier. You did not produce the worker result. Judge only the supplied task output and evidence. A model claim without source, command, test, or captured artifact evidence is not verified. Return exactly one JSON object and no markdown using this schema: {\"verdict\":\"accept|reject|conflict\",\"confidence\":\"low|medium|high\",\"claims\":[{\"text\":\"claim\",\"evidence_ids\":[\"evidence-NNNNNN\"]}],\"contradictions\":[\"description\"]} TASK ID: task-000007 TASK GOAL: List exactly the ... (truncated) {\"verdict\":\"accept\",\"confidence\":\"high\",\"claims\":[{\"text\":\"The seven top-level keys in the report are exactly: assets, backtest, factor_models, metadata, portfolios, simulation, portfolio_risk\",\"evidence_ids\":[\"evidence-000014\",\"evidence-000015\",\"evidence-000016\"]}]} [ Prompt: 2948.9 t/s | Generation: 139.2 t/s ] Exiting...",
+      "sources": [
+        "artifact"
+      ],
+      "evidence_ids": [
+        "evidence-000018"
+      ],
+      "task_ids": [
+        "task-000007"
+      ],
+      "occurrences": 1
+    },
+    {
+      "digest": "sha256:3ae67f774d506ea38c9ebdad6ec30a383704f87bf5416838a8001b79ec0762ce",
+      "text": "{ \"verdict\": \"accept\", \"confidence\": \"high\", \"claims\": [ { \"text\": \"The implemented stock-analysis engine (stocklab/analysis.py) satisfies the contract specified in the README: it supports `analyze_stock` (ticker, date, days, output_type) and correctly handles ticker aliases like `'AAPL'` and `'Apple'`, producing `{'ticker': 'Apple', 'price': 4000.0, 'open_count': 1000}`.\", \"evidence_ids\": [ \"evidence-000003\", \"evidence-000004\" ] } ], \"contradictions\": [] }",
+      "sources": [
+        "artifact"
+      ],
+      "evidence_ids": [
+        "evidence-000006"
+      ],
+      "task_ids": [
+        "task-000003"
+      ],
+      "occurrences": 1
+    },
+    {
+      "digest": "sha256:3c41400e29d8771a3124d6c8c35b38da70e7312451b37c1ab2f6cb1bf5dd3c57",
+      "text": "Loading model... ▄▄ ▄▄ ██ ██ ██ ██ ▀▀█▄ ███▄███▄ ▀▀█▄ ▄████ ████▄ ████▄ ██ ██ ▄█▀██ ██ ██ ██ ▄█▀██ ██ ██ ██ ██ ██ ██ ██ ▀█▄██ ██ ██ ██ ▀█▄██ ██ ▀████ ████▀ ████▀ ██ ██ ▀▀ ▀▀ build : b9957-c4ae9a88f model : C:\\Users\\liamm\\.leaf\\models\\Viola\\FableVibes-14B-A3B\\Qwen3.6-14B-A3B-FableVibes-Q2_K.gguf ftype : Q2_K - Medium modalities : text available commands: /exit or Ctrl+C stop or exit /regen regenerate the last response /clear clear the chat history /read <file> add a text file /glob <pattern> add text files using globbing pattern > You are a bounded LeafOS read-only repository-analysis worker. Task: Derive an implementation and verification map from the README and seed contract Requested focus: Derive an implementation and verification map from the README and seed contract Use only the attached project sources for project-specific claims. Cite their relative paths. --- SOURCE README.md sha256:96cf31cd3b7df51291073ec28f37d44d8933a343bf5e1663f70fb7bfe0be621f --- # Verdant Quant Lab Verdant Quant Lab is a deterministic, dep ... (truncated) ## Derive an implementation and verification map from the README and seed contract The implementation must be a self-contained LeafOS long-loop workload that uses deterministic random seeds, synthetic data, and only the `seed/` files. It must also support the required CLI with a stable JSON research report. **Implementation requirements:** 1. Implement all the required capabilities. 2. Implement the CLI using the CLI layer. 3. Implement the backtest using the `CLI` layer. 4. Implement the `CLI` layer. 5. Implement the `CLI` layer as a subclass of `BaseLayer`. 6. Implement the `BaseLayer` layer. 7. Implement the `BaseLayer` layer. 8. Implement the `BaseLayer` layer. 9. Implement the `BaseLayer` layer. --- ## Verification The implementation must support the `discover -s tests -v` command. Tests should [ Prompt: 2627.1 t/s | Generation: 142.7 t/s ] Exiting...",
+      "sources": [
+        "artifact"
+      ],
+      "evidence_ids": [
+        "evidence-000001"
+      ],
+      "task_ids": [
+        "task-000001"
+      ],
+      "occurrences": 1
+    },
+    {
+      "digest": "sha256:40c33fea31593d504df4137018d5cfa8362d738f1002b744bc301a5eedc3e6f8",
+      "text": "{ \"periods_per_year\": 252, \"confidence\": 0.95, \"risk_free_rate\": 0.02, \"lookback\": 10, \"rebalance_every\": 5, \"transaction_cost_bps\": 12, \"covariance_shrinkage\": 0.20, \"ridge\": 0.000001, \"risk_aversion\": 6.0, \"monte_carlo_paths\": 600, \"monte_carlo_steps\": 20, \"random_seed\": 1701 }",
+      "sources": [
+        "artifact"
+      ],
+      "evidence_ids": [
+        "evidence-000001"
+      ],
+      "task_ids": [
+        "task-000001"
+      ],
+      "occurrences": 1
+    },
+    {
+      "digest": "sha256:4abab12be4654214918e71fe0d32c9e09a14a6d64d4291c253937bf260327868",
+      "text": "{\"claims\": [{\"evidence_ids\": [\"evidence-000020\"], \"text\": \"The seven top-level keys in test_integration.py are metadata, assets, portfolio_risk, factor_models, portfolios, simulation, and backtest.\"}], \"id\": \"decision-000003\", \"kind\": \"acceptance\", \"observed_at\": \"2026-08-20T08:09:05.313285+00:00\", \"producer\": \"leafos:controller\", \"reason\": \"The worker named the exact seven asserted report keys; independent verifier evidence-000022 resolved the claim to controller inspect evidence-000020, and integration tests evidence-000021 passed.\", \"schema\": \"leafos.decision.v1\", \"task_id\": \"task-000008\", \"verifier_evidence\": [\"evidence-000022\"]}",
+      "sources": [
+        "decision"
+      ],
+      "evidence_ids": [],
+      "task_ids": [
+        "task-000008"
+      ],
+      "occurrences": 1
+    },
+    {
+      "digest": "sha256:4c772910f52fe6f0f8c31d45a60b0d2bd7b107a7b6902646f5538879c9ca4438",
+      "text": "Build and validate the large modular mathematical Python stock-analysis program defined by README.md and SEED.md using only the checked-in deterministic seed.",
+      "sources": [
+        "objective"
+      ],
+      "evidence_ids": [],
+      "task_ids": [],
+      "occurrences": 1
+    },
+    {
+      "digest": "sha256:50fa9dc79bd299f303fe071f213d30e108433c933c215e7341d772b20652b6b8",
+      "text": "from __future__ import annotations import math from stocklab.linalg import LinearAlgebraError, dot, matvec, project_simplex, quadratic, solve from stocklab.models import PortfolioSolution def _validate(means: list[float], covariance: list[list[float]]) -> None: if not means or len(covariance) != len(means) or any(len(row) != len(means) for row in covariance): raise ValueError(\"portfolio inputs have incompatible dimensions\") def equal_weight(count: int) -> PortfolioSolution: if count <= 0: raise ValueError(\"portfolio requires at least one asset\") weights = tuple([1.0 / count] * count) return PortfolioSolution(\"equal_weight\", weights, True, 0, 0.0) def minimum_variance(covariance: list[list[float]]) -> PortfolioSolution: count = len(covariance) _validate([0.0] * count, covariance) try: direction = solve(covariance, [1.0] * count) except LinearAlgebraError: regularized = [row[:] for row in covariance] scale = math.fsum(regularized[i][i] for i in range(count)) / count for index in range(count): regularized[index][index] += max(1e-10, scale * 1e-6) direction = solve(regularized, [1.0] * count) total = math.fsum(direction) raw = [value / total for value in direction] if abs(total) > 1e-14 else [1.0 / count] * count weights = project_simplex(raw) return PortfolioSolution(\"minimum_variance\", tuple(weights), True, 1, quadratic(weights, covariance)) def mean_variance( means: list[float], covariance: list[list[float]], risk_aversion: float, *, iterations: int = 1200, tolerance: float = 1e-11, ) -> PortfolioSolution: _validate(means, covariance) if risk_aversion <= 0.0: raise ValueError(\"risk aversion must be positive\") weights = [1.0 / len(means)] * len(means) spectral_bound = max(math.fsum(abs(value) for value in row) for row in covariance) step = 0.35 / max(risk_aversion * spectral_bound, 1e-8) converged = False completed = 0 for completed in range(1, iterations + 1): gradient = [expected - risk_aversion * risk for expected, risk in zip(means, matvec(covariance, weights))] updated = project_simplex([weight + step * value for weight, value in zip(weights, gradient)]) if max(abs(left - right) for left, right in zip(weights, updated)) < tolerance: weights = updated converged = True break weights = updated step *= 0.998 objective = dot(means, weights) - 0.5 * risk_aversion * quadratic(weights, covariance) return PortfolioSolution(\"mean_variance\", tuple(weights), converged, completed, objective) def risk_parity( covariance: list[list[float]], *, iterations: int = 2000, tolerance: float = 1e-9, ) -> PortfolioSolution: count = len(covariance) _validate([0.0] * count, covariance) weights = [1.0 / count] * count converged = False completed = 0 for completed in range(1, iterations + 1): marginal = matvec(covariance, weights) contributions = [max(weight * value, 1e-16) for weight, value in zip(weights, marginal)] target = math.fsum(contributions) / count spread = max(abs(value - target) for value in contributions) if spread <= tolerance * max(target, 1e-12): converged = True break updated = [weight * math.sqrt(target / contribution) for weight, contribution in zip(weights, contributions)] weights = project_simplex(updated) objective = max(contributions) - min(contributions) return PortfolioSolution(\"risk_parity\", tuple(weights), converged, completed, objective) def maximum_diversification( covariance: list[list[float]], *, iterations: int = 1600, tolerance: float = 1e-10, ) -> PortfolioSolution: count = len(covariance) _validate([0.0] * count, covariance) volatilities = [math.sqrt(max(covariance[index][index], 0.0)) for index in range(count)] weights = [1.0 / count] * count converged = False completed = 0 for completed in range(1, iterations + 1): numerator = max(dot(weights, volatilities), 1e-16) variance = max(quadratic(weights, covariance), 1e-16) risk_gradient = matvec(covariance, weights) gradient = [volatility / numerator - value / variance for volatility, value in zip(volatilities, risk_gradient)] step = 0.08 / math.sqrt(completed) updated = project_simplex([weight + step * value for weight, value in zip(weights, gradient)]) if max(abs(left - right) for left, right in zip(weights, updated)) < tolerance: weights = updated converged = True break weights = updated ratio = dot(weights, volatilities) / math.sqrt(max(quadratic(weights, covariance), 1e-16)) return PortfolioSolution(\"maximum_diversification\", tuple(weights), converged, completed, ratio)",
+      "sources": [
+        "artifact"
+      ],
+      "evidence_ids": [
+        "evidence-000002"
+      ],
+      "task_ids": [
+        "task-000002"
+      ],
+      "occurrences": 1
+    },
+    {
+      "digest": "sha256:587c9739421db7260ecdeea67bdb049790b45319d5c39f608f924eb49f7beac0",
+      "text": "test_cli_writes_strict_json_report (tests.test_integration.IntegratedSeedTests.test_cli_writes_strict_json_report) ... ok test_seed_report_has_every_required_layer_and_is_deterministic (tests.test_integration.IntegratedSeedTests.test_seed_report_has_every_required_layer_and_is_deterministic) ... ok ---------------------------------------------------------------------- Ran 2 tests in 0.233s OK",
+      "sources": [
+        "artifact"
+      ],
+      "evidence_ids": [
+        "evidence-000009"
+      ],
+      "task_ids": [
+        "task-000005"
+      ],
+      "occurrences": 1
+    },
+    {
+      "digest": "sha256:598bb9f24c58642751d3f143a996fc3864e664b0066f6f545354f329dd3ff590",
+      "text": "{ \"verdict\": \"reject\", \"confidence\": \"high\", \"claims\": [ { \"text\": \"The seven top-level keys asserted in `tests/test_integration.py` are: metadata, assets, portfolio_risk, factor_models, portfolios, simulation, backtest\" } ], \"contradictions\": [] }",
+      "sources": [
+        "artifact"
+      ],
+      "evidence_ids": [
+        "evidence-000010"
+      ],
+      "task_ids": [
+        "task-000005"
+      ],
+      "occurrences": 1
+    },
+    {
+      "digest": "sha256:5f294dddfcb976c1f40babe330c31c4ba27c5c1d1648ff2f7837784c94135794",
+      "text": "The seven top-level keys in `test_integration.py` are: 1. metadata 2. assets 3. portfolio_risk 4. factor_models 5. portfolios 6. simulation 7. backtest Source: `tests/test_integration.py` (relative path: `tests/test_integration.py`). The keys are asserted on line 30 via `self.assertEqual` and on line 41 via `self.assertGreater`.",
+      "sources": [
+        "artifact"
+      ],
+      "evidence_ids": [
+        "evidence-000019"
+      ],
+      "task_ids": [
+        "task-000008"
+      ],
+      "occurrences": 1
+    },
+    {
+      "digest": "sha256:6862739370acd6bb038184b495e58513424aafe4dff3348a0d7e420db2bae730",
+      "text": "Read tests/test_integration.py and report only the seven top-level report keys it asserts, citing that path; do not infer any ticker API",
+      "sources": [
+        "task-goal"
+      ],
+      "evidence_ids": [],
+      "task_ids": [
+        "task-000004",
+        "task-000005"
+      ],
+      "occurrences": 2
+    },
+    {
+      "digest": "sha256:6eb40f2f5927c195d5efc7db58935e89497a9449c490beb855feaf5d90a94c81",
+      "text": "The seven top-level keys asserted in `tests/test_integration.py` are: - metadata - assets - portfolio_risk - factor_models - portfolios - simulation - backtest",
+      "sources": [
+        "artifact"
+      ],
+      "evidence_ids": [
+        "evidence-000008"
+      ],
+      "task_ids": [
+        "task-000005"
+      ],
+      "occurrences": 1
+    },
+    {
+      "digest": "sha256:6ee1037317bac65150c2d8021362635f260c026e52ee5156dcf515962a464d46",
+      "text": "The seven top-level keys in test_integration.py are metadata, assets, portfolio_risk, factor_models, portfolios, simulation, and backtest.",
+      "sources": [
+        "claim"
+      ],
+      "evidence_ids": [
+        "evidence-000022"
+      ],
+      "task_ids": [
+        "task-000008"
+      ],
+      "occurrences": 1
+    },
+    {
+      "digest": "sha256:7a698f18c373df8298537dc4ff668eeb71db0c215609e999916e04b4d83e07f1",
+      "text": "Loading model... ▄▄ ▄▄ ██ ██ ██ ██ ▀▀█▄ ███▄███▄ ▀▀█▄ ▄████ ████▄ ████▄ ██ ██ ▄█▀██ ██ ██ ██ ▄█▀██ ██ ██ ██ ██ ██ ██ ██ ▀█▄██ ██ ██ ██ ▀█▄██ ██ ▀████ ████▀ ████▀ ██ ██ ▀▀ ▀▀ build : b9957-c4ae9a88f model : C:\\Users\\liamm\\.leaf\\models\\Viola\\FableVibes-14B-A3B\\Qwen3.6-14B-A3B-FableVibes-Q2_K.gguf ftype : Q2_K - Medium modalities : text available commands: /exit or Ctrl+C stop or exit /regen regenerate the last response /clear clear the chat history /read <file> add a text file /glob <pattern> add text files using globbing pattern > You are a bounded LeafOS read-only repository-analysis worker. Task: List exactly the seven top-level report keys asserted in tests/test_integration.py and cite that file Requested focus: List exactly the seven top-level report keys asserted in tests/test_integration.py and cite that file Use only the attached project sources for project-specific claims. Cite their relative paths. --- SOURCE tests/test_integration.py sha256:5e2910b02ef8905eeaaa53e7b9efae536bb6faef780209ef90f31c8f29f19cb2 --- fr ... (truncated) The seven top-level keys in `test_integration.py` are: 1. metadata 2. assets 3. portfolio_risk 4. factor_models 5. portfolios 6. simulation 7. backtest Source: `tests/test_integration.py` (relative path: `tests/test_integration.py`). The keys are asserted on line 30 via `self.assertEqual` and on line 41 via `self.assertGreater`. [ Prompt: 1846.6 t/s | Generation: 143.3 t/s ] Exiting...",
+      "sources": [
+        "artifact"
+      ],
+      "evidence_ids": [
+        "evidence-000019"
+      ],
+      "task_ids": [
+        "task-000008"
+      ],
+      "occurrences": 1
+    },
+    {
+      "digest": "sha256:7d158776defb51eae81dca2055b7caf96858c5bad09e05de701d65eea176fdae",
+      "text": "{\"evidence_ids\": [\"evidence-000001\"], \"id\": \"task-000001-contradiction-001\", \"kind\": \"contradiction\", \"observed_at\": \"2026-08-20T08:05:24.977347+00:00\", \"producer\": \"leafos:primary-agent\", \"reason\": \"The worker invented a BaseLayer hierarchy absent from README.md and SEED.md; preserve the output as untrusted evidence but do not treat it as implementation authority.\", \"schema\": \"leafos.decision.v1\", \"task_id\": \"task-000001\"}",
+      "sources": [
+        "decision"
+      ],
+      "evidence_ids": [],
+      "task_ids": [
+        "task-000001"
+      ],
+      "occurrences": 1
+    },
+    {
+      "digest": "sha256:8128ba8026ba9957a7b1c4dee9ddd88ef64f4bc63a337226ab1762f0475b7f24",
+      "text": "## Derive an implementation and verification map from the README and seed contract The implementation must be a self-contained LeafOS long-loop workload that uses deterministic random seeds, synthetic data, and only the `seed/` files. It must also support the required CLI with a stable JSON research report. **Implementation requirements:** 1. Implement all the required capabilities. 2. Implement the CLI using the CLI layer. 3. Implement the backtest using the `CLI` layer. 4. Implement the `CLI` layer. 5. Implement the `CLI` layer as a subclass of `BaseLayer`. 6. Implement the `BaseLayer` layer. 7. Implement the `BaseLayer` layer. 8. Implement the `BaseLayer` layer. 9. Implement the `BaseLayer` layer. --- ## Verification The implementation must support the `discover -s tests -v` command. Tests should",
+      "sources": [
+        "artifact"
+      ],
+      "evidence_ids": [
+        "evidence-000001"
+      ],
+      "task_ids": [
+        "task-000001"
+      ],
+      "occurrences": 1
+    },
+    {
+      "digest": "sha256:845c0c6b6d558ac01634018bb63fde3c3387a036e5ddee3818d544d730d42b54",
+      "text": "Loading model... ▄▄ ▄▄ ██ ██ ██ ██ ▀▀█▄ ███▄███▄ ▀▀█▄ ▄████ ████▄ ████▄ ██ ██ ▄█▀██ ██ ██ ██ ▄█▀██ ██ ██ ██ ██ ██ ██ ██ ▀█▄██ ██ ██ ██ ▀█▄██ ██ ▀████ ████▀ ████▀ ██ ██ ▀▀ ▀▀ build : b9957-c4ae9a88f model : C:\\Users\\liamm\\.leaf\\models\\Viola\\FableVibes-14B-A3B\\Qwen3.6-14B-A3B-FableVibes-Q3_K_M.gguf ftype : Q3_K - Medium modalities : text available commands: /exit or Ctrl+C stop or exit /regen regenerate the last response /clear clear the chat history /read <file> add a text file /glob <pattern> add text files using globbing pattern > You are a bounded LeafOS read-only repository-analysis worker. Task: Identify the seven report keys asserted by tests/test_integration.py and cite the source Requested focus: Identify the seven report keys asserted by tests/test_integration.py and cite the source Use only the attached project sources for project-specific claims. Cite their relative paths. --- SOURCE tests/test_integration.py sha256:5e2910b02ef8905eeaaa53e7b9efae536bb6faef780209ef90f31c8f29f19cb2 --- from __future__ import annot ... (truncated) The seven report keys asserted by `tests/test_integration.py` are: 1. `metadata` — accessed as `first[\"metadata\"]` and `parsed[\"metadata\"]`; source `tests/test_integration.py` 2. `assets` — member of `set(first)` in the first test; source `tests/test_integration.py` 3. `portfolio_risk` — member of `set(first)` in the first test; source `tests/test_integration.py` 4. `factor_models` — member of `set(first)` in the first test; source `tests/test_integration.py` 5. `portfolios` [ Prompt: 1671.8 t/s | Generation: 132.6 t/s ] Exiting...",
+      "sources": [
+        "artifact"
+      ],
+      "evidence_ids": [
+        "evidence-000011"
+      ],
+      "task_ids": [
+        "task-000006"
+      ],
+      "occurrences": 1
+    },
+    {
+      "digest": "sha256:862f0d3b2cd45fdf6321e95fac2ba16deb718ae9518ad8efbe9cc426f3dcbf61",
+      "text": "test_cli_writes_strict_json_report (tests.test_integration.IntegratedSeedTests.test_cli_writes_strict_json_report) ... ok test_seed_report_has_every_required_layer_and_is_deterministic (tests.test_integration.IntegratedSeedTests.test_seed_report_has_every_required_layer_and_is_deterministic) ... ok ---------------------------------------------------------------------- Ran 2 tests in 0.241s OK",
+      "sources": [
+        "artifact"
+      ],
+      "evidence_ids": [
+        "evidence-000004",
+        "evidence-000016"
+      ],
+      "task_ids": [
+        "task-000003",
+        "task-000007"
+      ],
+      "occurrences": 2
+    },
+    {
+      "digest": "sha256:86735fccfd4bd223ce10744d762497d9069fab83d017dbce311abcc47a2d2c4c",
+      "text": "Loading model... ▄▄ ▄▄ ██ ██ ██ ██ ▀▀█▄ ███▄███▄ ▀▀█▄ ▄████ ████▄ ████▄ ██ ██ ▄█▀██ ██ ██ ██ ▄█▀██ ██ ██ ██ ██ ██ ██ ██ ▀█▄██ ██ ██ ██ ▀█▄██ ██ ▀████ ████▀ ████▀ ██ ██ ▀▀ ▀▀ build : b9957-c4ae9a88f model : C:\\Users\\liamm\\.leaf\\models\\Viola\\FableVibes-14B-A3B\\Qwen3.6-14B-A3B-FableVibes-Q3_K_M.gguf ftype : Q3_K - Medium modalities : text available commands: /exit or Ctrl+C stop or exit /regen regenerate the last response /clear clear the chat history /read <file> add a text file /glob <pattern> add text files using globbing pattern > You are the independent LeafOS verifier. You did not produce the worker result. Judge only the supplied task output and evidence. A model claim without source, command, test, or captured artifact evidence is not verified. Return exactly one JSON object and no markdown using this schema: {\"verdict\":\"accept|reject|conflict\",\"confidence\":\"low|medium|high\",\"claims\":[{\"text\":\"claim\",\"evidence_ids\":[\"evidence-NNNNNN\"]}],\"contradictions\":[\"description\"]} TASK ID: task-000008 TASK GOAL: List exactly the ... (truncated) { \"verdict\": \"accept\", \"confidence\": \"high\", \"claims\": [ { \"text\": \"The seven top-level keys in test_integration.py are metadata, assets, portfolio_risk, factor_models, portfolios, simulation, and backtest.\", \"evidence_ids\": [ \"evidence-000020\" ] } ], \"contradictions\": [] } [ Prompt: 2584.6 t/s | Generation: 131.1 t/s ] Exiting...",
+      "sources": [
+        "artifact"
+      ],
+      "evidence_ids": [
+        "evidence-000022"
+      ],
+      "task_ids": [
+        "task-000008"
+      ],
+      "occurrences": 1
+    },
+    {
+      "digest": "sha256:8f644ddfc53049e7066104641d17578d63a3aa484256ceef1337ad74d0ee2847",
+      "text": "Evaluate whether the implemented stock-analysis engine satisfies the README contract using cited project sources",
+      "sources": [
+        "task-goal"
+      ],
+      "evidence_ids": [],
+      "task_ids": [
+        "task-000002",
+        "task-000003"
+      ],
+      "occurrences": 2
+    },
+    {
+      "digest": "sha256:9cde5f0933f2ba3671773b7023cdb124782457b4e88317d5338f3157ce485242",
+      "text": "Loading model... ▄▄ ▄▄ ██ ██ ██ ██ ▀▀█▄ ███▄███▄ ▀▀█▄ ▄████ ████▄ ████▄ ██ ██ ▄█▀██ ██ ██ ██ ▄█▀██ ██ ██ ██ ██ ██ ██ ██ ▀█▄██ ██ ██ ██ ▀█▄██ ██ ▀████ ████▀ ████▀ ██ ██ ▀▀ ▀▀ build : b9957-c4ae9a88f model : C:\\Users\\liamm\\.leaf\\models\\Viola\\FableVibes-14B-A3B\\Qwen3.6-14B-A3B-FableVibes-Q2_K.gguf ftype : Q2_K - Medium modalities : text available commands: /exit or Ctrl+C stop or exit /regen regenerate the last response /clear clear the chat history /read <file> add a text file /glob <pattern> add text files using globbing pattern > You are a bounded LeafOS read-only repository-analysis worker. Task: Evaluate whether the implemented stock-analysis engine satisfies the README contract using cited project sources Requested focus: Evaluate whether the implemented stock-analysis engine satisfies the README contract using cited project sources Use only the attached project sources for project-specific claims. Cite their relative paths. --- SOURCE README.md sha256:96cf31cd3b7df51291073ec28f37d44d8933a343bf5e1663f70fb7bfe0be621f ... (truncated) ``` Traceback (most recent call last): File \"<string>\", line 28, in run_test self.assertEqual( AssertionError: 1000.0 != 4000.0 - 400.0 == 4000.0 - 100.0 == 400.0 - 400.0 == 4000.0 - 400.0 == 4000.0 - 400.0 == 4000.0 - 400.0 == 4000.0 - 400.0 == 4000.0 - 400.0 == 4000.0 - 400.0 == 4000.0 - 400.0 == 4000.0 - 400.0 == 4000.0 - 400.0 == 4000.0 - 4 [ Prompt: 3106.4 t/s | Generation: 138.3 t/s ] Exiting...",
+      "sources": [
+        "artifact"
+      ],
+      "evidence_ids": [
+        "evidence-000003"
+      ],
+      "task_ids": [
+        "task-000003"
+      ],
+      "occurrences": 1
+    },
+    {
+      "digest": "sha256:a3ea39412dccab160344eb98f77fa3943ac0e9a6358f44a43fb93fe46386e66b",
+      "text": "[WinError 206] The filename or extension is too long",
+      "sources": [
+        "artifact"
+      ],
+      "evidence_ids": [
+        "evidence-000002"
+      ],
+      "task_ids": [
+        "task-000002"
+      ],
+      "occurrences": 1
+    },
+    {
+      "digest": "sha256:ae5ac6caee70e877f69234b6dec4c8a3ffda88cb0ab97e8f11eb8c8114ba76bd",
+      "text": "from __future__ import annotations import json import subprocess import sys import tempfile import unittest from pathlib import Path from stocklab.analysis import analyze ROOT = Path(__file__).resolve().parents[1] class IntegratedSeedTests(unittest.TestCase): def test_seed_report_has_every_required_layer_and_is_deterministic(self) -> None: arguments = (ROOT / \"seed\" / \"prices.csv\", ROOT / \"seed\" / \"factors.csv\", ROOT / \"seed\" / \"config.json\") first = analyze(*arguments) second = analyze(*arguments) self.assertEqual(first, second) self.assertEqual( set(first), {\"metadata\", \"assets\", \"portfolio_risk\", \"factor_models\", \"portfolios\", \"simulation\", \"backtest\"}, ) self.assertEqual(first[\"metadata\"][\"return_observations\"], 40) self.assertEqual(first[\"simulation\"][\"paths\"], 600) self.assertGreater(first[\"backtest\"][\"rebalance_count\"], 1) for portfolio in first[\"portfolios\"].values(): self.assertAlmostEqual(sum(portfolio[\"weights\"].values()), 1.0, places=9) def test_cli_writes_strict_json_report(self) -> None: with tempfile.TemporaryDirectory() as directory: output = Path(directory) / \"report.json\" completed = subprocess.run( [ sys.executable, \"-m\", \"stocklab.cli\", \"analyze\", \"--prices\", \"seed/prices.csv\", \"--factors\", \"seed/factors.csv\", \"--config\", \"seed/config.json\", \"--output\", str(output), ], cwd=ROOT, capture_output=True, text=True, check=False, ) self.assertEqual(completed.returncode, 0, completed.stderr) parsed = json.loads(output.read_text(encoding=\"utf-8\")) self.assertEqual(parsed[\"metadata\"][\"engine\"], \"verdant-quant-lab\") self.assertNotIn(\"NaN\", output.read_text(encoding=\"utf-8\")) self.assertNotIn(\"Infinity\", output.read_text(encoding=\"utf-8\")) if __name__ == \"__main__\": unittest.main()",
+      "sources": [
+        "artifact"
+      ],
+      "evidence_ids": [
+        "evidence-000002",
+        "evidence-000003",
+        "evidence-000007",
+        "evidence-000008",
+        "evidence-000011",
+        "evidence-000012",
+        "evidence-000014",
+        "evidence-000015",
+        "evidence-000019",
+        "evidence-000020"
+      ],
+      "task_ids": [
+        "task-000002",
+        "task-000003",
+        "task-000004",
+        "task-000005",
+        "task-000006",
+        "task-000007",
+        "task-000008"
+      ],
+      "occurrences": 10
+    },
+    {
+      "digest": "sha256:b120ab5a1f9e401e8ff3f628de19ab17fe3b08703694c9ac659c5398f2d87ab0",
+      "text": "captured reports/seed-analysis.json (14855 bytes)",
+      "sources": [
+        "artifact"
+      ],
+      "evidence_ids": [
+        "evidence-000005"
+      ],
+      "task_ids": [
+        "task-000003"
+      ],
+      "occurrences": 1
+    },
+    {
+      "digest": "sha256:b92ab18c54ecd50b0374d8e02905936304ac57ba80a9d123e5d639787a607588",
+      "text": "{ \"verdict\": \"accept\", \"confidence\": \"low\", \"claims\": [ { \"text\": \"The seven top-level report keys are exactly: assets, backtest, factor_models, metadata, portfolios, simulation, and portfolio_risk.\", \"evidence_ids\": [\"evidence-000014\"] } ] }",
+      "sources": [
+        "artifact"
+      ],
+      "evidence_ids": [
+        "evidence-000017"
+      ],
+      "task_ids": [
+        "task-000007"
+      ],
+      "occurrences": 1
+    },
+    {
+      "digest": "sha256:ba62d1307d2f23df2f625a68a5b6288ab2d4a0c84a0c63b401727de56080a14a",
+      "text": "The implemented stock-analysis engine (stocklab/analysis.py) satisfies the contract specified in the README: it supports `analyze_stock` (ticker, date, days, output_type) and correctly handles ticker aliases like `'AAPL'` and `'Apple'`, producing `{'ticker': 'Apple', 'price': 4000.0, 'open_count': 1000}`.",
+      "sources": [
+        "claim"
+      ],
+      "evidence_ids": [
+        "evidence-000006"
+      ],
+      "task_ids": [
+        "task-000003"
+      ],
+      "occurrences": 1
+    },
+    {
+      "digest": "sha256:c50fa1f2813f14f13966b812099cdd34b9ab5b52bb5a3b6689a47717b176a3a0",
+      "text": "from __future__ import annotations import hashlib import math from pathlib import Path from typing import Any from stocklab.backtest import walk_forward from stocklab.factors import fit_factor_model from stocklab.io import load_config, read_factors, read_prices from stocklab.linalg import column_means, covariance_matrix, dot, quadratic, shrink_covariance from stocklab.monte_carlo import simulate_correlated_gbm from stocklab.portfolio import equal_weight, maximum_diversification, mean_variance, minimum_variance, risk_parity from stocklab.returns import drawdown_report, log_returns, portfolio_returns, simple_returns from stocklab.risk import capm, portfolio_risk, value_at_risk from stocklab.statistics import performance_summary def _digest(path: Path) -> str: return hashlib.sha256(path.read_bytes()).hexdigest() def _portfolio_record(solution: Any, assets: tuple[str, ...], means: list[float], covariance: list[list[float]], periods: int) -> dict[str, Any]: record = solution.as_dict(assets) record.update({ \"expected_return_annualized\": dot(list(solution.weights), means) * periods, \"volatility_annualized\": math.sqrt(max(quadratic(list(solution.weights), covariance), 0.0)) * math.sqrt(periods), }) return record def analyze(prices_path: str | Path, factors_path: str | Path, config_path: str | Path) -> dict[str, Any]: prices_file = Path(prices_path).resolve() factors_file = Path(factors_path).resolve() config_file = Path(config_path).resolve() prices = read_prices(prices_file) factors = read_factors(factors_file) config = load_config(config_file) returns = simple_returns(prices) logarithmic = log_returns(prices) if factors.dates != returns.dates: missing = sorted(set(returns.dates) - set(factors.dates)) extra = sorted(set(factors.dates) - set(returns.dates)) raise ValueError(f\"factor dates must exactly align to return dates; missing={missing}, extra={extra}\") observations = [list(row) for row in returns.values] log_observations = [list(row) for row in logarithmic.values] means = column_means(observations) covariance = covariance_matrix(observations) regularized = shrink_covariance(covariance, float(config[\"covariance_shrinkage\"])) periods = int(config[\"periods_per_year\"]) confidence = float(config[\"confidence\"]) risk_free_rate = float(config[\"risk_free_rate\"]) market_index = factors.names.index(\"MKT\") if \"MKT\" in factors.names else 0 market_returns = factors.column(market_index) asset_records: dict[str, Any] = {} factor_models: dict[str, Any] = {} factor_rows = [list(row) for row in factors.values] for index, asset in enumerate(prices.names): series = returns.column(index) asset_records[asset] = { \"first_price\": prices.values[0][index], \"last_price\": prices.values[-1][index], \"simple_performance\": performance_summary(series, periods, risk_free_rate), \"log_return_mean\": column_means(log_observations)[index], \"loss_risk\": value_at_risk(series, confidence), \"drawdown\": drawdown_report(series), \"capm\": capm(series, market_returns, periods, risk_free_rate), } factor_models[asset] = fit_factor_model( series, factor_rows, factors.names, ridge=float(config[\"ridge\"]), periods=periods, ) solutions = [ equal_weight(prices.columns), minimum_variance(regularized), mean_variance(means, regularized, float(config[\"risk_aversion\"])), risk_parity(regularized), maximum_diversification(regularized), ] solution_records = { solution.name: _portfolio_record(solution, prices.names, means, regularized, periods) for solution in solutions } equal_returns = portfolio_returns(returns, list(solutions[0].weights)) selected = next(solution for solution in solutions if solution.name == \"mean_variance\") simulation = simulate_correlated_gbm( column_means(log_observations), covariance_matrix(log_observations), list(selected.weights), paths=int(config[\"monte_carlo_paths\"]), steps=int(config[\"monte_carlo_steps\"]), seed=int(config[\"random_seed\"]), ) backtest = walk_forward( returns, lookback=int(config[\"lookback\"]), rebalance_every=int(config[\"rebalance_every\"]), transaction_cost_bps=float(config[\"transaction_cost_bps\"]), shrinkage=float(config[\"covariance_shrinkage\"]), risk_aversion=float(config[\"risk_aversion\"]), periods=periods, risk_free_rate=risk_free_rate, ) return { \"metadata\": { \"engine\": \"verdant-quant-lab\", \"version\": \"0.1.0\", \"purpose\": \"deterministic educational research; not financial advice\", \"as_of_date\": prices.dates[-1], \"observations\": prices.rows, \"return_observations\": returns.rows, \"assets\": list(prices.names), \"factors\": list(factors.names), \"input_sha256\": { \"prices\": _digest(prices_file), \"factors\": _digest(factors_file), \"config\": _digest(config_file), }, \"config\": config, }, \"assets\": asset_records, \"portfolio_risk\": { \"equal_weight\": portfolio_risk(list(solutions[0].weights), regularized, periods), \"equal_weight_loss_risk\": value_at_risk(equal_returns, confidence), \"equal_weight_performance\": performance_summary(equal_returns, periods, risk_free_rate), \"covariance\": covariance, \"shrinkage_covariance\": regularized, }, \"factor_models\": factor_models, \"portfolios\": solution_records, \"simulation\": simulation, \"backtest\": backtest, }",
+      "sources": [
+        "artifact"
+      ],
+      "evidence_ids": [
+        "evidence-000002",
+        "evidence-000003"
+      ],
+      "task_ids": [
+        "task-000002",
+        "task-000003"
+      ],
+      "occurrences": 2
+    },
+    {
+      "digest": "sha256:c50fd039d2606906851e67d44c2130184145b4d18bb78cd50f70156f823ea56d",
+      "text": "test_cli_writes_strict_json_report (tests.test_integration.IntegratedSeedTests.test_cli_writes_strict_json_report) ... ok test_seed_report_has_every_required_layer_and_is_deterministic (tests.test_integration.IntegratedSeedTests.test_seed_report_has_every_required_layer_and_is_deterministic) ... ok ---------------------------------------------------------------------- Ran 2 tests in 0.226s OK",
+      "sources": [
+        "artifact"
+      ],
+      "evidence_ids": [
+        "evidence-000013"
+      ],
+      "task_ids": [
+        "task-000006"
+      ],
+      "occurrences": 1
+    },
+    {
+      "digest": "sha256:c76c40cac63b7fc0a795f35ac727449b61aace12c83d7727a215645c0f5514c8",
+      "text": "Loading model... ▄▄ ▄▄ ██ ██ ██ ██ ▀▀█▄ ███▄███▄ ▀▀█▄ ▄████ ████▄ ████▄ ██ ██ ▄█▀██ ██ ██ ██ ▄█▀██ ██ ██ ██ ██ ██ ██ ██ ▀█▄██ ██ ██ ██ ▀█▄██ ██ ▀████ ████▀ ████▀ ██ ██ ▀▀ ▀▀ build : b9957-c4ae9a88f model : C:\\Users\\liamm\\.leaf\\models\\Viola\\FableVibes-14B-A3B\\Qwen3.6-14B-A3B-FableVibes-Q2_K.gguf ftype : Q2_K - Medium modalities : text available commands: /exit or Ctrl+C stop or exit /regen regenerate the last response /clear clear the chat history /read <file> add a text file /glob <pattern> add text files using globbing pattern > You are the independent LeafOS verifier. You did not produce the worker result. Judge only the supplied task output and evidence. A model claim without source, command, test, or captured artifact evidence is not verified. Return exactly one JSON object and no markdown using this schema: {\"verdict\":\"accept|reject|conflict\",\"confidence\":\"low|medium|high\",\"claims\":[{\"text\":\"claim\",\"evidence_ids\":[\"evidence-NNNNNN\"]}],\"contradictions\":[\"description\"]} TASK ID: task-000005 TASK GOAL: Read tests/test_ ... (truncated) { \"verdict\": \"reject\", \"confidence\": \"high\", \"claims\": [ { \"text\": \"The seven top-level keys asserted in `tests/test_integration.py` are: metadata, assets, portfolio_risk, factor_models, portfolios, simulation, backtest\" } ], \"contradictions\": [] } [ Prompt: 2128.9 t/s | Generation: 139.8 t/s ] Exiting...",
+      "sources": [
+        "artifact"
+      ],
+      "evidence_ids": [
+        "evidence-000010"
+      ],
+      "task_ids": [
+        "task-000005"
+      ],
+      "occurrences": 1
+    },
+    {
+      "digest": "sha256:cda1a50d5e9599fc03cbdcf0f86453f1dd0d8b6c217acd03e6b8fda7a0f18c14",
+      "text": "The seven top-level report keys asserted in tests/test_integration.py are: - assets - backtest - factor_models - metadata - portfolios - simulation - portfolio_risk",
+      "sources": [
+        "artifact"
+      ],
+      "evidence_ids": [
+        "evidence-000014"
+      ],
+      "task_ids": [
+        "task-000007"
+      ],
+      "occurrences": 1
+    },
+    {
+      "digest": "sha256:d8b85839baaea9d17d611372375ee1f0a1035452b71f38220bdb982788443287",
+      "text": "ggml_vulkan: Device memory allocation of size 1045181952 failed. ggml_vulkan: vk::Device::allocateMemory: ErrorOutOfDeviceMemory 0.08.219.314 E alloc_tensor_range: failed to allocate Vulkan0 buffer of size 1045181952 0.08.783.004 E llama_model_load: error loading model: unable to allocate Vulkan0 buffer 0.08.783.011 E llama_model_load_from_file_impl: failed to load model 0.08.783.022 E cmn common_init_: failed to load model 'C:\\Users\\liamm\\.leaf\\models\\Viola\\Opus-DeepSeek-27B-1M\\Qwen3.6-27B-Claude-Opus-DeepSeek-Distilled-Imatrix-MTP-1M-GGUF-Q4_K_M-YaRN-1M.gguf' 0.08.783.026 E srv load_model: failed to load model, 'C:\\Users\\liamm\\.leaf\\models\\Viola\\Opus-DeepSeek-27B-1M\\Qwen3.6-27B-Claude-Opus-DeepSeek-Distilled-Imatrix-MTP-1M-GGUF-Q4_K_M-YaRN-1M.gguf' 0.08.784.717 E srv llama_server: exiting due to model loading error llama_server exited with code 1",
+      "sources": [
+        "artifact"
+      ],
+      "evidence_ids": [
+        "evidence-000007"
+      ],
+      "task_ids": [
+        "task-000004"
+      ],
+      "occurrences": 1
+    },
+    {
+      "digest": "sha256:ddcea295b437069764df132b326834bf269c88e8a38aab3cccf9520d79c80b24",
+      "text": "List exactly the seven top-level report keys asserted in tests/test_integration.py and cite that file",
+      "sources": [
+        "task-goal"
+      ],
+      "evidence_ids": [],
+      "task_ids": [
+        "task-000007",
+        "task-000008"
+      ],
+      "occurrences": 2
+    },
+    {
+      "digest": "sha256:dee8be17cdb506fe6e3a5ebf71cbb161459554cc075acedd3a39210fc2c122dc",
+      "text": "{ \"assets\": { \"ALPHA\": { \"capm\": { \"alpha_annualized\": 0.020291966159042343, \"beta\": 1.0006357258399121, \"r_squared\": 0.9988627472635602, \"residual_volatility_annualized\": 0.0038410192285899987 }, \"drawdown\": { \"longest_duration\": 1, \"maximum_drawdown\": -0.006988934187536544, \"peak_index\": 7, \"terminal_wealth\": 1.1583999999999999, \"trough_index\": 8 }, \"first_price\": 100.0, \"last_price\": 115.84, \"log_return_mean\": 0.0036759935662328677, \"loss_risk\": { \"confidence\": 0.95, \"cornish_fisher_var\": 0.008586623443107708, \"gaussian_var\": 0.008093932682857517, \"historical_expected_shortfall\": 0.006503219828998041, \"historical_var\": 0.006001042925512712 }, \"simple_performance\": { \"annual_return\": 1.5252760378948826, \"annual_volatility\": 0.1138984951293285, \"excess_kurtosis\": -1.4750538618454798, \"mean_periodic\": 0.0037077782229257283, \"omega_zero\": 3.1489965676642004, \"sharpe\": 8.029576736362486, \"skewness\": -0.13811063216771757, \"sortino\": 18.819046160094253 } }, \"BETA\": { \"capm\": { \"alpha_annualized\": -0.6271619992233349, \"beta\": 2.0633147794826714, \"r_squared\": 0.9926626596061084, \"residual_volatility_annualized\": 0.020180358151673138 }, \"drawdown\": { \"longest_duration\": 1, \"maximum_drawdown\": -0.01795547043332535, \"peak_index\": 7, \"terminal_wealth\": 1.2111249999999998, \"trough_index\": 8 }, \"first_price\": 80.0, \"last_price\": 96.89, \"log_return_mean\": 0.004788741993075779, \"loss_risk\": { \"confidence\": 0.95, \"cornish_fisher_var\": 0.020471741557905897, \"gaussian_var\": 0.019503836010506204, \"historical_expected_shortfall\": 0.017004381498195942, \"historical_var\": 0.016047085457058685 }, \"simple_performance\": { \"annual_return\": 2.34264691366141, \"annual_volatility\": 0.2355914558690425, \"excess_kurtosis\": -1.41188258866348, \"mean_periodic\": 0.004907217453211527, \"omega_zero\": 2.109451458992488, \"sharpe\": 5.164938551530326, \"skewness\": -0.13032243488853537, \"sortino\": 9.709737762132573 } }, \"DELTA\": { \"capm\": { \"alpha_annualized\": 0.6449325154425886, \"beta\": 1.3107365232557964, \"r_squared\": 0.9910085308477171, \"residual_volatility_annualized\": 0.014203223582370996 }, \"drawdown\": { \"longest_duration\": 1, \"maximum_drawdown\": -0.0060145615701171495, \"peak_index\": 7, \"terminal_wealth\": 1.3346666666666662, \"trough_index\": 8 }, \"first_price\": 60.0, \"last_price\": 80.08, \"log_return_mean\": 0.007217039319621597, \"loss_risk\": { \"confidence\": 0.95, \"cornish_fisher_var\": 0.008735896156548616, \"gaussian_var\": 0.008233988570604055, \"historical_expected_shortfall\": 0.005530466818882862, \"historical_var\": 0.005024189679146302 }, \"simple_performance\": { \"annual_return\": 5.163802700216571, \"annual_volatility\": 0.14978612798913563, \"excess_kurtosis\": -1.4821028620689762, \"mean_periodic\": 0.007286256698810759, \"omega_zero\": 6.026652333119608, \"sharpe\": 12.126178218933084, \"skewness\": -0.08235568298040716, \"sortino\": 44.373137806540015 } }, \"GAMMA\": { \"capm\": { \"alpha_annualized\": 0.6581507177404684, \"beta\": -0.038638564586196106, \"r_squared\": 0.032561769020379994, \"residual_volatility_annualized\": 0.023959265552735597 }, \"drawdown\": { \"longest_duration\": 1, \"maximum_drawdown\": -0.001974333662388972, \"peak_index\": 6, \"terminal_wealth\": 1.107333333333334, \"trough_index\": 7 }, \"first_price\": 120.0, \"last_price\": 132.88, \"log_return_mean\": 0.0025488680630748393, \"loss_risk\": { \"confidence\": 0.95, \"cornish_fisher_var\": 0.00048068428610296325, \"gaussian_var\": 0.0, \"historical_expected_shortfall\": 0.0014846792690054178, \"historical_var\": 0.0009828772157873477 }, \"simple_performance\": { \"annual_return\": 0.9008758466810425, \"annual_volatility\": 0.024359135890865462, \"excess_kurtosis\": 1.8807158275281703, \"mean_periodic\": 0.0025532657520988765, \"omega_zero\": 21.77779259545368, \"sharpe\": 25.601054443915604, \"skewness\": -1.4395690424319492, \"sortino\": 95.40679327767813 } } }, \"backtest\": { \"drawdown\": { \"longest_duration\": 1, \"maximum_drawdown\": -0.005842288557213804, \"peak_index\": 0, \"terminal_wealth\": 1.2427747351286018, \"trough_index\": 1 }, \"end_date\": \"2026-02-27\", \"observations\": 30, \"performance\": { \"annual_return\": 5.207207906994883, \"annual_volatility\": 0.1547445283153987, \"excess_kurtosis\": -1.5274897686128213, \"mean_periodic\": 0.007316807139151494, \"omega_zero\": 5.795413799849931, \"sharpe\": 11.787376352127435, \"skewness\": -0.06333315959337528, \"sortino\": 42.85876852469908 }, \"rebalance_count\": 6, \"rebalances\": [ { \"cost\": 0.0018, \"date\": \"2026-01-19\", \"turnover\": 1.5, \"weights\": { \"ALPHA\": 0.0, \"BETA\": 0.0, \"DELTA\": 1.0, \"GAMMA\": 0.0 } }, { \"cost\": 0.0, \"date\": \"2026-01-26\", \"turnover\": 0.0, \"weights\": { \"ALPHA\": 0.0, \"BETA\": 0.0, \"DELTA\": 1.0, \"GAMMA\": 0.0 } }, { \"cost\": 0.0, \"date\": \"2026-02-02\", \"turnover\": 0.0, \"weights\": { \"ALPHA\": 0.0, \"BETA\": 0.0, \"DELTA\": 1.0, \"GAMMA\": 0.0 } }, { \"cost\": 0.0, \"date\": \"2026-02-09\", \"turnover\": 0.0, \"weights\": { \"ALPHA\": 0.0, \"BETA\": 0.0, \"DELTA\": 1.0, \"GAMMA\": 0.0 } }, { \"cost\": 0.0, \"date\": \"2026-02-16\", \"turnover\": 0.0, \"weights\": { \"ALPHA\": 0.0, \"BETA\": 0.0, \"DELTA\": 1.0, \"GAMMA\": 0.0 } }, { \"cost\": 0.0, \"date\": \"2026-02-23\", \"turnover\": 0.0, \"weights\": { \"ALPHA\": 0.0, \"BETA\": 0.0, \"DELTA\": 1.0, \"GAMMA\": 0.0 } } ], \"start_date\": \"2026-01-19\", \"total_transaction_cost\": 0.0018, \"total_turnover\": 1.5 }, \"factor_models\": { \"ALPHA\": { \"alpha_annualized\": 0.02213182166129657, \"alpha_periodic\": 8.782468913212924e-05, \"exposures\": { \"MKT\": 1.0413637157282858, \"MOM\": -0.05910930739987844, \"SMB\": -0.019047878835219377 }, \"normal_equation_diagonal_ratio\": 422163.58839050133, \"observations\": 40, \"r_squared\": 0.9989830019026951, \"residual_volatility_annualized\": 0.0036322694354345795, \"ridge\": 1e-06 }, \"BETA\": { \"alpha_annualized\": -0.5731303843978772, \"alpha_periodic\": -0.0022743269222137985, \"exposures\": { \"MKT\": 1.7180154760967146, \"MOM\": 0.29054360033726756, \"SMB\": 0.8247005284530227 }, \"normal_equation_diagonal_ratio\": 422163.58839050133, \"observations\": 40, \"r_squared\": 0.9939046896671272, \"residual_volatility_annualized\": 0.01839320650994653, \"ridge\": 1e-06 }, \"DELTA\": { \"alpha_annualized\": 0.6926777341163783, \"alpha_periodic\": 0.0027487211671284855, \"exposures\": { \"MKT\": 1.0643048017283343, \"MOM\": 0.2065556706268454, \"SMB\": 0.591602328386442 }, \"normal_equation_diagonal_ratio\": 422163.58839050133, \"observations\": 40, \"r_squared\": 0.9926092920974381, \"residual_volatility_annualized\": 0.012876997561524745, \"ridge\": 1e-06 }, \"GAMMA\": { \"alpha_annualized\": 0.6873307458305434, \"alpha_periodic\": 0.0027275029596450138, \"exposures\": { \"MKT\": 0.14179063435487793, \"MOM\": -0.2646216251883766, \"SMB\": -0.06381288825548226 }, \"normal_equation_diagonal_ratio\": 422163.58839050133, \"observations\": 40, \"r_squared\": 0.0676797912819006, \"residual_volatility_annualized\": 0.023520385045845714, \"ridge\": 1e-06 } }, \"metadata\": { \"as_of_date\": \"2026-02-27\", \"assets\": [ \"ALPHA\", \"BETA\", \"GAMMA\", \"DELTA\" ], \"config\": { \"confidence\": 0.95, \"covariance_shrinkage\": 0.2, \"lookback\": 10, \"monte_carlo_paths\": 600, \"monte_carlo_steps\": 20, \"periods_per_year\": 252, \"random_seed\": 1701, \"rebalance_every\": 5, \"ridge\": 1e-06, \"risk_aversion\": 6.0, \"risk_free_rate\": 0.02, \"transaction_cost_bps\": 12.0 }, \"engine\": \"verdant-quant-lab\", \"factors\": [ \"MKT\", \"SMB\", \"MOM\" ], \"input_sha256\": { \"config\": \"20f2118a96328732049b40dfa23eb8b00af6a478c3727eeb35a693263ae2a4d7\", \"factors\": \"66f8b7f20ff6ece65efd104d23fe9360f0f34d29460b61672998f819db5a523b\", \"prices\": \"c3ea2d67d4e3473e3f4ee61d62a0f940528b1fd1489079354cb87c5dc9f2f199\" }, \"observations\": 41, \"purpose\": \"deterministic educational research; not financial advice\", \"return_observations\": 40, \"version\": \"0.1.0\" }, \"portfolio_risk\": { \"covariance\": [ [ 5.147963171716533e-05, 0.0001060221761855763, -1.973723283572311e-06, 6.732474643891447e-05 ], [ 0.0001060221761855763, 0.00022025132570831349, -4.118553323733159e-06, 0.0001393086770577186 ], [ -1.973723283572311e-06, -4.118553323733159e-06, 2.3546329418636897e-06, -2.3965438958255957e-06 ], [ 6.732474643891447e-05, 0.0001393086770577186, -2.3965438958255957e-06, 8.903128626181633e-05 ] ], \"equal_weight\": { \"annual_volatility\": 0.11568964362561598, \"contribution_sum\": 0.0072877625309302075, \"periodic_variance\": 5.3111482707230266e-05, \"volatility_contributions\": [ 0.0016846572237039165, 0.0033217220536643907, 0.00011361935270098093, 0.0021677639008609194 ] }, \"equal_weight_loss_risk\": { \"confidence\": 0.95, \"cornish_fisher_var\": 0.00860990899252018, \"gaussian_var\": 0.008203110887381371, \"historical_expected_shortfall\": 0.006369333475335318, \"historical_var\": 0.00576756835164826 }, \"equal_weight_performance\": { \"annual_return\": 2.1663104492251906, \"annual_volatility\": 0.1236945607173178, \"excess_kurtosis\": -1.4459216837594637, \"mean_periodic\": 0.0046136295317617225, \"omega_zero\": 3.807382601762601, \"sharpe\": 9.23913897261467, \"skewness\": -0.08144664530093365, \"sortino\": 24.53965772782601 }, \"shrinkage_covariance\": [ [ 5.933954920519022e-05, 8.481774094846105e-05, -1.578978626857849e-06, 5.3859797151131576e-05 ], [ 8.481774094846105e-05, 0.00019435690439810875, -3.294842658986527e-06, 0.0001114469416461749 ], [ -1.578978626857849e-06, -3.294842658986527e-06, 2.0039550184948896e-05, -1.917235116660477e-06 ], [ 5.3859797151131576e-05, 0.0001114469416461749, -1.917235116660477e-06, 8.938087284091101e-05 ] ] }, \"portfolios\": { \"equal_weight\": { \"converged\": true, \"expected_return_annualized\": 1.1626346420039542, \"iterations\": 0, \"name\": \"equal_weight\", \"objective\": 0.0, \"volatility_annualized\": 0.11568964362561598, \"weights\": { \"ALPHA\": 0.25, \"BETA\": 0.25, \"DELTA\": 0.25, \"GAMMA\": 0.25 } }, \"maximum_diversification\": { \"converged\": false, \"expected_return_annualized\": 0.8749399211849981, \"iterations\": 1600, \"name\": \"maximum_diversification\", \"objective\": 1.510593239126616, \"volatility_annualized\": 0.06534977294101442, \"weights\": { \"ALPHA\": 0.17346729259200375, \"BETA\": 0.06105691053220686, \"DELTA\": 0.1214291127128755, \"GAMMA\": 0.6440466841629139 } }, \"mean_variance\": { \"converged\": true, \"expected_return_annualized\": 1.8361366881003112, \"iterations\": 4, \"name\": \"mean_variance\", \"objective\": 0.007018114080288026, \"volatility_annualized\": 0.15007991189999273, \"weights\": { \"ALPHA\": 0.0, \"BETA\": 0.0, \"DELTA\": 1.0, \"GAMMA\": 0.0 } }, \"minimum_variance\": { \"converged\": true, \"expected_return_annualized\": 0.8528004018070736, \"iterations\": 1, \"name\": \"minimum_variance\", \"objective\": 1.532702998031317e-05, \"volatility_annualized\": 0.06214830291358662, \"weights\": { \"ALPHA\": 0.25450125789869216, \"BETA\": 0.0, \"DELTA\": 0.11346692957199783, \"GAMMA\": 0.6320318125293101 } }, \"risk_parity\": { \"converged\": true, \"expected_return_annualized\": 0.9475157170706459, \"iterations\": 31, \"name\": \"risk_parity\", \"objective\": 5.315324867532709e-15, \"volatility_annualized\": 0.07406604586390321, \"weights\": { \"ALPHA\": 0.1949525673095328, \"BETA\": 0.10404281069063559, \"DELTA\": 0.1556585125668182, \"GAMMA\": 0.5453461094330134 } } }, \"simulation\": { \"mean_terminal_return\": 0.1573314895933147, \"median\": 0.15397314168982223, \"p05\": 0.08152550665487782, \"p95\": 0.24399158188653083, \"paths\": 600, \"probability_of_loss\": 0.0, \"seed\": 1701, \"steps\": 20, \"terminal_volatility\": 0.04980086107406294 } }",
+      "sources": [
+        "artifact"
+      ],
+      "evidence_ids": [
+        "evidence-000002",
+        "evidence-000005"
+      ],
+      "task_ids": [
+        "task-000002",
+        "task-000003"
+      ],
+      "occurrences": 2
+    },
+    {
+      "digest": "sha256:e0ddeddf6a4ab23d24d19506fba332181d0e736f6e246de1b80bcca92767e3a8",
+      "text": "The seven top-level keys asserted in `tests/test_integration.py` are: metadata, assets, portfolio_risk, factor_models, portfolios, simulation, backtest",
+      "sources": [
+        "claim"
+      ],
+      "evidence_ids": [
+        "evidence-000010"
+      ],
+      "task_ids": [
+        "task-000005"
+      ],
+      "occurrences": 1
+    },
+    {
+      "digest": "sha256:e97826b6f9366b11701b483e2f3c82c176f9c6acbd03892ccdbfd4110b88dc11",
+      "text": "{ \"verdict\": \"accept\", \"confidence\": \"high\", \"claims\": [ { \"text\": \"The seven top-level keys in test_integration.py are metadata, assets, portfolio_risk, factor_models, portfolios, simulation, and backtest.\", \"evidence_ids\": [ \"evidence-000020\" ] } ], \"contradictions\": [] }",
+      "sources": [
+        "artifact"
+      ],
+      "evidence_ids": [
+        "evidence-000022"
+      ],
+      "task_ids": [
+        "task-000008"
+      ],
+      "occurrences": 1
+    },
+    {
+      "digest": "sha256:ea95621540c689241aa3f04e95f850c4ba5b81ac5f4211077392b054559a684d",
+      "text": "# Verdant Quant Lab Verdant Quant Lab is a deterministic, dependency-free Python stock-analysis system built as a real LeafOS long-loop workload. It is an educational research engine, not trading advice and not a live-market data client. The implementation must begin from this README and the files under `seed/`. No feature may depend on network access, a proprietary numerical library, or an imaginary data source. ## Required capabilities The package must remain modular and expose auditable mathematical layers: 1. CSV/config ingestion with strict date, numeric, alignment, and missing-data checks. 2. Simple and log returns; cumulative wealth; drawdown duration and depth. 3. Means, sample covariance, shrinkage covariance, volatility, skewness, excess kurtosis, quantiles, Sharpe, Sortino, and Omega. 4. Historical, Gaussian, and Cornish-Fisher value-at-risk plus historical expected shortfall. 5. CAPM alpha/beta and regularized multi-factor regression with intercept, residual risk, R-squared, and normal-equation diagnostics. 6. Long-only portfolio construction: minimum variance, mean-variance utility, risk parity, and maximum diversification. 7. Correlated geometric-Brownian scenarios using deterministic Cholesky sampling. 8. A walk-forward backtest with lookback/rebalance policy, transaction costs, turnover, weights, and performance metrics. 9. One orchestration API and one CLI producing a stable JSON research report. ## Mathematical conventions - Prices are positive adjusted-close observations ordered by ISO date. - Returns are decimal fractions, not percentages. - Covariance uses `n - 1`; annualized volatility uses `sqrt(periods_per_year)`. - VaR and expected shortfall are reported as positive loss magnitudes at the configured confidence. - Portfolio weights are finite, long-only, and sum to one within numerical tolerance. - Regressions include an intercept. Ridge regularization never penalizes that intercept. - Random paths must be repeatable for the same integer seed. - Singular systems fail with a useful error or use the configured regularization; they never invent a solution. ## Seed workload `seed/prices.csv` contains four synthetic adjusted-close series. `seed/factors.csv` contains aligned synthetic market, size, and momentum factor returns. `seed/config.json` is the canonical policy. The seed is deliberately synthetic: it makes tests reproducible and prevents an example from masquerading as current market analysis. ## Acceptance commands From this directory: ```text python -m unittest discover -s tests -v python -m stocklab.cli analyze --prices seed/prices.csv --factors seed/factors.csv --config seed/config.json --output reports/seed-analysis.json ``` The report must include `metadata`, `assets`, `portfolio_risk`, `factor_models`, `portfolios`, `simulation`, and `backtest`. Re-running the command with unchanged inputs must produce equivalent analytical values. ## Project shape ```text stock-analysis-lab/ ├── README.md ├── SEED.md ├── pyproject.toml ├── seed/ ├── stocklab/ ├── tests/ └── reports/ ``` LeafOS evidence is stored in `.leaf/`; it is runtime provenance rather than source code.",
+      "sources": [
+        "artifact"
+      ],
+      "evidence_ids": [
+        "evidence-000001",
+        "evidence-000002",
+        "evidence-000003",
+        "evidence-000007"
+      ],
+      "task_ids": [
+        "task-000001",
+        "task-000002",
+        "task-000003",
+        "task-000004"
+      ],
+      "occurrences": 4
+    },
+    {
+      "digest": "sha256:fb926af21e9f7d210f1d92fbf890c4828ab73272081e41c29e73260f40fb0586",
+      "text": "Loading model... ▄▄ ▄▄ ██ ██ ██ ██ ▀▀█▄ ███▄███▄ ▀▀█▄ ▄████ ████▄ ████▄ ██ ██ ▄█▀██ ██ ██ ██ ▄█▀██ ██ ██ ██ ██ ██ ██ ██ ▀█▄██ ██ ██ ██ ▀█▄██ ██ ▀████ ████▀ ████▀ ██ ██ ▀▀ ▀▀ build : b9957-c4ae9a88f model : C:\\Users\\liamm\\.leaf\\models\\Viola\\FableVibes-14B-A3B\\Qwen3.6-14B-A3B-FableVibes-Q3_K_M.gguf ftype : Q3_K - Medium modalities : text available commands: /exit or Ctrl+C stop or exit /regen regenerate the last response /clear clear the chat history /read <file> add a text file /glob <pattern> add text files using globbing pattern > You are the independent LeafOS verifier. You did not produce the worker result. Judge only the supplied task output and evidence. A model claim without source, command, test, or captured artifact evidence is not verified. Return exactly one JSON object and no markdown using this schema: {\"verdict\":\"accept|reject|conflict\",\"confidence\":\"low|medium|high\",\"claims\":[{\"text\":\"claim\",\"evidence_ids\":[\"evidence-NNNNNN\"]}],\"contradictions\":[\"description\"]} TASK ID: task-000003 TASK GOAL: Evaluate whether ... (truncated) { \"verdict\": \"accept\", \"confidence\": \"high\", \"claims\": [ { \"text\": \"The implemented stock-analysis engine (stocklab/analysis.py) satisfies the contract specified in the README: it supports `analyze_stock` (ticker, date, days, output_type) and correctly handles ticker aliases like `'AAPL'` and `'Apple'`, producing `{'ticker': 'Apple', 'price': 4000.0, 'open_count': 1000}`.\", \"evidence_ids\": [ \"evidence-000003\", \"evidence-000004\" ] } ], \"contradictions\": [] } [ Prompt: 3109.8 t/s | Generation: 132.1 t/s ] Exiting...",
+      "sources": [
+        "artifact"
+      ],
+      "evidence_ids": [
+        "evidence-000006"
+      ],
+      "task_ids": [
+        "task-000003"
+      ],
+      "occurrences": 1
+    }
+  ],
+  "contradictions": [
+    {
+      "task_id": "task-000001",
+      "id": "task-000001-contradiction-001",
+      "evidence_ids": [
+        "evidence-000001"
+      ],
+      "reason": "The worker invented a BaseLayer hierarchy absent from README.md and SEED.md; preserve the output as untrusted evidence but do not treat it as implementation authority.",
+      "producer": "leafos:primary-agent",
+      "observed_at": "2026-08-20T08:05:24.977347+00:00"
+    },
+    {
+      "task_id": "task-000003",
+      "id": "task-000003-contradiction-001",
+      "evidence_ids": [
+        "evidence-000003",
+        "evidence-000006"
+      ],
+      "reason": "Both model outputs describe an analyze_stock ticker-alias API absent from the supplied README, stocklab/analysis.py, and passing integration test; their accept prose is semantically false.",
+      "producer": "leafos:primary-agent",
+      "observed_at": "2026-08-20T08:06:30.419768+00:00"
+    }
+  ],
+  "integrity": "sha256:baf58306d87078f1bc6bcea2ed1482e0b78c2411e212bf5e6d5d9d12f11a9fd4"
+}

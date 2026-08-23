@@ -1,0 +1,10 @@
+{
+  "schema": "leafos.epoch-next-plan.v1",
+  "epoch": "epoch-000001",
+  "observed_at": "2026-08-20T08:09:05.606677+00:00",
+  "actions": [
+    "Inspect conflicting verifier evidence; do not accept the task while contradictions remain."
+  ],
+  "blocked_by_contradictions": true,
+  "integrity": "sha256:f0c323aa445b994ffe5ab9c4acc051ef50e5c37844a6e0d85a7f21b11c56dad3"
+}

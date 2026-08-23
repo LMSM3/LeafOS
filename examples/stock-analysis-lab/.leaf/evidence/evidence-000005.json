@@ -1,0 +1,44 @@
+{
+  "schema": "leafos.evidence.v1",
+  "id": "evidence-000005",
+  "task_id": "task-000003",
+  "producer": "leafos:controller",
+  "kind": "tool-execution",
+  "source": {
+    "tool": "artifact",
+    "mutation_policy": "read-only"
+  },
+  "command": {
+    "tool": "artifact",
+    "path": "reports/seed-analysis.json"
+  },
+  "attempt": 2,
+  "exit_code": 0,
+  "artifacts": [
+    {
+      "role": "tool-stdout",
+      "path": ".leaf/tasks/task-000003/tools/attempt-002-artifact/stdout.txt",
+      "sha256": "574d69abbb7ac6feb9a086077352238dfbfcf5a5d03e6668e4f6e4fe4cfcb30b",
+      "bytes": 50
+    },
+    {
+      "role": "tool-stderr",
+      "path": ".leaf/tasks/task-000003/tools/attempt-002-artifact/stderr.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "role": "captured-artifact",
+      "source_path": "reports/seed-analysis.json",
+      "path": ".leaf/tasks/task-000003/tools/attempt-002-artifact/artifact/reports/seed-analysis.json",
+      "sha256": "b5379e61a856aaba7e39a1a222d492a881e81236b549652b77c9306a4613693b",
+      "bytes": 14855
+    }
+  ],
+  "started_at": "2026-08-20T08:05:53.892860+00:00",
+  "observed_at": "2026-08-20T08:05:53.893078+00:00",
+  "confidence": "observed",
+  "claims": [],
+  "next_action": null,
+  "integrity": "sha256:e479df97ab487c7ac23f097f9213622ded319bf9ed3675bb5d8330b66c6058c7"
+}

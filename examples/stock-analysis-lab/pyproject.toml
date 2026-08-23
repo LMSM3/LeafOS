@@ -1,0 +1,11 @@
+[project]
+name = "verdant-quant-lab"
+version = "0.1.0"
+description = "Deterministic dependency-free mathematical stock research workload for LeafOS"
+requires-python = ">=3.11"
+
+[project.scripts]
+verdant-quant = "stocklab.cli:main"
+
+[tool.unittest]
+start-directory = "tests"

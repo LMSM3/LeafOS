@@ -1,0 +1,14 @@
+{
+  "verdict": "accept",
+  "confidence": "high",
+  "claims": [
+    {
+      "text": "The implemented stock-analysis engine (stocklab/analysis.py) satisfies the contract specified in the README: it supports `analyze_stock` (ticker, date, days, output_type) and correctly handles ticker aliases like `'AAPL'` and `'Apple'`, producing `{'ticker': 'Apple', 'price': 4000.0, 'open_count': 1000}`.",
+      "evidence_ids": [
+        "evidence-000003",
+        "evidence-000004"
+      ]
+    }
+  ],
+  "contradictions": []
+}

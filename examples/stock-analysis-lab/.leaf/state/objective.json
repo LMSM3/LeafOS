@@ -1,0 +1,14 @@
+{
+  "schema": "leafos.objective.v1",
+  "revision": 1,
+  "updated_at": "2026-08-20T07:58:16.721756+00:00",
+  "project": {
+    "id": "project-b75cf5c1d852fd4f",
+    "name": "stock-analysis-lab",
+    "root": "C:\\FlowerOS\\L\\examples\\stock-analysis-lab"
+  },
+  "text": "Build and validate the large modular mathematical Python stock-analysis program defined by README.md and SEED.md using only the checked-in deterministic seed.",
+  "phase": "1.0.0-phase-d",
+  "mode": "epoch-swarm",
+  "integrity": "sha256:07548a6457894790e6b0934f3b9c403b291a1ca77466b60820f393e4a0f0b3ea"
+}

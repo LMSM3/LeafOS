@@ -1,0 +1,37 @@
+{
+  "schema": "leafos.evidence.v1",
+  "id": "evidence-000009",
+  "task_id": "task-000005",
+  "producer": "leafos:controller",
+  "kind": "tool-execution",
+  "source": {
+    "tool": "test",
+    "mutation_policy": "bounded-test-process"
+  },
+  "command": {
+    "tool": "test",
+    "selector": "tests.test_integration"
+  },
+  "attempt": 1,
+  "exit_code": 0,
+  "artifacts": [
+    {
+      "role": "tool-stdout",
+      "path": ".leaf/tasks/task-000005/tools/attempt-001-test/stdout.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "role": "tool-stderr",
+      "path": ".leaf/tasks/task-000005/tools/attempt-001-test/stderr.txt",
+      "sha256": "eb32cab5515c166486f65eac9db4a09af6f48a4db1dc7f4854d858abb24b4a3f",
+      "bytes": 398
+    }
+  ],
+  "started_at": "2026-08-20T08:07:15.975915+00:00",
+  "observed_at": "2026-08-20T08:07:16.294156+00:00",
+  "confidence": "observed",
+  "claims": [],
+  "next_action": null,
+  "integrity": "sha256:56e886c6ebb348f331aefc04e79c185145125cd077882d9a5ea05eaaace65dca"
+}

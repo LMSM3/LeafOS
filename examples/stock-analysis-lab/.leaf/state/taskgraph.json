@@ -1,0 +1,537 @@
+{
+  "schema": "leafos.taskgraph.v1",
+  "revision": 42,
+  "updated_at": "2026-08-20T08:09:05.313285+00:00",
+  "project_id": "project-b75cf5c1d852fd4f",
+  "next_task": 9,
+  "next_evidence": 23,
+  "tasks": {
+    "task-000001": {
+      "id": "task-000001",
+      "goal": "Derive an implementation and verification map from the README and seed contract",
+      "owner": "leafos:worker-pool",
+      "lane": "fast",
+      "inputs": {
+        "prompt": null,
+        "sources": [
+          {
+            "path": "README.md",
+            "sha256": "96cf31cd3b7df51291073ec28f37d44d8933a343bf5e1663f70fb7bfe0be621f",
+            "bytes": 3207,
+            "encoding": "utf-8"
+          },
+          {
+            "path": "SEED.md",
+            "sha256": "63b42ab125c342dd56ad727985d285ca21dd09b482d8b7070a05cb8549b95b9e",
+            "bytes": 884,
+            "encoding": "utf-8"
+          },
+          {
+            "path": "seed/config.json",
+            "sha256": "20f2118a96328732049b40dfa23eb8b00af6a478c3727eeb35a693263ae2a4d7",
+            "bytes": 305,
+            "encoding": "utf-8"
+          }
+        ]
+      },
+      "dependencies": [],
+      "budget": {
+        "tokens": 192,
+        "context": 4096,
+        "timeout_seconds": 180,
+        "attempts": 2,
+        "tool_attempts": 3,
+        "verifier_attempts": 2
+      },
+      "priority": 50,
+      "schedule_class": "critical",
+      "mutation_policy": "read-only",
+      "status": "verifying",
+      "attempt": 1,
+      "lease": null,
+      "verification_lease": null,
+      "cancellation_requested": false,
+      "evidence": [
+        "evidence-000001"
+      ],
+      "tool_evidence": [],
+      "verifier_evidence": [],
+      "contradictions": [
+        {
+          "id": "task-000001-contradiction-001",
+          "task_id": "task-000001",
+          "evidence_ids": [
+            "evidence-000001"
+          ],
+          "reason": "The worker invented a BaseLayer hierarchy absent from README.md and SEED.md; preserve the output as untrusted evidence but do not treat it as implementation authority.",
+          "producer": "leafos:primary-agent",
+          "observed_at": "2026-08-20T08:05:24.977347+00:00"
+        }
+      ],
+      "decision": null,
+      "confidence": "conflicted",
+      "output": {
+        "path": ".leaf/tasks/task-000001/worker-output.txt",
+        "sha256": "502da911cd73ac6376501e67e4ba9ef7d440319bff65700f28cc570a6e1aeda2",
+        "bytes": 816
+      },
+      "last_error": null,
+      "created_at": "2026-08-20T07:58:16.894866+00:00",
+      "updated_at": "2026-08-20T08:05:24.977347+00:00"
+    },
+    "task-000002": {
+      "id": "task-000002",
+      "goal": "Evaluate whether the implemented stock-analysis engine satisfies the README contract using cited project sources",
+      "owner": "leafos:worker-pool",
+      "lane": "fast",
+      "inputs": {
+        "prompt": null,
+        "sources": [
+          {
+            "path": "README.md",
+            "sha256": "96cf31cd3b7df51291073ec28f37d44d8933a343bf5e1663f70fb7bfe0be621f",
+            "bytes": 3207,
+            "encoding": "utf-8"
+          },
+          {
+            "path": "stocklab/analysis.py",
+            "sha256": "ed025c45356d715509f672441ebb1e05137858b2c69757cef754fe915ed22d0a",
+            "bytes": 5927,
+            "encoding": "utf-8"
+          },
+          {
+            "path": "stocklab/linalg.py",
+            "sha256": "ab497640597b4eee65d41209af5593d6c99348d3f2412685f405d10016f1ad11",
+            "bytes": 5957,
+            "encoding": "utf-8"
+          },
+          {
+            "path": "stocklab/portfolio.py",
+            "sha256": "82dc258d72a6b0a1ec6ef11ff909ea14bfd5333224379ff356cb07a66d13f22a",
+            "bytes": 4933,
+            "encoding": "utf-8"
+          },
+          {
+            "path": "stocklab/risk.py",
+            "sha256": "8ae7e54157f15276581836c79ad30a117316456745b3fc12a4ecda6b93c4e166",
+            "bytes": 3363,
+            "encoding": "utf-8"
+          },
+          {
+            "path": "tests/test_integration.py",
+            "sha256": "5e2910b02ef8905eeaaa53e7b9efae536bb6faef780209ef90f31c8f29f19cb2",
+            "bytes": 2068,
+            "encoding": "utf-8"
+          },
+          {
+            "path": "reports/seed-analysis.json",
+            "sha256": "b5379e61a856aaba7e39a1a222d492a881e81236b549652b77c9306a4613693b",
+            "bytes": 14855,
+            "encoding": "utf-8"
+          }
+        ]
+      },
+      "dependencies": [],
+      "budget": {
+        "tokens": 256,
+        "context": 32768,
+        "timeout_seconds": 180,
+        "attempts": 2,
+        "tool_attempts": 3,
+        "verifier_attempts": 2
+      },
+      "priority": 50,
+      "schedule_class": "critical",
+      "mutation_policy": "read-only",
+      "status": "failed",
+      "attempt": 1,
+      "lease": null,
+      "verification_lease": null,
+      "cancellation_requested": false,
+      "evidence": [
+        "evidence-000002"
+      ],
+      "tool_evidence": [],
+      "verifier_evidence": [],
+      "contradictions": [],
+      "decision": null,
+      "confidence": "unverified",
+      "output": {
+        "path": ".leaf/tasks/task-000002/worker-output.txt",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "bytes": 0
+      },
+      "last_error": "llama.cpp exited with code 127",
+      "created_at": "2026-08-20T08:05:31.028000+00:00",
+      "updated_at": "2026-08-20T08:05:31.074850+00:00"
+    },
+    "task-000003": {
+      "id": "task-000003",
+      "goal": "Evaluate whether the implemented stock-analysis engine satisfies the README contract using cited project sources",
+      "owner": "leafos:worker-pool",
+      "lane": "fast",
+      "inputs": {
+        "prompt": null,
+        "sources": [
+          {
+            "path": "README.md",
+            "sha256": "96cf31cd3b7df51291073ec28f37d44d8933a343bf5e1663f70fb7bfe0be621f",
+            "bytes": 3207,
+            "encoding": "utf-8"
+          },
+          {
+            "path": "stocklab/analysis.py",
+            "sha256": "ed025c45356d715509f672441ebb1e05137858b2c69757cef754fe915ed22d0a",
+            "bytes": 5927,
+            "encoding": "utf-8"
+          },
+          {
+            "path": "tests/test_integration.py",
+            "sha256": "5e2910b02ef8905eeaaa53e7b9efae536bb6faef780209ef90f31c8f29f19cb2",
+            "bytes": 2068,
+            "encoding": "utf-8"
+          }
+        ]
+      },
+      "dependencies": [],
+      "budget": {
+        "tokens": 256,
+        "context": 8192,
+        "timeout_seconds": 180,
+        "attempts": 2,
+        "tool_attempts": 3,
+        "verifier_attempts": 2
+      },
+      "priority": 50,
+      "schedule_class": "critical",
+      "mutation_policy": "read-only",
+      "status": "verifying",
+      "attempt": 1,
+      "lease": null,
+      "verification_lease": null,
+      "cancellation_requested": false,
+      "evidence": [
+        "evidence-000003",
+        "evidence-000004",
+        "evidence-000005",
+        "evidence-000006"
+      ],
+      "tool_evidence": [
+        "evidence-000004",
+        "evidence-000005"
+      ],
+      "verifier_evidence": [
+        "evidence-000006"
+      ],
+      "contradictions": [
+        {
+          "id": "task-000003-contradiction-001",
+          "task_id": "task-000003",
+          "evidence_ids": [
+            "evidence-000003",
+            "evidence-000006"
+          ],
+          "reason": "Both model outputs describe an analyze_stock ticker-alias API absent from the supplied README, stocklab/analysis.py, and passing integration test; their accept prose is semantically false.",
+          "producer": "leafos:primary-agent",
+          "observed_at": "2026-08-20T08:06:30.419768+00:00"
+        }
+      ],
+      "decision": null,
+      "confidence": "conflicted",
+      "output": {
+        "path": ".leaf/tasks/task-000003/worker-output.txt",
+        "sha256": "a98064bd70360fbe853081295d008323a0eaffbcbea6ab4d6a60603a0b9dee0d",
+        "bytes": 408
+      },
+      "last_error": null,
+      "created_at": "2026-08-20T08:05:41.408714+00:00",
+      "updated_at": "2026-08-20T08:06:30.419768+00:00"
+    },
+    "task-000004": {
+      "id": "task-000004",
+      "goal": "Read tests/test_integration.py and report only the seven top-level report keys it asserts, citing that path; do not infer any ticker API",
+      "owner": "leafos:worker-pool",
+      "lane": "reasoning",
+      "inputs": {
+        "prompt": null,
+        "sources": [
+          {
+            "path": "tests/test_integration.py",
+            "sha256": "5e2910b02ef8905eeaaa53e7b9efae536bb6faef780209ef90f31c8f29f19cb2",
+            "bytes": 2068,
+            "encoding": "utf-8"
+          },
+          {
+            "path": "README.md",
+            "sha256": "96cf31cd3b7df51291073ec28f37d44d8933a343bf5e1663f70fb7bfe0be621f",
+            "bytes": 3207,
+            "encoding": "utf-8"
+          }
+        ]
+      },
+      "dependencies": [],
+      "budget": {
+        "tokens": 192,
+        "context": 4096,
+        "timeout_seconds": 180,
+        "attempts": 2,
+        "tool_attempts": 3,
+        "verifier_attempts": 2
+      },
+      "priority": 50,
+      "schedule_class": "critical",
+      "mutation_policy": "read-only",
+      "status": "failed",
+      "attempt": 1,
+      "lease": null,
+      "verification_lease": null,
+      "cancellation_requested": false,
+      "evidence": [
+        "evidence-000007"
+      ],
+      "tool_evidence": [],
+      "verifier_evidence": [],
+      "contradictions": [],
+      "decision": null,
+      "confidence": "unverified",
+      "output": {
+        "path": ".leaf/tasks/task-000004/worker-output.txt",
+        "sha256": "171f12f23d3a82024d4e97fca6115298f17712663c99dc421be1bf5c8ff5e1f6",
+        "bytes": 63
+      },
+      "last_error": "llama.cpp exited with code 1",
+      "created_at": "2026-08-20T08:06:30.564748+00:00",
+      "updated_at": "2026-08-20T08:06:40.615935+00:00"
+    },
+    "task-000005": {
+      "id": "task-000005",
+      "goal": "Read tests/test_integration.py and report only the seven top-level report keys it asserts, citing that path; do not infer any ticker API",
+      "owner": "leafos:worker-pool",
+      "lane": "verifier",
+      "inputs": {
+        "prompt": null,
+        "sources": [
+          {
+            "path": "tests/test_integration.py",
+            "sha256": "5e2910b02ef8905eeaaa53e7b9efae536bb6faef780209ef90f31c8f29f19cb2",
+            "bytes": 2068,
+            "encoding": "utf-8"
+          }
+        ]
+      },
+      "dependencies": [],
+      "budget": {
+        "tokens": 128,
+        "context": 4096,
+        "timeout_seconds": 180,
+        "attempts": 2,
+        "tool_attempts": 3,
+        "verifier_attempts": 2
+      },
+      "priority": 50,
+      "schedule_class": "critical",
+      "mutation_policy": "read-only",
+      "status": "verifying",
+      "attempt": 1,
+      "lease": null,
+      "verification_lease": null,
+      "cancellation_requested": false,
+      "evidence": [
+        "evidence-000008",
+        "evidence-000009",
+        "evidence-000010"
+      ],
+      "tool_evidence": [
+        "evidence-000009"
+      ],
+      "verifier_evidence": [
+        "evidence-000010"
+      ],
+      "contradictions": [],
+      "decision": null,
+      "confidence": "rejected",
+      "output": {
+        "path": ".leaf/tasks/task-000005/worker-output.txt",
+        "sha256": "5d9bff9577c5f26f5c6cff417ca3957e5bb894ebd8b53ae73581eae4fdb8a662",
+        "bytes": 160
+      },
+      "last_error": null,
+      "created_at": "2026-08-20T08:06:57.773371+00:00",
+      "updated_at": "2026-08-20T08:07:23.523373+00:00"
+    },
+    "task-000006": {
+      "id": "task-000006",
+      "goal": "Identify the seven report keys asserted by tests/test_integration.py and cite the source",
+      "owner": "leafos:worker-pool",
+      "lane": "verifier",
+      "inputs": {
+        "prompt": null,
+        "sources": [
+          {
+            "path": "tests/test_integration.py",
+            "sha256": "5e2910b02ef8905eeaaa53e7b9efae536bb6faef780209ef90f31c8f29f19cb2",
+            "bytes": 2068,
+            "encoding": "utf-8"
+          }
+        ]
+      },
+      "dependencies": [],
+      "budget": {
+        "tokens": 128,
+        "context": 4096,
+        "timeout_seconds": 180,
+        "attempts": 2,
+        "tool_attempts": 3,
+        "verifier_attempts": 2
+      },
+      "priority": 50,
+      "schedule_class": "critical",
+      "mutation_policy": "read-only",
+      "status": "verifying",
+      "attempt": 1,
+      "lease": null,
+      "verification_lease": null,
+      "cancellation_requested": false,
+      "evidence": [
+        "evidence-000011",
+        "evidence-000012",
+        "evidence-000013"
+      ],
+      "tool_evidence": [
+        "evidence-000012",
+        "evidence-000013"
+      ],
+      "verifier_evidence": [],
+      "contradictions": [],
+      "decision": null,
+      "confidence": "unverified",
+      "output": {
+        "path": ".leaf/tasks/task-000006/worker-output.txt",
+        "sha256": "43942b6191f59d96fcf19606424591c352a36da3ab45276d99761fba61bb2604",
+        "bytes": 488
+      },
+      "last_error": null,
+      "created_at": "2026-08-20T08:07:45.577341+00:00",
+      "updated_at": "2026-08-20T08:07:52.586915+00:00"
+    },
+    "task-000007": {
+      "id": "task-000007",
+      "goal": "List exactly the seven top-level report keys asserted in tests/test_integration.py and cite that file",
+      "owner": "leafos:worker-pool",
+      "lane": "verifier",
+      "inputs": {
+        "prompt": null,
+        "sources": [
+          {
+            "path": "tests/test_integration.py",
+            "sha256": "5e2910b02ef8905eeaaa53e7b9efae536bb6faef780209ef90f31c8f29f19cb2",
+            "bytes": 2068,
+            "encoding": "utf-8"
+          }
+        ]
+      },
+      "dependencies": [],
+      "budget": {
+        "tokens": 256,
+        "context": 4096,
+        "timeout_seconds": 180,
+        "attempts": 2,
+        "tool_attempts": 3,
+        "verifier_attempts": 2
+      },
+      "priority": 50,
+      "schedule_class": "critical",
+      "mutation_policy": "read-only",
+      "status": "verifying",
+      "attempt": 1,
+      "lease": null,
+      "verification_lease": null,
+      "cancellation_requested": false,
+      "evidence": [
+        "evidence-000014",
+        "evidence-000015",
+        "evidence-000016",
+        "evidence-000017",
+        "evidence-000018"
+      ],
+      "tool_evidence": [
+        "evidence-000015",
+        "evidence-000016"
+      ],
+      "verifier_evidence": [
+        "evidence-000017",
+        "evidence-000018"
+      ],
+      "contradictions": [],
+      "decision": null,
+      "confidence": "unverified",
+      "output": {
+        "path": ".leaf/tasks/task-000007/worker-output.txt",
+        "sha256": "3ab83f55414ef634929817f6a8eab234f2b939f026ccaf1db0901318d77a8bfe",
+        "bytes": 164
+      },
+      "last_error": null,
+      "created_at": "2026-08-20T08:08:06.062698+00:00",
+      "updated_at": "2026-08-20T08:08:31.292646+00:00"
+    },
+    "task-000008": {
+      "id": "task-000008",
+      "goal": "List exactly the seven top-level report keys asserted in tests/test_integration.py and cite that file",
+      "owner": "leafos:worker-pool",
+      "lane": "fast",
+      "inputs": {
+        "prompt": null,
+        "sources": [
+          {
+            "path": "tests/test_integration.py",
+            "sha256": "5e2910b02ef8905eeaaa53e7b9efae536bb6faef780209ef90f31c8f29f19cb2",
+            "bytes": 2068,
+            "encoding": "utf-8"
+          }
+        ]
+      },
+      "dependencies": [],
+      "budget": {
+        "tokens": 256,
+        "context": 4096,
+        "timeout_seconds": 180,
+        "attempts": 2,
+        "tool_attempts": 3,
+        "verifier_attempts": 2
+      },
+      "priority": 50,
+      "schedule_class": "critical",
+      "mutation_policy": "read-only",
+      "status": "accepted",
+      "attempt": 1,
+      "lease": null,
+      "verification_lease": null,
+      "cancellation_requested": false,
+      "evidence": [
+        "evidence-000019",
+        "evidence-000020",
+        "evidence-000021",
+        "evidence-000022"
+      ],
+      "tool_evidence": [
+        "evidence-000020",
+        "evidence-000021"
+      ],
+      "verifier_evidence": [
+        "evidence-000022"
+      ],
+      "contradictions": [],
+      "decision": "decision-000003",
+      "confidence": "verified",
+      "output": {
+        "path": ".leaf/tasks/task-000008/worker-output.txt",
+        "sha256": "b28a642232fb101f166c4323c8ec001eca79e66d6e3e7a0fc315553b44d73626",
+        "bytes": 331
+      },
+      "last_error": null,
+      "created_at": "2026-08-20T08:08:37.668609+00:00",
+      "updated_at": "2026-08-20T08:09:05.313285+00:00"
+    }
+  },
+  "integrity": "sha256:b80d2284ff100417c9d126ac00bf638e76ab4b1886524ed1a267938d393ed085"
+}

@@ -1,0 +1,24 @@
+{
+  "schema": "leafos.epoch-failures.v1",
+  "epoch": "epoch-000001",
+  "observed_at": "2026-08-20T08:09:05.606677+00:00",
+  "failures": [
+    {
+      "id": "task-000002",
+      "goal": "Evaluate whether the implemented stock-analysis engine satisfies the README contract using cited project sources",
+      "error": "llama.cpp exited with code 127",
+      "evidence": [
+        "evidence-000002"
+      ]
+    },
+    {
+      "id": "task-000004",
+      "goal": "Read tests/test_integration.py and report only the seven top-level report keys it asserts, citing that path; do not infer any ticker API",
+      "error": "llama.cpp exited with code 1",
+      "evidence": [
+        "evidence-000007"
+      ]
+    }
+  ],
+  "integrity": "sha256:cd8a9c87c52abb9f9bbcae280acc53162acf5589ee7d19b97004c517d62842b6"
+}
